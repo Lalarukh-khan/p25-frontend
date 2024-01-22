@@ -1,0 +1,49 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3000",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-react-calendars": "^22.2.5",
+    "axios": "^1.4.0",
+    "bootstrap": "^5.3.1",
+    "bootstrap-daterangepicker": "^3.1.0",
+    "cors": "^2.8.5",
+    "datatables.net": "^1.13.8",
+    "date-fns": "^2.30.0",
+    "jquery": "^3.7.0",
+    "moment": "^2.29.4",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
+    "react-bootstrap-daterangepicker": "^8.0.0",
+    "react-date-range": "^1.4.0",
+    "react-datepicker": "^4.21.0",
+    "react-daterange-picker": "^2.0.1",
+    "react-dom": "^18.2.0",
+    "react-responsive-carousel": "^3.2.23",
+    "react-router-dom": "^6.14.1",
+    "react-select": "^5.7.4",
+    "react-slick": "^0.29.0",
+    "react-tooltip": "^5.20.0",
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.2",
+    "sweetalert2": "^11.7.20",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "@vitejs/plugin-react": "^4.0.1",
+    "eslint": "^8.44.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
+    "vite": "^4.4.0"
+  }
+}
