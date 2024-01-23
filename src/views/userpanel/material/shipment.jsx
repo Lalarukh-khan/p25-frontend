@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import axiosClient from '../../../axios-client';
 
 export default function AddShipment(){
-	const [mattype, setMatType] = useState("");
 	useEffect(() => {
 		loadcategories();
 		loadsubcategories(1);
-		loadmaterial();
+		loadmaterialbytype(1);
 		loadmaterialvalues(1);
+		loadmattypes();
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -31,6 +31,41 @@ export default function AddShipment(){
 					});
 					select.addEventListener('change', function() {
 						loadsubcategories(this.value);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadmattypes = () => {
+		axiosClient.get('/get-mattypes')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			// Function to create and append the <select> element
+			function createSelect(options) {
+				const selectContainer = document.getElementById('alltypecateg');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shpinput`;
+					select.id = `mattypes`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.name;
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadmaterialbytype(this.value);
 					});
 					selectContainer.appendChild(select);
 				// }
@@ -83,8 +118,45 @@ export default function AddShipment(){
 			}
 		});
 	}
-	const loadmaterial = () => {
-		axiosClient.get('/get-material')
+	// const loadmaterial = () => {
+	// 	axiosClient.get('/get-material')
+	// 	.then(({data}) => {
+	// 		console.log(data); 
+	// 		const jsonData = data.data;
+	// 		// Function to create and append the <select> element
+	// 		function createSelect(options) {
+	// 			const selectContainer = document.getElementById('material-container');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shpinput`;
+	// 				select.id = `slctmat`;
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.id;
+	// 					optionElement.text = option.component;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				select.addEventListener('change', function() {
+	// 					loadmaterialvalues(this.value);
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		createSelect(jsonData);
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
+	const loadmaterialbytype = (matid) => {
+		const payload = new FormData();
+		payload.append('matid', matid);
+		axiosClient.post('/get-materialbytype', payload)
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
@@ -127,7 +199,6 @@ export default function AddShipment(){
 			const jsonData = data.data[0];
 			const quantity = document.getElementById("quantity");
 			quantity.value = jsonData.quantity;
-			setMatType(jsonData.type);
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -142,9 +213,10 @@ export default function AddShipment(){
 		const shipid =  document.getElementById("shipid").value;
 		const name =  document.getElementById("name").value;
 		const from =  document.getElementById("from").value;
-		// const slctcateg =  document.getElementById("slctcateg").value;
-		// const slctsubcateg =  document.getElementById("slctsubcateg").value;
-		// const slctmat =  document.getElementById("slctmat").value;
+		const slctcateg =  document.getElementById("slctcateg").value;
+		const slctsubcateg =  document.getElementById("slctsubcateg").value;
+		const slctmat =  document.getElementById("slctmat").value;
+		const slctmattype =  document.getElementById("mattypes").value;
 		const packingno =  document.getElementById("packingno").value;
 		const quantity =  document.getElementById("quantity").value;
 		const shipmentqty =  document.getElementById("shipmentqty").value;
@@ -156,29 +228,25 @@ export default function AddShipment(){
 		const selectedsubOption = slctsubcategoryname.options[slctsubcategoryname.selectedIndex];
 		const slctmatname = document.getElementById("slctmat");
 		const selectedMatOption = slctmatname.options[slctmatname.selectedIndex];
+		const mattypesname = document.getElementById("mattypes");
+		const mattypeOption = mattypesname.options[mattypesname.selectedIndex];
 		const result = document.getElementById("result");
-		let mattypename = "";
-		if(mattype == 1){
-			mattypename = "New Material";
-		}
-		else{
-			mattypename = "Used Material";
-		}
-		// const payload = new FormData();
-		// payload.append('shipid', shipid);
-		// payload.append('name', name);
-		// payload.append('from', from);
-		// payload.append('slctcateg', slctcateg);
-		// payload.append('slctsubcateg', slctsubcateg);
-		// payload.append('slctmat', slctmat);
-		// payload.append('packingno', packingno);
-		// payload.append('quantity', quantity);
-		// payload.append('shipmentqty', shipmentqty);
-		// payload.append('receivedqty', receivedqty);
-		// payload.append('remainingqty', remainingqty);
-		// axiosClient.post('/add-shipment', payload)
-		// .then(({data}) => {
-		// 	console.log(data); 
+		const payload = new FormData();
+		payload.append('shipid', shipid);
+		payload.append('name', name);
+		payload.append('from', from);
+		payload.append('slctcateg', slctcateg);
+		payload.append('slctsubcateg', slctsubcateg);
+		payload.append('slctmat', slctmat);
+		payload.append('slcttype', slctmattype);
+		payload.append('packingno', packingno);
+		payload.append('quantity', quantity);
+		payload.append('shipmentqty', shipmentqty);
+		payload.append('receivedqty', receivedqty);
+		payload.append('remainingqty', remainingqty);
+		axiosClient.post('/add-shipment', payload)
+		.then(({data}) => {
+			console.log(data); 
 			const rs2 = document.getElementById("rs2");
 			const rs3 = document.getElementById("rs3");
 			const rs4 = document.getElementById("rs4");
@@ -197,20 +265,20 @@ export default function AddShipment(){
 			rs5.innerText = selectedOption.text;
 			rs6.innerText = selectedsubOption.text;
 			rs7.innerText = selectedMatOption.text;
-			rs8.innerText = mattypename;
+			rs8.innerText = mattypeOption.text;
 			rs9.innerText = packingno;
 			rs10.innerText = quantity;
 			rs11.innerText = shipmentqty;
 			rs12.innerText = receivedqty;
 			rs13.innerText = remainingqty;
 			result.style.display = "block";
-		// })
-		// .catch((err) => {
-		// 	const response = err.response;
-		// 	if (response && response.status === 422) {
-		// 		console.log(response.data.message);
-		// 	}
-		// });
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
 		
 	}
 	const addmatshow = () => {
@@ -220,12 +288,19 @@ export default function AddShipment(){
 	const handleRemainingInput = () => {
 		const input1Value = document.getElementById('quantity').value;
 		const input2Value = document.getElementById('receivedqty').value;
+		const input3Value = document.getElementById('shipmentqty').value;
 		const resultValue = document.getElementById('remainingqty');
 		const number1 = parseFloat(input1Value);
 		const number2 = parseFloat(input2Value);
-		if (!isNaN(number1) && !isNaN(number2)) {
-			const result = number1 - number2;
-			resultValue.value = result;
+		const number3 = parseFloat(input3Value);
+		if(number2 <= number3){
+			if (!isNaN(number1) && !isNaN(number2)) {
+				const result = number1 - number2;
+				resultValue.value = result;
+			}
+		}
+		else{
+			document.getElementById('receivedqty').value = number3;
 		}
 	}
 	return (
@@ -259,7 +334,10 @@ export default function AddShipment(){
 					<div className="row mb-3">
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Type of Material</h6>
-							<button className="shpinput">Material Type/Spare &gt;</button>
+							<div id="alltypecateg">
+									<div>
+									</div>
+							</div>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Material Component</h6>

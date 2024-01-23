@@ -4,9 +4,11 @@ import * as XLSX from 'xlsx';
 
 export default function AddMaterial(){
 	const [activeButtonText, setActiveButtonText] = useState("");
+	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadcategories();
 		loadsubcategories(1);
+		loadmattypes();
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -30,6 +32,38 @@ export default function AddMaterial(){
 					});
 					select.addEventListener('change', function() {
 						loadsubcategories(this.value);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadmattypes = () => {
+		axiosClient.get('/get-mattypes')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			// Function to create and append the <select> element
+			function createSelect(options) {
+				const selectContainer = document.getElementById('alltypecateg');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `matinput`;
+					select.id = `type`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.name;
+						select.appendChild(optionElement);
 					});
 					selectContainer.appendChild(select);
 				// }
@@ -115,7 +149,7 @@ export default function AddMaterial(){
 			console.log(data); 
 			const jsonData = data.data;
 			console.log("Results:"+jsonData);
-			const result = document.getElementById("result");
+			const matresult = document.getElementById("matresult");
 			const rstcomponent = document.getElementById("rstcomponent");
 			const rstmodel = document.getElementById("rstmodel");
 			const rstdescription = document.getElementById("rstdescription");
@@ -125,17 +159,17 @@ export default function AddMaterial(){
 			const rsttype = document.getElementById("rsttype");
 			const rstqty = document.getElementById("rstqty");
 			const rstunit = document.getElementById("rstunit");
-			rstcomponent.value = component;
-			rstmodel.value = model;
-			rstdescription.value = description;
-			rstpartno.value = partno;
-			rstqty.value = quantity;
-			rstunit.value = activeButtonText;
-			rstctg.value = selectedOption.text;
-			rstsubctg.value = selectedsubOption.text;
-			rsttype.value = selectedtypeOption.text;
+			rstcomponent.innerText = component;
+			rstmodel.innerText = model;
+			rstdescription.innerText = description;
+			rstpartno.innerText = partno;
+			rstqty.innerText = quantity;
+			rstunit.innerText = activeButtonText;
+			rstctg.innerText = selectedOption.text;
+			rstsubctg.innerText = selectedsubOption.text;
+			rsttype.innerText = selectedtypeOption.text;
 
-			result.style.display = "block";
+			matresult.style.display = "block";
 		// 	// Function to create and append the <select> element
 		})
 		.catch((err) => {
@@ -149,6 +183,7 @@ export default function AddMaterial(){
 	const addmatshow = () => {
 		const toshow = document.getElementById("toshow");
 		toshow.style.display = "block";
+		document.getElementById("bulkupload").style.display = "none";
 	}
 	const handleFile = (e) => {
 		const file = e.target.files[0];
@@ -170,6 +205,7 @@ export default function AddMaterial(){
 			// Filter out empty rows
 			const filteredData = jsonData.filter(row => row.length > 0);
 
+			setRowData(filteredData.slice(1));
 			// Send each row in a POST request
 			sendRows(filteredData.slice(1));
 		};
@@ -179,6 +215,7 @@ export default function AddMaterial(){
 	};
 	const bulkupload = () => {
 		document.getElementById("bulkupload").style.display = "block";
+		document.getElementById("toshow").style.display = "none";
 	}
 	const sendRows = (rows) => {
 		for (const row of rows) {
@@ -216,7 +253,6 @@ export default function AddMaterial(){
 			});
 		}
 		console.log("All Code Uploaded");
-		document.getElementById("sccssbulk").style.display = "block";
 	};
 	return (
 		<>
@@ -231,7 +267,6 @@ export default function AddMaterial(){
 				<div className="col-lg-8 col-md-8 col-sm-12"></div>
 			</div>
 			<input type="file" onChange={handleFile} accept=".xlsx, .xls" style={{display: "none"}} id="bulkupload"/>
-			<h3 id="sccssbulk"className="mt-3" style={{display: "none"}} >Data has been Uploaded!</h3>
 			<div className="row mb-5" id="toshow" style={{display: "none"}}>
 				<div className="col-lg-9 col-md-9 col-sm-12">
 					<div className="row  mb-3">
@@ -263,10 +298,10 @@ export default function AddMaterial(){
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Material Type</h6>
-							<select name="type" id="type" className="matinput">
-								<option value="1">New</option>
-								<option value="2">Used</option>
-							</select>
+							<div id="alltypecateg">
+									<div>
+									</div>
+							</div>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Purchased Quantity</h6>
@@ -287,48 +322,61 @@ export default function AddMaterial(){
 				</div>
 				<div className="col-lg-3 col-md-3 col-sm-12"></div>
 			</div>
-			<div id="result" style={{display: "none"}}>
-				<div className="row mb-3">
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Material Component</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstcomponent" readOnly/>
-					</div>
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Material Model</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstmodel" readOnly/>
-					</div>
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Material Description</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstdescription" readOnly/>
-					</div>
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Part Number</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstpartno" readOnly/>
-					</div>
-				</div>
-				<div className="row">
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Select Category</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstctg" readOnly/>
-					</div>
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Select Sub Category</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstsubctg" readOnly/>
-					</div>
-					<div className="col-lg-3 col-md-3 col-sm-12">
-						<h6 className="h5heading">Material Type</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rsttype" readOnly/>
-					</div>
-					<div className="col-lg-2 col-md-2 col-sm-12">
-						<h6 className="h5heading">Purchased Quality</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstqty" readOnly/>
-					</div>
-					<div className="col-lg-1 col-md-1 col-sm-12">
-						<h6 className="h5heading">MaterialUnit</h6>
-						<input type="text" placeholder="xxxxxxxxxxx" className="matinput" id="rstunit" readOnly/>
-					</div>
-				</div>
+			<div id="matresult" style={{display: "none"}}>
+				<table className="shipmenttable">
+				<tr>
+					<th>SL No</th>
+					<th>Material Component</th>
+					<th>Material Model</th>
+					<th>Material Description</th>
+					<th>Part Number</th>
+					<th>Select Category</th>
+					<th>Select Sub Category</th>
+					<th>Material Type</th>
+					<th>Purchased Quantity</th>
+					<th>Material Unit</th>
+				</tr>
+				<tr>
+					<td id="rs1">1</td>
+					<td id="rstcomponent">Shipment ID</td>
+					<td id="rstmodel">Shipment Name (PGD)</td>
+					<td id="rstdescription">Shipment From</td>
+					<td id="rstpartno">Category</td>
+					<td id="rstctg">Sub Category</td>
+					<td id="rstsubctg">Material Name</td>
+					<td id="rsttype">Type of Material</td>
+					<td id="rstqty">Packing/Box NO.</td>
+					<td id="rstunit">Purchased QTY</td>
+				</tr>
+				</table>
 			</div>
+
+			{rowData && (
+			<div id="matresult" className="mt-5 mb-3">
+				<table className="shipmenttable">
+				<tr>
+					<th>SL No</th>
+					<th>Material Component</th>
+					<th>Material Model</th>
+					<th>Material Description</th>
+					<th>Part Number</th>
+					<th>Select Category</th>
+					<th>Select Sub Category</th>
+					<th>Material Type</th>
+					<th>Purchased Quantity</th>
+					<th>Material Unit</th>
+				</tr>
+				{rowData.map((row, rowIndex) => (
+				<tr key={rowIndex}>
+					<td>{rowIndex + 1}</td>
+					{row.map((cell, cellIndex) => (
+						<td key={cellIndex}>{cell}</td>
+					))}
+				</tr>
+				))}
+				</table>
+			</div>
+			)}
 		</div>	
 		</>
 	)

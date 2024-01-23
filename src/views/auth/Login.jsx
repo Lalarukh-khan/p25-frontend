@@ -37,6 +37,7 @@ export default function Login(){
 		.catch((err) => {
 			document.getElementById("sigin").innerHTML = 'Sign in';
 			const response = err.response;
+			setMessage("User entered credentials are incorrect!")
 			if (response && response.status === 422) {
 			setMessage(response.data.message)
 			}
@@ -78,7 +79,7 @@ export default function Login(){
 							<form id="loginformAuthentication" className="mb-3" onSubmit={onSubmit} >
 								{message &&
 									<div className="text-danger">
-									<p>{message}</p>
+									<p><b>{message}</b></p>
 									</div>
 								}
 								<div className="mb-3">

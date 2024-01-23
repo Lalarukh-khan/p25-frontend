@@ -4,6 +4,7 @@ import { useEffect } from "react";
 export default function MaterialCategory(){
 	useEffect(() => {
 		loadcategories();
+		loadmattypes();
 	}, [])
 	const UpdateCategory = () => {
 		const category = document.getElementById("category").value;
@@ -134,6 +135,52 @@ export default function MaterialCategory(){
 			}
 		});
 	}
+	const loadmattypes = () => {
+		axiosClient.get('/get-mattypes')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const allsubcategDiv = document.getElementById('alltypecateg');
+				allsubcategDiv.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					options.forEach(item => {
+						// Create a div for each item
+						const resultDiv = document.createElement('div');
+						resultDiv.className = 'row resultsidecateg mb-1';
+						resultDiv.style.marginLeft = '0px';
+						const col1 = document.createElement('div');
+						col1.className = 'col-lg-9 col-md-9 col-sm-9';
+						const categoryName = document.createElement('p');
+						categoryName.className = 'categsidefotn';
+						categoryName.textContent = item.name;
+						categoryName.id = item.id;
+						col1.appendChild(categoryName);
+						const col2 = document.createElement('div');
+						col2.className = 'col-lg-3 col-md-3 col-sm-3';
+						const buttonX = document.createElement('button');
+						buttonX.textContent = 'X';
+						const buttonY = document.createElement('button');
+						buttonY.textContent = 'Y';
+						col2.appendChild(buttonX);
+						col2.appendChild(document.createTextNode('\u00A0')); // Non-breaking space
+						col2.appendChild(buttonY);
+						resultDiv.appendChild(col1);
+						resultDiv.appendChild(col2);
+						allsubcategDiv.appendChild(resultDiv);
+				});
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			const allsubcategDiv = document.getElementById('alltypecateg');
+			allsubcategDiv.innerHTML = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
 
 	return (
 		<>
@@ -198,7 +245,11 @@ export default function MaterialCategory(){
 				</div>
 				<div className="col-lg-3 col-md-9 col-sm-12 greyback pt-5" style={{height: "100vh"}}>
 					<h5 className="h5heading">Material Type</h5>
-					<div className="row resultsidecateg mb-1" style={{marginLeft: "0px"}}>
+						<div id="alltypecateg">
+								<div>
+								</div>
+						</div>
+					{/* <div className="row resultsidecateg mb-1" style={{marginLeft: "0px"}}>
 						<div className="col-lg-9 col-md-9 col-sm-9">
 							<p className="categsidefotn">Antenna System</p>
 						</div>
@@ -224,7 +275,7 @@ export default function MaterialCategory(){
 							<button>X</button>&nbsp;
 							<button>Y</button>
 						</div>
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</div>	
