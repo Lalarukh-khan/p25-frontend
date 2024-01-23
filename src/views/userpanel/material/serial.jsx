@@ -6,6 +6,7 @@ export default function AddSerial(){
 	useEffect(() => {
 		loadshipments();
 		loadshipmentvalues(1);
+		loadmanufactures();
 	}, []);
 	const loadshipments = () => {
 		axiosClient.get('/get-shipments')
@@ -42,79 +43,70 @@ export default function AddSerial(){
 			}
 		});
 	}
-	const AddShipment = () => {
-		const shipid =  document.getElementById("shipid").value;
-		const name =  document.getElementById("name").value;
-		const from =  document.getElementById("from").value;
-		// const slctcateg =  document.getElementById("slctcateg").value;
-		// const slctsubcateg =  document.getElementById("slctsubcateg").value;
-		// const slctmat =  document.getElementById("slctmat").value;
-		const packingno =  document.getElementById("packingno").value;
-		const quantity =  document.getElementById("quantity").value;
-		const shipmentqty =  document.getElementById("shipmentqty").value;
-		const receivedqty =  document.getElementById("receivedqty").value;
-		const remainingqty =  document.getElementById("remainingqty").value;
-		const slctcategoryname = document.getElementById("slctcateg");
-		const selectedOption = slctcategoryname.options[slctcategoryname.selectedIndex];
-		const slctsubcategoryname = document.getElementById("slctsubcateg");
-		const selectedsubOption = slctsubcategoryname.options[slctsubcategoryname.selectedIndex];
-		const slctmatname = document.getElementById("slctmat");
-		const selectedMatOption = slctmatname.options[slctmatname.selectedIndex];
+	const loadmanufactures = () => {
+		axiosClient.get('/get-manufacturers')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			// Function to create and append the <select> element
+			function createSelect(options) {
+				const selectContainer = document.getElementById('manufacture-container');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctmnf`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.mnfid;
+						optionElement.text = option.mnfname;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const AddSerial = () => {
+		const matsid =  document.getElementById("matsid").value;
+		const slctshipment =  document.getElementById("slctshipment").value;
+		const shpquantity =  document.getElementById("shpquantity").value;
+		const slctmnf = document.getElementById("slctmnf");
+		const slctmnf_id = document.getElementById("slctmnf").value;
+		const matname = slctmnf.options[slctmnf.selectedIndex];
 		const result = document.getElementById("result");
-		// let mattypename = "";
-		// if(mattype == 1){
-		// 	mattypename = "New Material";
-		// }
-		// else{
-		// 	mattypename = "Used Material";
-		// }
-		// const payload = new FormData();
-		// payload.append('shipid', shipid);
-		// payload.append('name', name);
-		// payload.append('from', from);
-		// payload.append('slctcateg', slctcateg);
-		// payload.append('slctsubcateg', slctsubcateg);
-		// payload.append('slctmat', slctmat);
-		// payload.append('packingno', packingno);
-		// payload.append('quantity', quantity);
-		// payload.append('shipmentqty', shipmentqty);
-		// payload.append('receivedqty', receivedqty);
-		// payload.append('remainingqty', remainingqty);
-		// axiosClient.post('/add-shipment', payload)
-		// .then(({data}) => {
-		// 	console.log(data); 
+		const payload = new FormData();
+		payload.append('matsid', matsid);
+		payload.append('slctshipment', slctshipment);
+		payload.append('shpquantity', shpquantity);
+		payload.append('slctmnf_id', slctmnf_id);
+		axiosClient.post('/add-serial', payload)
+		.then(({data}) => {
+			console.log(data); 
 			const rs2 = document.getElementById("rs2");
 			const rs3 = document.getElementById("rs3");
 			const rs4 = document.getElementById("rs4");
 			const rs5 = document.getElementById("rs5");
-			const rs6 = document.getElementById("rs6");
-			const rs7 = document.getElementById("rs7");
-			const rs8 = document.getElementById("rs8");
-			const rs9 = document.getElementById("rs9");
-			const rs10 = document.getElementById("rs10");
-			const rs11 = document.getElementById("rs11");
-			const rs12 = document.getElementById("rs12");
-			const rs13 = document.getElementById("rs13");
-			rs2.innerText = shipid;
-			rs3.innerText = name;
-			rs4.innerText = from;
-			rs5.innerText = selectedOption.text;
-			rs6.innerText = selectedsubOption.text;
-			rs7.innerText = selectedMatOption.text;
-			rs8.innerText = mattypename;
-			rs9.innerText = packingno;
-			rs10.innerText = quantity;
-			rs11.innerText = shipmentqty;
-			rs12.innerText = receivedqty;
-			rs13.innerText = remainingqty;
+			rs2.innerText = matsid;
+			rs3.innerText = slctshipment;
+			rs4.innerText = shpquantity;
+			rs5.innerText = matname.text;
 			result.style.display = "block";
-		// })
-		// .catch((err) => {
-		// 	const response = err.response;
-		// 	if (response && response.status === 422) {
-		// 		console.log(response.data.message);
-		// 	}
-		// });
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
 		
 	}
 	const loadshipmentvalues = (shpid) => {
@@ -157,7 +149,8 @@ export default function AddSerial(){
 				</div>
 				<div className="col-lg-10 col-md-10 col-sm-12"></div>
 			</div>
-			<div className="row mb-5" id="toshow" style={{display: "none"}}>
+			<div id="toshow" style={{display: "none"}}>
+			<div className="row mb-5">
 				<div className="col-lg-6 col-md-6 col-sm-12">
 					<div className="row  mb-3">
 						<div className="col-lg-4 col-md-4 col-sm-12">
@@ -241,47 +234,32 @@ export default function AddSerial(){
 					</div>
 					<div className="row">
 						<div className="col-lg-2 col-md-2 col-sm-12">
-						<button className="categbtn" id="categbtn" onClick={AddShipment}>Upload</button>
+						<button className="categbtn" id="categbtn" onClick={AddSerial}>Upload</button>
 						</div>
 					</div>
 				</div>
-				<div className="col-lg-6 col-md-6 col-sm-12"></div>
+				<div className="col-lg-6 col-md-6 col-sm-12">
+					<div id="result" style={{display: "none"}}>
+						<table className="shipmenttable">
+						<tr>
+							<th>SL No</th>
+							<th>Material ID</th>
+							<th>Shipment ID</th>
+							<th>Quantity</th>
+							<th>Manufacturer Name</th>
+						</tr>
+						<tr>
+							<td id="rs1">1</td>
+							<td id="rs2">Shipment ID</td>
+							<td id="rs3">Shipment Name (PGD)</td>
+							<td id="rs4">Shipment From</td>
+							<td id="rs5">Category</td>
+						</tr>
+						</table>
+					</div>
+				</div>
 			</div>
-			{/* <div id="result" style={{display: "none"}}>
-				<hr />
-				<table className="shipmenttable">
-				<tr>
-					<th>SL No</th>
-					<th>Shipment ID</th>
-					<th>Shipment Name (PGD)</th>
-					<th>Shipment From</th>
-					<th>Category</th>
-					<th>Sub Category</th>
-					<th>Material Name</th>
-					<th>Type of Material</th>
-					<th>Packing/Box NO.</th>
-					<th>Purchased QTY</th>
-					<th>Shipment QTY</th>
-					<th>Received QTY</th>
-					<th>Remaining QTY</th>
-				</tr>
-				<tr>
-					<td id="rs1">1</td>
-					<td id="rs2">Shipment ID</td>
-					<td id="rs3">Shipment Name (PGD)</td>
-					<td id="rs4">Shipment From</td>
-					<td id="rs5">Category</td>
-					<td id="rs6">Sub Category</td>
-					<td id="rs7">Material Name</td>
-					<td id="rs8">Type of Material</td>
-					<td id="rs9">Packing/Box NO.</td>
-					<td id="rs10">Purchased QTY</td>
-					<td id="rs11">Shipment QTY</td>
-					<td id="rs12">Received QTY</td>
-					<td id="rs13">Remaining QTY</td>
-				</tr>
-				</table>
-			</div> */}
+			</div>
 		</div>	
 		</>
 	)

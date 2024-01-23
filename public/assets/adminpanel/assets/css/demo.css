@@ -193,6 +193,14 @@ padding-bottom: 10px;
   height: 40px;
   padding-top: 5px;
 }
+.resultmanuf{
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  width: 100%;
+  height: 60px;
+  padding-top: 5px;
+}
 .resultsidecateg{
   background-color: #fff;
   color: #000;
@@ -206,6 +214,11 @@ padding-bottom: 10px;
   color: black;
   padding-top: 5px;
   font-size: 18px;
+}
+.manuffotn{
+  color: black;
+  font-size: 15px;
+  margin-top: -12px;
 }
 .categsidefotn{
   color: black;

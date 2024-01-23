@@ -81,10 +81,10 @@ export default function UserLayout() {
 									<NavDropdown.Item href="/add-material">Add Material</NavDropdown.Item>
 									<NavDropdown.Item href="/add-serial">Add Material S/N</NavDropdown.Item>
 									<NavDropdown.Item href="/add-shipment">Shipment Information</NavDropdown.Item>
-									<NavDropdown.Item href="#action/3.4">Manufacture Information</NavDropdown.Item>
-									<NavDropdown.Item href="#action/3.4">Warehouse Information</NavDropdown.Item>
-									<NavDropdown.Item href="#action/3.4">Site Information</NavDropdown.Item>
-									<NavDropdown.Item href="#action/3.4">Company Information</NavDropdown.Item>
+									<NavDropdown.Item href="/manufacture-information">Manufacture Information</NavDropdown.Item>
+									<NavDropdown.Item href="/warehouse-information">Warehouse Information</NavDropdown.Item>
+									<NavDropdown.Item href="/site-information">Site Information</NavDropdown.Item>
+									<NavDropdown.Item href="/company-information">Company Information</NavDropdown.Item>
 								</NavDropdown>
 								<NavDropdown title="Material Requisition" className="navlinkleft" id="collapsible-nav-dropdown">
 									<NavDropdown.Item href="#action/3.1">Create Requisition</NavDropdown.Item>

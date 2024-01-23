@@ -8,6 +8,10 @@ import MaterialCategory from "./views/userpanel/material/category";
 import AddMaterial from "./views/userpanel/material/add";
 import AddSerial from "./views/userpanel/material/serial";
 import AddShipment from "./views/userpanel/material/shipment";
+import ManufactureInformation from "./views/userpanel/material/manufacture";
+import WarehouseInformation from "./views/userpanel/material/warehouse";
+import SiteInformation from "./views/userpanel/material/site";
+import CompanyInformation from "./views/userpanel/material/company";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -32,6 +36,22 @@ const router = createBrowserRouter([
             {
                 path: "/add-serial",
                 element: <AddSerial />,
+            },
+            {
+                path: "/manufacture-information",
+                element: <ManufactureInformation />,
+            },
+            {
+                path: "/warehouse-information",
+                element: <WarehouseInformation />,
+            },
+            {
+                path: "/site-information",
+                element: <SiteInformation />,
+            },
+            {
+                path: "/company-information",
+                element: <CompanyInformation />,
             },
         ],
     },
