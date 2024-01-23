@@ -146,6 +146,10 @@ padding-bottom: 10px;
   width: 100%;
   height: 35px;
 }
+.shp3input::placeholder{
+  color: #fff;
+  opacity: 1;
+}
 .shipmenttable{
   width: 100%;
 }

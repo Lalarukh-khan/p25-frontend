@@ -1,36 +1,34 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import axiosClient from '../../../axios-client';
 
 export default function AddSerial(){
-	const [mattype, setMatType] = useState("");
+	// const [mattype, setMatType] = useState("");
 	useEffect(() => {
-		loadcategories();
-		loadsubcategories(1);
-		loadmaterial();
-		loadmaterialvalues(1);
+		loadshipments();
+		loadshipmentvalues(1);
 	}, []);
-	const loadcategories = () => {
-		axiosClient.get('/get-categories')
+	const loadshipments = () => {
+		axiosClient.get('/get-shipments')
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
 			// Function to create and append the <select> element
 			function createSelect(options) {
-				const selectContainer = document.getElementById('category-container');
+				const selectContainer = document.getElementById('shipment-container');
 				selectContainer.innerHTML = "";
 				// if (selectContainer.innerHTML.trim() === '') {
 					const select = document.createElement('select');
-					select.className = `shpinput`;
-					select.id = `slctcateg`;
+					select.className = `shp3input`;
+					select.id = `slctshipment`;
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
 						optionElement.value = option.id;
-						optionElement.text = option.name;
+						optionElement.text = option.shipid;
 						select.appendChild(optionElement);
 					});
 					select.addEventListener('change', function() {
-						loadsubcategories(this.value);
+						loadshipmentvalues(this.value);
 					});
 					selectContainer.appendChild(select);
 				// }
@@ -39,100 +37,6 @@ export default function AddSerial(){
 		})
 		.catch((err) => {
 			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
-	const loadsubcategories = (categid) => {
-		const payload = new FormData();
-		payload.append('categid', categid);
-		axiosClient.post('/get-subcategory', payload)
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			console.log("jsonData"+jsonData);
-			function createSelect(options) {
-				const selectContainer = document.getElementById('subcategory-container');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shpinput`;
-					select.id = `slctsubcateg`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.name;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			const selectContainer = document.getElementById('subcategory-container');
-			selectContainer.innerHTML = "";
-			const select = document.createElement('select');
-			select.className = `shpinput`;
-			selectContainer.appendChild(select);
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
-	const loadmaterial = () => {
-		axiosClient.get('/get-material')
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			// Function to create and append the <select> element
-			function createSelect(options) {
-				const selectContainer = document.getElementById('material-container');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shpinput`;
-					select.id = `slctmat`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.component;
-						select.appendChild(optionElement);
-					});
-					select.addEventListener('change', function() {
-						loadmaterialvalues(this.value);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
-	const loadmaterialvalues = (matid) => {
-		const payload = new FormData();
-		payload.append('matid', matid);
-		axiosClient.post('/get-materialvalues', payload)
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data[0];
-			const quantity = document.getElementById("quantity");
-			quantity.value = jsonData.quantity;
-			setMatType(jsonData.type);
-		})
-		.catch((err) => {
-			const response = err.response;
-			const quantity = document.getElementById("quantity");
-			quantity.value = "";
 			if (response && response.status === 422) {
 				console.log(response.data.message);
 			}
@@ -157,13 +61,13 @@ export default function AddSerial(){
 		const slctmatname = document.getElementById("slctmat");
 		const selectedMatOption = slctmatname.options[slctmatname.selectedIndex];
 		const result = document.getElementById("result");
-		let mattypename = "";
-		if(mattype == 1){
-			mattypename = "New Material";
-		}
-		else{
-			mattypename = "Used Material";
-		}
+		// let mattypename = "";
+		// if(mattype == 1){
+		// 	mattypename = "New Material";
+		// }
+		// else{
+		// 	mattypename = "Used Material";
+		// }
 		// const payload = new FormData();
 		// payload.append('shipid', shipid);
 		// payload.append('name', name);
@@ -213,88 +117,137 @@ export default function AddSerial(){
 		// });
 		
 	}
+	const loadshipmentvalues = (shpid) => {
+		const payload = new FormData();
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-shipmentvalues', payload) 
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data[0];
+			document.getElementById("packingno").value = jsonData.packingno;
+			document.getElementById("shpcat").value = jsonData.categoryname;
+			document.getElementById("shpsubcat").value = jsonData.subcategoryname;
+			document.getElementById("shptype").value = jsonData.typename;
+			document.getElementById("shpmatname").value = jsonData.materialname;
+			document.getElementById("shppurchase").value = jsonData.quantity;
+			document.getElementById("shpreceived").value = jsonData.receivedqty;
+			document.getElementById("shpremaining").value = jsonData.remainingqty;
+			document.getElementById("shpmatdescription").innerText = jsonData.materialdescription;
+			document.getElementById("shounit").value = jsonData.materialunit;
+		})
+		.catch((err) => {
+			const response = err.response;
+			// const quantity = document.getElementById("quantity");
+			// quantity.value = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
 	const addmatshow = () => {
 		const toshow = document.getElementById("toshow");
 		toshow.style.display = "block";
-	}
-	const handleRemainingInput = () => {
-		const input1Value = document.getElementById('quantity').value;
-		const input2Value = document.getElementById('receivedqty').value;
-		const resultValue = document.getElementById('remainingqty');
-		const number1 = parseFloat(input1Value);
-		const number2 = parseFloat(input2Value);
-		if (!isNaN(number1) && !isNaN(number2)) {
-			const result = number1 - number2;
-			resultValue.value = result;
-		}
 	}
 	return (
 		<>
 		<div className="container">
 			<div className="row mb-3">
 				<div className="col-lg-2 col-md-2 col-sm-12">
-					<button className="categbtn" onClick={addmatshow}>Add Shipment</button>
+					<button className="categbtn" onClick={addmatshow}>Add Material Serial</button>
 				</div>
 				<div className="col-lg-10 col-md-10 col-sm-12"></div>
 			</div>
 			<div className="row mb-5" id="toshow" style={{display: "none"}}>
-				<div className="col-lg-10 col-md-10 col-sm-12">
+				<div className="col-lg-6 col-md-6 col-sm-12">
 					<div className="row  mb-3">
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<input type="text" id="shipid" placeholder="Shipment ID" className="shpinput"/>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Material ID</h6>
+							<input type="text" id="matsid" placeholder="xxxxxxx" className="shp3input"/>
 						</div>
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<input type="text" id="name" placeholder="Shipment name (PGD)" className="shpinput"/>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Date of Upload</h6>
+							<input type="date" id="date" placeholder="xxxxxxx" className="shp2input"/>
 						</div>
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<input type="text" id="from" placeholder="Shipment From" className="shpinput"/>
+						<div className="col-lg-4 col-md-4 col-sm-12"></div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-5 col-md-5 col-sm-12">
+							<h6 className="h5heading">Shipment ID</h6>
+							<div id="shipment-container"></div>
 						</div>
-						<div className="col-lg-3 col-md-3 col-sm-12">
-							<div id="category-container"></div>
+						<div className="col-lg-5 col-md-5 col-sm-12">
+							<h6 className="h5heading">Packing/Box No.</h6>
+							<input type="text" id="packingno" placeholder="xxxxxxx" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-3 col-md-3 col-sm-12">
-							<div id="subcategory-container"></div>
+						<div className="col-lg-2 col-md-2 col-sm-12"></div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Category</h6>
+							<input type="text" id="shpcat" placeholder="xxxxxxx" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Sub Category</h6>
+							<input type="text" id="shpsubcat" placeholder="xxxxxxx" className="shp2input" readOnly/>
 						</div>
 					</div>
-					<div className="row mb-3">
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<h6 className="h5heading">Type of Material</h6>
-							<button className="shpinput">Material Type/Spare &gt;</button>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Type</h6>
+							<input type="text" id="shptype" placeholder="xxxxxxx" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<h6 className="h5heading">Material Component</h6>
-							<div id="material-container"></div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Name</h6>
+							<input type="text" id="shpmatname" placeholder="xxxxxxx" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<h6 className="h5heading">Packing/Box No.</h6>
-							<input type="text" placeholder="xxxxxxxx" className="shp2input" id="packingno"/>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Purchased Quantity</h6>
+							<input type="text" id="shppurchase" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<h6 className="h5heading">Purchased (Q)</h6>
-							<input type="text" id="quantity" className="shp3input" readOnly/>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Received Quantity</h6>
+							<input type="text" id="shpreceived" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-1 col-md-1 col-sm-12">
-							<h6 className="h5heading">Shipment(Q)</h6>
-							<input type="text" id="shipmentqty" className="shp2input"/>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Remaining Quantity</h6>
+							<input type="text" id="shpremaining" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-1 col-md-1 col-sm-12">
-							<h6 className="h5heading">Received(Q)</h6>
-							<input type="text" id="receivedqty" className="shp2input" onInput={handleRemainingInput}/>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Description</h6>
+							<textarea id="shpmatdescription" rows="10" className="shp2input" readOnly></textarea>
 						</div>
-						<div className="col-lg-2 col-md-2 col-sm-12">
-							<h6 className="h5heading">Remainaing (Q)</h6>
-							<input type="text" id="remainingqty" className="shp3input" readOnly/>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Unit</h6>
+							<input type="text" id="shounit" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Quantity</h6>
+							<input type="text" id="shpquantity" className="shp2input"/>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Manufacture Name</h6>
+							<div id="manufacture-container"></div>
 						</div>
 					</div>
 					<div className="row">
 						<div className="col-lg-2 col-md-2 col-sm-12">
-						<button className="categbtn" id="categbtn" onClick={AddShipment}>Submit</button>
+						<button className="categbtn" id="categbtn" onClick={AddShipment}>Upload</button>
 						</div>
 					</div>
 				</div>
-				<div className="col-lg-2 col-md-2 col-sm-12"></div>
+				<div className="col-lg-6 col-md-6 col-sm-12"></div>
 			</div>
-			<div id="result" style={{display: "none"}}>
+			{/* <div id="result" style={{display: "none"}}>
 				<hr />
 				<table className="shipmenttable">
 				<tr>
@@ -328,7 +281,7 @@ export default function AddSerial(){
 					<td id="rs13">Remaining QTY</td>
 				</tr>
 				</table>
-			</div>
+			</div> */}
 		</div>	
 		</>
 	)
