@@ -182,11 +182,11 @@ export default function AddSerial(){
 			const description = dataArray[2];
 			const partno = dataArray[3];
 			const payload = new FormData();
-			payload.append('component', component);
-			payload.append('model', model);
-			payload.append('description', description);
-			payload.append('partno', partno);
-			axiosClient.post('/add-serial', payload)
+			payload.append('serial_id', component);
+			payload.append('shipment_id', model);
+			payload.append('quantity', description);
+			payload.append('manufacturer_name', partno);
+			axiosClient.post('/add-serial-bulk', payload)
 			.then(({data}) => {
 				console.log(data); 
 			// 	// Function to create and append the <select> element

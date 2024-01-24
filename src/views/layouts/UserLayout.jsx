@@ -75,7 +75,7 @@ export default function UserLayout() {
 							<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 							<Navbar.Collapse id="responsive-navbar-nav">
 							<Nav className="me-auto">
-								<Nav.Link href="#features" className="navlinkleft">Home</Nav.Link>
+								<Nav.Link href="/" className="navlinkleft">Home</Nav.Link>
 								<NavDropdown title="Material" className="navlinkleft" id="collapsible-nav-dropdown">
 									<NavDropdown.Item href="/material-category">Add Material Category</NavDropdown.Item>
 									<NavDropdown.Item href="/add-material">Add Material</NavDropdown.Item>

@@ -192,6 +192,7 @@ export default function AddMaterial(){
 		const reader = new FileReader();
 
 		reader.onload = async (event) => {
+			document.getElementById("uploading").style.display = "block";
 			const data = event.target.result;
 			const workbook = XLSX.read(data, { type: 'binary' });
 
@@ -205,9 +206,10 @@ export default function AddMaterial(){
 			// Filter out empty rows
 			const filteredData = jsonData.filter(row => row.length > 0);
 
-			setRowData(filteredData.slice(1));
 			// Send each row in a POST request
 			sendRows(filteredData.slice(1));
+
+			setRowData(filteredData.slice(1));
 		};
 
 		reader.readAsBinaryString(file);
@@ -225,10 +227,10 @@ export default function AddMaterial(){
 			const model = dataArray[1];
 			const description = dataArray[2];
 			const partno = dataArray[3];
-			const type = dataArray[4];
-			const quantity = dataArray[5];
-			const slctcateg = dataArray[6];
-			const slctsubcateg = dataArray[7];
+			const slctcateg = dataArray[4];
+			const slctsubcateg = dataArray[5];
+			const type = dataArray[6];
+			const quantity = dataArray[7];
 			const bactiveButtonText = dataArray[8];
 			const payload = new FormData();
 			payload.append('component', component);
@@ -237,10 +239,10 @@ export default function AddMaterial(){
 			payload.append('partno', partno);
 			payload.append('type', type);
 			payload.append('quantity', quantity);
-			payload.append('slctcateg', slctcateg);
-			payload.append('slctsubcateg', slctsubcateg);
+			payload.append('category', slctcateg);
+			payload.append('subcategory', slctsubcateg);
 			payload.append('activeButtonText', bactiveButtonText);
-			axiosClient.post('/add-material', payload)
+			axiosClient.post('/add-material-bulk', payload)
 			.then(({data}) => {
 				console.log(data); 
 			// 	// Function to create and append the <select> element
@@ -253,6 +255,7 @@ export default function AddMaterial(){
 			});
 		}
 		console.log("All Code Uploaded");
+		document.getElementById("uploading").style.display = "none";
 	};
 	return (
 		<>
@@ -267,6 +270,8 @@ export default function AddMaterial(){
 				<div className="col-lg-8 col-md-8 col-sm-12"></div>
 			</div>
 			<input type="file" onChange={handleFile} accept=".xlsx, .xls" style={{display: "none"}} id="bulkupload"/>
+			<div id="uploading" style={{display: "none"}} >
+			<br />Uploading...</div>
 			<div className="row mb-5" id="toshow" style={{display: "none"}}>
 				<div className="col-lg-9 col-md-9 col-sm-12">
 					<div className="row  mb-3">
