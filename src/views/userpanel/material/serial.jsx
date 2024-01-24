@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axiosClient from '../../../axios-client';
+import * as XLSX from 'xlsx';
 
 export default function AddSerial(){
 	// const [mattype, setMatType] = useState("");
+	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadshipments();
 		loadshipmentvalues(1);
@@ -140,6 +142,64 @@ export default function AddSerial(){
 		const toshow = document.getElementById("toshow");
 		toshow.style.display = "block";
 	}
+	const handleFile = (e) => {
+		const file = e.target.files[0];
+
+		if (file) {
+		const reader = new FileReader();
+
+		reader.onload = async (event) => {
+			const data = event.target.result;
+			const workbook = XLSX.read(data, { type: 'binary' });
+
+			// Assuming the first sheet is the target sheet
+			const sheetName = workbook.SheetNames[0];
+			const sheet = workbook.Sheets[sheetName];
+
+			// Convert sheet data to JSON
+			const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+			// Filter out empty rows
+			const filteredData = jsonData.filter(row => row.length > 0);
+
+			setRowData(filteredData.slice(1));
+			// Send each row in a POST request
+			sendRows(filteredData.slice(1));
+		};
+
+		reader.readAsBinaryString(file);
+		}
+	};
+	const bulkupload = () => {
+		document.getElementById("bulkupload").style.display = "block";
+	}
+	const sendRows = (rows) => {
+		for (const row of rows) {
+			const dataString = String(row);
+			const dataArray = dataString.split(',');
+			const component = dataArray[0];
+			const model = dataArray[1];
+			const description = dataArray[2];
+			const partno = dataArray[3];
+			const payload = new FormData();
+			payload.append('component', component);
+			payload.append('model', model);
+			payload.append('description', description);
+			payload.append('partno', partno);
+			axiosClient.post('/add-serial', payload)
+			.then(({data}) => {
+				console.log(data); 
+			// 	// Function to create and append the <select> element
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status === 422) {
+					console.log(response.data.message);
+				}
+			});
+		}
+		console.log("All Code Uploaded");
+	};
 	return (
 		<>
 		<div className="container">
@@ -239,6 +299,13 @@ export default function AddSerial(){
 					</div>
 				</div>
 				<div className="col-lg-6 col-md-6 col-sm-12">
+					<div className="row mb-3">
+						<div className="col-lg-5 col-md-5 col-sm-12">
+						<span className="h5heading">Material Serial Number</span><button className="categbtn" onClick={bulkupload}>Upload XLS File</button>
+						</div>
+						<div className="col-lg-7 col-md-7 col-sm-12"></div>
+					</div>
+					<input type="file" onChange={handleFile} accept=".xlsx, .xls" style={{display: "none"}} id="bulkupload"/>
 					<div id="result" style={{display: "none"}}>
 						<table className="shipmenttable">
 						<tr>
@@ -257,6 +324,28 @@ export default function AddSerial(){
 						</tr>
 						</table>
 					</div>
+
+					{rowData && (
+					<div id="matresult" className="mt-5 mb-3">
+						<table className="shipmenttable">
+						<tr>
+							<th>SL No</th>
+							<th>Material ID</th>
+							<th>Shipment ID</th>
+							<th>Quantity</th>
+							<th>Manufacturer Name</th>
+						</tr>
+						{rowData.map((row, rowIndex) => (
+						<tr key={rowIndex}>
+							<td>{rowIndex + 1}</td>
+							{row.map((cell, cellIndex) => (
+								<td key={cellIndex}>{cell}</td>
+							))}
+						</tr>
+						))}
+						</table>
+					</div>
+					)}
 				</div>
 			</div>
 			</div>

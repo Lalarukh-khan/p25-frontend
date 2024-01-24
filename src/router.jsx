@@ -12,6 +12,8 @@ import ManufactureInformation from "./views/userpanel/material/manufacture";
 import WarehouseInformation from "./views/userpanel/material/warehouse";
 import SiteInformation from "./views/userpanel/material/site";
 import CompanyInformation from "./views/userpanel/material/company";
+import UserInformation from "./views/userpanel/setting/userinformation";
+import UserControl from "./views/userpanel/setting/usercontrol";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -52,6 +54,14 @@ const router = createBrowserRouter([
             {
                 path: "/company-information",
                 element: <CompanyInformation />,
+            },
+            {
+                path: "/user-information",
+                element: <UserInformation />,
+            },
+            {
+                path: "/role-control",
+                element: <UserControl />,
             },
         ],
     },

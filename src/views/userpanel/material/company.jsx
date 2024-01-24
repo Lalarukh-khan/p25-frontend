@@ -69,11 +69,11 @@ export default function CompanyInformation(){
 		.then(({data}) => {
 			console.log(data);
 			loadshipments();
-			document.getElementById("categresult").style.display = "block";
+			// document.getElementById("categresult").style.display = "block";
 		})
 		.catch((err) => {
 			const response = err.response;
-			document.getElementById("categresult").style.display = "block";
+			// document.getElementById("categresult").style.display = "block";
 			if (response && response.status === 422) {
 				console.log(response.data.message);
 			}
@@ -111,7 +111,7 @@ export default function CompanyInformation(){
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>
-				<div id="categresult" style={{display: "none"}}>
+				<div id="categresult" >
 					<hr />
 						<div className="row">
 							<div className="col-lg-4 col-md-4 col-sm-12" id="allmnufs">

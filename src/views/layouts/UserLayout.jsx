@@ -91,8 +91,8 @@ export default function UserLayout() {
 									<NavDropdown.Item href="#action/3.2">Requisition Update</NavDropdown.Item>
 								</NavDropdown>
 								<NavDropdown title="Settings" className="navlinkleft" id="collapsible-nav-dropdown">
-									<NavDropdown.Item href="#action/3.1">User Information</NavDropdown.Item>
-									<NavDropdown.Item href="#action/3.2">User Role Control</NavDropdown.Item>
+									<NavDropdown.Item  href="/user-information">User Information</NavDropdown.Item>
+									<NavDropdown.Item href="/role-control">User Role Control</NavDropdown.Item>
 								</NavDropdown>
 							</Nav>
 							<Nav>
