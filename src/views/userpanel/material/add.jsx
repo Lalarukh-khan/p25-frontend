@@ -7,7 +7,7 @@ export default function AddMaterial(){
 	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadcategories();
-		loadsubcategories(1);
+		loadsubcategories(0);
 		loadmattypes();
 		loadmaterials();
 	}, []);
@@ -25,6 +25,9 @@ export default function AddMaterial(){
 					select.className = `matinput`;
 					select.id = `slctcateg`;
 					// Loop through the options and create <option> elements
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
 						optionElement.value = option.id;

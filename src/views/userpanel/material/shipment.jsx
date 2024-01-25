@@ -5,10 +5,10 @@ export default function AddShipment(){
 	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadcategories();
-		loadsubcategories(1);
-		loadmaterialbytype(1);
-		loadmaterialvalues(1);
-		loadmattypes();
+		loadsubcategories(0);
+		// loadmaterialbytype(0);
+		loadmaterialvalues(0);
+		loadsubmattypes(0);
 		loadshipments();
 	}, []);
 	const loadcategories = () => {
@@ -25,6 +25,9 @@ export default function AddShipment(){
 					select.className = `shpinput`;
 					select.id = `slctcateg`;
 					// Loop through the options and create <option> elements
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
 						optionElement.value = option.id;
@@ -46,8 +49,10 @@ export default function AddShipment(){
 			}
 		});
 	}
-	const loadmattypes = () => {
-		axiosClient.get('/get-mattypes')
+	const loadsubmattypes = (subid) => {
+		const payload = new FormData();
+		payload.append('subid', subid);
+		axiosClient.post('/get-mattypesbysub', payload)
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
@@ -55,26 +60,42 @@ export default function AddShipment(){
 			function createSelect(options) {
 				const selectContainer = document.getElementById('alltypecateg');
 				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shpinput`;
-					select.id = `mattypes`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.name;
-						select.appendChild(optionElement);
-					});
-					select.addEventListener('change', function() {
-						loadmaterialbytype(this.value);
-					});
-					selectContainer.appendChild(select);
-				// }
+			
+				// Get unique types
+				const uniqueTypes = [...new Set(options.map(option => option.type))];
+			
+				// Create select element
+				const select = document.createElement('select');
+				select.className = `shpinput`;
+				select.id = `mattypes`;
+			
+				// Loop through unique types and create <option> elements
+				uniqueTypes.forEach(type => {
+					const optionElement = document.createElement('option');
+					optionElement.value = type;
+					if (type == "1") {
+						optionElement.text = "New Material";
+					} else if (type == "2") {
+						optionElement.text = "Spare Parts";
+					} else if (type == "3") {
+						optionElement.text = "Returned Items From Sites";
+					}
+					select.appendChild(optionElement);
+				});
+				select.addEventListener('change', function() {
+					loadmaterialbytype(this.value, subid);
+				});
+				if (select.options.length === 1) {
+					loadmaterialbytype(select.options[0].value, subid);
+				}
+				selectContainer.appendChild(select);
 			}
+			
 			createSelect(jsonData);
 		})
 		.catch((err) => {
+			document.getElementById("mattypes").innerHTML = "";
+			loadmaterialbytype(0,0);
 			const response = err.response;
 			if (response && response.status === 422) {
 				console.log(response.data.message);
@@ -102,6 +123,9 @@ export default function AddShipment(){
 						optionElement.value = option.id;
 						optionElement.text = option.name;
 						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadsubmattypes(this.value);
 					});
 					selectContainer.appendChild(select);
 				// }
@@ -133,9 +157,10 @@ export default function AddShipment(){
 			}
 		});
 	}
-	const loadmaterialbytype = (matid) => {
+	const loadmaterialbytype = (typeid, subid) => {
 		const payload = new FormData();
-		payload.append('matid', matid);
+		payload.append('typeid', typeid);
+		payload.append('subid', subid);
 		axiosClient.post('/get-materialbytype', payload)
 		.then(({data}) => {
 			console.log(data); 
@@ -158,12 +183,17 @@ export default function AddShipment(){
 					select.addEventListener('change', function() {
 						loadmaterialvalues(this.value);
 					});
+					if (select.options.length === 1) {
+						loadmaterialvalues(select.options[0].value);
+					}
 					selectContainer.appendChild(select);
 				// }
 			}
 			createSelect(jsonData);
 		})
 		.catch((err) => {
+			document.getElementById("slctmat").innerHTML = "";
+			document.getElementById("quantity").value = "";
 			const response = err.response;
 			if (response && response.status === 422) {
 				console.log(response.data.message);
@@ -283,12 +313,19 @@ export default function AddShipment(){
 							<h6 className="h5heading">Type of Material</h6>
 							<div id="alltypecateg">
 									<div>
+										<select name="" id="" className="shpinput">
+											<option value=""></option>
+										</select>
 									</div>
 							</div>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Material Component</h6>
-							<div id="material-container"></div>
+							<div id="material-container">
+										<select name="" id="" className="shpinput">
+											<option value=""></option>
+										</select>
+							</div>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Packing/Box No.</h6>
