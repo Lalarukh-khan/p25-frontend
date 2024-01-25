@@ -9,6 +9,7 @@ export default function AddMaterial(){
 		loadcategories();
 		loadsubcategories(1);
 		loadmattypes();
+		loadmaterials();
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -116,6 +117,19 @@ export default function AddMaterial(){
 			}
 		});
 	}
+	const loadmaterials = () => {
+		axiosClient.get('/get-material')
+		.then(({data}) => {
+			console.log(data); 
+			setRowData(data.data);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
 	const setActiveButton = (buttonText) => {
 		setActiveButtonText(buttonText);
 	}
@@ -128,12 +142,12 @@ export default function AddMaterial(){
 		const quantity =  document.getElementById("quantity").value;
 		const slctcateg =  document.getElementById("slctcateg").value;
 		const slctsubcateg =  document.getElementById("slctsubcateg").value;
-		const slctcategoryname = document.getElementById("slctcateg");
-		const selectedOption = slctcategoryname.options[slctcategoryname.selectedIndex];
-		const slctsubcategoryname = document.getElementById("slctsubcateg");
-		const selectedsubOption = slctsubcategoryname.options[slctsubcategoryname.selectedIndex];
-		const slcttype = document.getElementById("type");
-		const selectedtypeOption = slcttype.options[slcttype.selectedIndex];
+		// const slctcategoryname = document.getElementById("slctcateg");
+		// const selectedOption = slctcategoryname.options[slctcategoryname.selectedIndex];
+		// const slctsubcategoryname = document.getElementById("slctsubcateg");
+		// const selectedsubOption = slctsubcategoryname.options[slctsubcategoryname.selectedIndex];
+		// const slcttype = document.getElementById("type");
+		// const selectedtypeOption = slcttype.options[slcttype.selectedIndex];
 		const payload = new FormData();
 		payload.append('component', component);
 		payload.append('model', model);
@@ -147,29 +161,30 @@ export default function AddMaterial(){
 		axiosClient.post('/add-material', payload)
 		.then(({data}) => {
 			console.log(data); 
-			const jsonData = data.data;
-			console.log("Results:"+jsonData);
-			const matresult = document.getElementById("matresult");
-			const rstcomponent = document.getElementById("rstcomponent");
-			const rstmodel = document.getElementById("rstmodel");
-			const rstdescription = document.getElementById("rstdescription");
-			const rstpartno = document.getElementById("rstpartno");
-			const rstctg = document.getElementById("rstctg");
-			const rstsubctg = document.getElementById("rstsubctg");
-			const rsttype = document.getElementById("rsttype");
-			const rstqty = document.getElementById("rstqty");
-			const rstunit = document.getElementById("rstunit");
-			rstcomponent.innerText = component;
-			rstmodel.innerText = model;
-			rstdescription.innerText = description;
-			rstpartno.innerText = partno;
-			rstqty.innerText = quantity;
-			rstunit.innerText = activeButtonText;
-			rstctg.innerText = selectedOption.text;
-			rstsubctg.innerText = selectedsubOption.text;
-			rsttype.innerText = selectedtypeOption.text;
+			loadmaterials();
+			// const jsonData = data.data;
+			// console.log("Results:"+jsonData);
+			// const matresult = document.getElementById("matresult");
+			// const rstcomponent = document.getElementById("rstcomponent");
+			// const rstmodel = document.getElementById("rstmodel");
+			// const rstdescription = document.getElementById("rstdescription");
+			// const rstpartno = document.getElementById("rstpartno");
+			// const rstctg = document.getElementById("rstctg");
+			// const rstsubctg = document.getElementById("rstsubctg");
+			// const rsttype = document.getElementById("rsttype");
+			// const rstqty = document.getElementById("rstqty");
+			// const rstunit = document.getElementById("rstunit");
+			// rstcomponent.innerText = component;
+			// rstmodel.innerText = model;
+			// rstdescription.innerText = description;
+			// rstpartno.innerText = partno;
+			// rstqty.innerText = quantity;
+			// rstunit.innerText = activeButtonText;
+			// rstctg.innerText = selectedOption.text;
+			// rstsubctg.innerText = selectedsubOption.text;
+			// rsttype.innerText = selectedtypeOption.text;
 
-			matresult.style.display = "block";
+			// matresult.style.display = "block";
 		// 	// Function to create and append the <select> element
 		})
 		.catch((err) => {
@@ -209,7 +224,7 @@ export default function AddMaterial(){
 			// Send each row in a POST request
 			sendRows(filteredData.slice(1));
 
-			setRowData(filteredData.slice(1));
+			// setRowData(filteredData.slice(1));
 		};
 
 		reader.readAsBinaryString(file);
@@ -256,6 +271,7 @@ export default function AddMaterial(){
 		}
 		console.log("All Code Uploaded");
 		document.getElementById("uploading").style.display = "none";
+		loadmaterials();
 	};
 	return (
 		<>
@@ -270,8 +286,7 @@ export default function AddMaterial(){
 				<div className="col-lg-8 col-md-8 col-sm-12"></div>
 			</div>
 			<input type="file" onChange={handleFile} accept=".xlsx, .xls" style={{display: "none"}} id="bulkupload"/>
-			<div id="uploading" style={{display: "none"}} >
-			<br />Uploading...</div>
+			<div id="uploading" style={{display: "none"}} ><br />Uploading...</div>
 			<div className="row mb-5" id="toshow" style={{display: "none"}}>
 				<div className="col-lg-9 col-md-9 col-sm-12">
 					<div className="row  mb-3">
@@ -310,7 +325,7 @@ export default function AddMaterial(){
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h6 className="h5heading">Purchased Quantity</h6>
-							<input type="text" id="quantity" placeholder="Text with Number 100" className="matinput"/>
+							<input type="text" id="quantity" placeholder="xxxxx" className="matinput"/>
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h6 className="h5heading">Material Unit</h6>
@@ -327,7 +342,7 @@ export default function AddMaterial(){
 				</div>
 				<div className="col-lg-3 col-md-3 col-sm-12"></div>
 			</div>
-			<div id="matresult" style={{display: "none"}}>
+			{/* <div id="matresult" style={{display: "none"}}>
 				<table className="shipmenttable">
 				<tr>
 					<th>SL No</th>
@@ -354,9 +369,9 @@ export default function AddMaterial(){
 					<td id="rstunit">Purchased QTY</td>
 				</tr>
 				</table>
-			</div>
+			</div> */}
 
-			{rowData && (
+			{/* {rowData && (
 			<div id="matresult" className="mt-5 mb-3">
 				<table className="shipmenttable">
 				<tr>
@@ -381,7 +396,39 @@ export default function AddMaterial(){
 				))}
 				</table>
 			</div>
-			)}
+			)} */}
+			{rowData && (
+					<div id="matresult" className="mt-5 mb-3">
+						<table className="shipmenttable">
+						<tr>
+							<th>SL No</th>
+							<th>Material Component</th>
+							<th>Material Model</th>
+							<th>Material Description</th>
+							<th>Part Number</th>
+							<th>Select Category</th>
+							<th>Select Sub Category</th>
+							<th>Material Type</th>
+							<th>Purchased Quantity</th>
+							<th>Material Unit</th>
+						</tr>
+						{rowData.map((row, index) => (
+							<tr key={row.id}>
+								<td>{index + 1}</td>
+								<td>{row.component}</td>
+								<td>{row.model}</td>
+								<td>{row.description}</td>
+								<td>{row.partno}</td>
+								<td>{row.slctcateg}</td>
+								<td>{row.slctsubcateg}</td>
+								<td>{row.type}</td>
+								<td>{row.quantity}</td>
+								<td>{row.activeButtonText}</td>
+							</tr>
+						))}
+						</table>
+					</div>
+					)}
 		</div>	
 		</>
 	)

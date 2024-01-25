@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axiosClient from '../../../axios-client';
 
 export default function AddShipment(){
+	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadcategories();
 		loadsubcategories(1);
 		loadmaterialbytype(1);
 		loadmaterialvalues(1);
 		loadmattypes();
+		loadshipments();
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -118,41 +120,19 @@ export default function AddShipment(){
 			}
 		});
 	}
-	// const loadmaterial = () => {
-	// 	axiosClient.get('/get-material')
-	// 	.then(({data}) => {
-	// 		console.log(data); 
-	// 		const jsonData = data.data;
-	// 		// Function to create and append the <select> element
-	// 		function createSelect(options) {
-	// 			const selectContainer = document.getElementById('material-container');
-	// 			selectContainer.innerHTML = "";
-	// 			// if (selectContainer.innerHTML.trim() === '') {
-	// 				const select = document.createElement('select');
-	// 				select.className = `shpinput`;
-	// 				select.id = `slctmat`;
-	// 				// Loop through the options and create <option> elements
-	// 				options.forEach(option => {
-	// 					const optionElement = document.createElement('option');
-	// 					optionElement.value = option.id;
-	// 					optionElement.text = option.component;
-	// 					select.appendChild(optionElement);
-	// 				});
-	// 				select.addEventListener('change', function() {
-	// 					loadmaterialvalues(this.value);
-	// 				});
-	// 				selectContainer.appendChild(select);
-	// 			// }
-	// 		}
-	// 		createSelect(jsonData);
-	// 	})
-	// 	.catch((err) => {
-	// 		const response = err.response;
-	// 		if (response && response.status === 422) {
-	// 			console.log(response.data.message);
-	// 		}
-	// 	});
-	// }
+	const loadshipments = () => {
+		axiosClient.get('/get-allshipments')
+		.then(({data}) => {
+			console.log(data); 
+			setRowData(data.data);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
 	const loadmaterialbytype = (matid) => {
 		const payload = new FormData();
 		payload.append('matid', matid);
@@ -222,15 +202,6 @@ export default function AddShipment(){
 		const shipmentqty =  document.getElementById("shipmentqty").value;
 		const receivedqty =  document.getElementById("receivedqty").value;
 		const remainingqty =  document.getElementById("remainingqty").value;
-		const slctcategoryname = document.getElementById("slctcateg");
-		const selectedOption = slctcategoryname.options[slctcategoryname.selectedIndex];
-		const slctsubcategoryname = document.getElementById("slctsubcateg");
-		const selectedsubOption = slctsubcategoryname.options[slctsubcategoryname.selectedIndex];
-		const slctmatname = document.getElementById("slctmat");
-		const selectedMatOption = slctmatname.options[slctmatname.selectedIndex];
-		const mattypesname = document.getElementById("mattypes");
-		const mattypeOption = mattypesname.options[mattypesname.selectedIndex];
-		const result = document.getElementById("result");
 		const payload = new FormData();
 		payload.append('shipid', shipid);
 		payload.append('name', name);
@@ -247,31 +218,7 @@ export default function AddShipment(){
 		axiosClient.post('/add-shipment', payload)
 		.then(({data}) => {
 			console.log(data); 
-			const rs2 = document.getElementById("rs2");
-			const rs3 = document.getElementById("rs3");
-			const rs4 = document.getElementById("rs4");
-			const rs5 = document.getElementById("rs5");
-			const rs6 = document.getElementById("rs6");
-			const rs7 = document.getElementById("rs7");
-			const rs8 = document.getElementById("rs8");
-			const rs9 = document.getElementById("rs9");
-			const rs10 = document.getElementById("rs10");
-			const rs11 = document.getElementById("rs11");
-			const rs12 = document.getElementById("rs12");
-			const rs13 = document.getElementById("rs13");
-			rs2.innerText = shipid;
-			rs3.innerText = name;
-			rs4.innerText = from;
-			rs5.innerText = selectedOption.text;
-			rs6.innerText = selectedsubOption.text;
-			rs7.innerText = selectedMatOption.text;
-			rs8.innerText = mattypeOption.text;
-			rs9.innerText = packingno;
-			rs10.innerText = quantity;
-			rs11.innerText = shipmentqty;
-			rs12.innerText = receivedqty;
-			rs13.innerText = remainingqty;
-			result.style.display = "block";
+			loadshipments();
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -372,41 +319,45 @@ export default function AddShipment(){
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>
 			</div>
-			<div id="result" style={{display: "none"}}>
 				<hr />
-				<table className="shipmenttable">
-				<tr>
-					<th>SL No</th>
-					<th>Shipment ID</th>
-					<th>Shipment Name (PGD)</th>
-					<th>Shipment From</th>
-					<th>Category</th>
-					<th>Sub Category</th>
-					<th>Material Name</th>
-					<th>Type of Material</th>
-					<th>Packing/Box NO.</th>
-					<th>Purchased QTY</th>
-					<th>Shipment QTY</th>
-					<th>Received QTY</th>
-					<th>Remaining QTY</th>
-				</tr>
-				<tr>
-					<td id="rs1">1</td>
-					<td id="rs2">Shipment ID</td>
-					<td id="rs3">Shipment Name (PGD)</td>
-					<td id="rs4">Shipment From</td>
-					<td id="rs5">Category</td>
-					<td id="rs6">Sub Category</td>
-					<td id="rs7">Material Name</td>
-					<td id="rs8">Type of Material</td>
-					<td id="rs9">Packing/Box NO.</td>
-					<td id="rs10">Purchased QTY</td>
-					<td id="rs11">Shipment QTY</td>
-					<td id="rs12">Received QTY</td>
-					<td id="rs13">Remaining QTY</td>
-				</tr>
-				</table>
-			</div>
+				{rowData && (
+					<div className="mt-5 mb-3">
+						<table className="shipmenttable">
+						<tr>
+							<th>SL No</th>
+							<th>Shipment ID</th>
+							<th>Shipment Name (PGD)</th>
+							<th>Shipment From</th>
+							<th>Category</th>
+							<th>Sub Category</th>
+							<th>Material Name</th>
+							<th>Type of Material</th>
+							<th>Packing/Box NO.</th>
+							<th>Purchased QTY</th>
+							<th>Shipment QTY</th>
+							<th>Received QTY</th>
+							<th>Remaining QTY</th>
+						</tr>
+						{rowData.map((row, index) => (
+							<tr key={row.id}>
+								<td>{index + 1}</td>
+								<td>{row.shipid}</td>
+								<td>{row.name}</td>
+								<td>{row.shpfrom}</td>
+								<td>{row.categoryname}</td>
+								<td>{row.subcategoryname}</td>
+								<td>{row.materialname}</td>
+								<td>{row.typename}</td>
+								<td>{row.packingno}</td>
+								<td>{row.quantity}</td>
+								<td>{row.shipmentqty}</td>
+								<td>{row.receivedqty}</td>
+								<td>{row.remainingqty}</td>
+							</tr>
+						))}
+						</table>
+					</div>
+				)}
 		</div>	
 		</>
 	)

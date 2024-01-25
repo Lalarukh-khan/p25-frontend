@@ -1,10 +1,12 @@
 import axiosClient from '../../../axios-client';
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function MaterialCategory(){
+	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadcategories();
 		loadmattypes();
+		loadcatsubcat();
 	}, [])
 	const UpdateCategory = () => {
 		const category = document.getElementById("category").value;
@@ -14,9 +16,9 @@ export default function MaterialCategory(){
 		axiosClient.post('/make-category', payload)
 		.then(({data}) => {
 			document.getElementById("categbtn").innerHTML = 'Update';
-			document.getElementById("callcateg").innerText = category;
 			console.log(data);
 			loadcategories();
+			loadcatsubcat();
 		})
 		.catch((err) => {
 			document.getElementById("categbtn").innerHTML = 'Update';
@@ -63,8 +65,6 @@ export default function MaterialCategory(){
 		const subcategory = document.getElementById("subcategory").value;
 		const slctcategory = document.getElementById("slctcateg").value;
 		const categid = slctcategory.replace("slctcategory", "");
-		const slctcategoryname = document.getElementById("slctcateg");
-		const selectedOption = slctcategoryname.options[slctcategoryname.selectedIndex];
 		document.getElementById("subcategbtn").innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="padding: 13px;"></span>`;
 		const payload = new FormData();
 		payload.append('subcategory', subcategory);
@@ -72,9 +72,8 @@ export default function MaterialCategory(){
 		axiosClient.post('/make-subcategory', payload)
 		.then(({data}) => {
 			document.getElementById("subcategbtn").innerHTML = 'Update';
-			loadsubcategories(categid);
-			document.getElementById("callcateg").innerText = selectedOption.text;
 			console.log(data);
+			loadcatsubcat();
 		})
 		.catch((err) => {
 			document.getElementById("subcategbtn").innerHTML = 'Update';
@@ -84,56 +83,6 @@ export default function MaterialCategory(){
 			}
 		});
 
-	}
-	const loadsubcategories = (categid) => {
-		const payload = new FormData();
-		payload.append('categid', categid);
-		axiosClient.post('/get-subcategory', payload)
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			console.log("jsonData"+jsonData);
-			// Function to create and append the <select> element
-			function createSelect(options) {
-				const allsubcategDiv = document.getElementById('allsubcateg');
-				allsubcategDiv.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					options.forEach(item => {
-						// Create a div for each item
-						const resultDiv = document.createElement('div');
-						resultDiv.className = 'row resultsidecateg';
-						resultDiv.style.marginBottom = '4px';
-						const col1 = document.createElement('div');
-						col1.className = 'col-lg-10 col-md-10 col-sm-10';
-						const categoryName = document.createElement('p');
-						categoryName.className = 'categsidefotn';
-						categoryName.textContent = item.name;
-						categoryName.id = item.id;
-						col1.appendChild(categoryName);
-						const col2 = document.createElement('div');
-						col2.className = 'col-lg-2 col-md-2 col-sm-2';
-						const buttonX = document.createElement('button');
-						buttonX.textContent = 'X';
-						const buttonY = document.createElement('button');
-						buttonY.textContent = 'Y';
-						col2.appendChild(buttonX);
-						col2.appendChild(document.createTextNode('\u00A0')); // Non-breaking space
-						col2.appendChild(buttonY);
-						resultDiv.appendChild(col1);
-						resultDiv.appendChild(col2);
-						allsubcategDiv.appendChild(resultDiv);
-				});
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			const allsubcategDiv = document.getElementById('allsubcateg');
-			allsubcategDiv.innerHTML = "";
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
 	}
 	const loadmattypes = () => {
 		axiosClient.get('/get-mattypes')
@@ -176,6 +125,19 @@ export default function MaterialCategory(){
 			const response = err.response;
 			const allsubcategDiv = document.getElementById('alltypecateg');
 			allsubcategDiv.innerHTML = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadcatsubcat = () => {
+		axiosClient.get('/get-catsubcat')
+		.then(({data}) => {
+			console.log("concerned data: "+data); 
+			setRowData(data.data);
+		})
+		.catch((err) => {
+			const response = err.response;
 			if (response && response.status === 422) {
 				console.log(response.data.message);
 			}
@@ -225,23 +187,43 @@ export default function MaterialCategory(){
 							<h5 className="h5heading">Sub Category</h5>
 						</div>
 					</div>
-					<div className="row" id="categresult">
-						<div className="col-lg-6 col-md-6 col-sm-12">
-							<div className="row resultcateg">
-								<div className="col-lg-10 col-md-10 col-sm-10">
-									<h5 className="categfotn" id="callcateg"></h5>
+					{rowData && (
+						<div>
+							{rowData.map((category, index) => (
+								<div className="row mb-3" key={index}>
+									<div className="col-lg-6 col-md-6 col-sm-12">
+										<div className="row resultcateg">
+											<div className="col-lg-10 col-md-10 col-sm-10">
+												<h5 className="categfotn" id={category.category_id}>{category.category_name}</h5>
+											</div>
+											<div className="col-lg-2 col-md-2 col-sm-2">
+												<button>X</button>&nbsp;
+												<button>Y</button>
+											</div>
+										</div>
+									</div>
+									{category.subcategories && category.subcategories.length > 0 && (
+										<div className="col-lg-6 col-md-6 col-sm-12">
+											{/* Render subcategories */}
+											{category.subcategories.map((subcategory, subIndex) => (
+												<div key={subIndex}>
+													<div className='row resultsidecateg' style={{marginBottom: "4px"}}>
+														<div className="col-lg-10 col-md-10 col-sm-10">
+															<p className="categsidefotn" id={subcategory.id}>{subcategory.name}</p>
+														</div>
+														<div className="col-lg-2 col-md-2 col-sm-2">
+															<button>X</button>&nbsp;
+															<button>Y</button>
+														</div>
+													</div>
+												</div>
+											))}
+										</div>
+									)}
 								</div>
-								<div className="col-lg-2 col-md-2 col-sm-2">
-									<button>X</button>&nbsp;
-									<button>Y</button>
-								</div>
-							</div>
+							))}
 						</div>
-						<div className="col-lg-6 col-md-6 col-sm-12" id="allsubcateg">
-								<div>
-								</div>
-						</div>
-					</div>
+					)}
 				</div>
 				<div className="col-lg-3 col-md-9 col-sm-12 greyback pt-5" style={{height: "100vh"}}>
 					<h5 className="h5heading">Material Type</h5>
