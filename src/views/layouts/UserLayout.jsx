@@ -2,7 +2,7 @@ import {Navigate, Outlet} from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 // import axiosClient from "../../axios-client";
 // import {useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import $ from "jquery";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -77,22 +77,22 @@ export default function UserLayout() {
 							<Nav className="me-auto">
 								<Nav.Link href="/" className="navlinkleft">Home</Nav.Link>
 								<NavDropdown title="Material" className="navlinkleft" id="collapsible-nav-dropdown">
-									<NavDropdown.Item href="/material-category">Add Material Category</NavDropdown.Item>
-									<NavDropdown.Item href="/add-material">Add Material</NavDropdown.Item>
-									<NavDropdown.Item href="/add-serial">Add Material S/N</NavDropdown.Item>
-									<NavDropdown.Item href="/add-shipment">Shipment Information</NavDropdown.Item>
-									<NavDropdown.Item href="/manufacture-information">Manufacture Information</NavDropdown.Item>
-									<NavDropdown.Item href="/warehouse-information">Warehouse Information</NavDropdown.Item>
-									<NavDropdown.Item href="/site-information">Site Information</NavDropdown.Item>
-									<NavDropdown.Item href="/company-information">Company Information</NavDropdown.Item>
+									<Link to="/material-category" className="dropdown-item">Add Material Category</Link>
+									<Link to="/add-material" className="dropdown-item">Add Material</Link>
+									<Link to="/add-serial" className="dropdown-item">Add Material S/N</Link>
+									<Link to="/add-shipment" className="dropdown-item">Shipment Information</Link>
+									<Link to="/manufacture-information" className="dropdown-item">Manufacture Information</Link>
+									<Link to="/warehouse-information" className="dropdown-item">Warehouse Information</Link>
+									<Link to="/site-information" className="dropdown-item">Site Information</Link>
+									<Link to="/company-information" className="dropdown-item">Company Information</Link>
 								</NavDropdown>
 								<NavDropdown title="Material Requisition" className="navlinkleft" id="collapsible-nav-dropdown">
 									<NavDropdown.Item href="#action/3.1">Create Requisition</NavDropdown.Item>
 									<NavDropdown.Item href="#action/3.2">Requisition Update</NavDropdown.Item>
 								</NavDropdown>
 								<NavDropdown title="Settings" className="navlinkleft" id="collapsible-nav-dropdown">
-									<NavDropdown.Item  href="/user-information">User Information</NavDropdown.Item>
-									<NavDropdown.Item href="/role-control">User Role Control</NavDropdown.Item>
+									<Link to="/user-information" className="dropdown-item">User Information</Link>
+									<Link to="/role-control" className="dropdown-item">User Role Control</Link>
 								</NavDropdown>
 							</Nav>
 							<Nav>
