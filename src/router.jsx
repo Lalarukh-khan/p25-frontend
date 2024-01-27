@@ -14,6 +14,7 @@ import SiteInformation from "./views/userpanel/material/site";
 import CompanyInformation from "./views/userpanel/material/company";
 import UserInformation from "./views/userpanel/setting/userinformation";
 import UserControl from "./views/userpanel/setting/usercontrol";
+import CreateRequisition from "./views/userpanel/requisition/create";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
             {
                 path: "/role-control",
                 element: <UserControl />,
+            },
+            {
+                path: "/create-requisition",
+                element: <CreateRequisition />,
             },
         ],
     },

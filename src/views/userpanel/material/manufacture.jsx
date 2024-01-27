@@ -83,7 +83,72 @@ export default function ManufactureInformation(){
 	const addmatshow = () => {
 		const toshow = document.getElementById("toshow");
 		toshow.style.display = "block";
+		// editmnf();
 	}
+	// const delmnf = (catid) => {
+	// 	const confirmed = window.confirm('Are you sure you want to delete?');
+	// 	if (confirmed) {
+	// 		const payload = new FormData();
+	// 			payload.append('categid', catid);
+	// 			axiosClient.post('/delete-category', payload)
+	// 			.then(({data}) => {
+	// 				console.log(data);
+	// 				loadcatsubcat();
+	// 			})
+	// 			.catch((err) => {
+	// 				alert("There's an issue in deleting!");
+	// 				const response = err.response;
+	// 				if (response && response.status === 422) {
+	// 					console.log(response.data.message);
+	// 				}
+	// 		});
+	// 	}
+	// }
+// 	const editmnf = () => {
+// 		// const userInput = window.prompt('Enter new manufacture name:', '');
+// 		// 	if (userInput !== null) {
+// 		// 		const payload = new FormData();
+// 		// 		payload.append('categid', catid);
+// 		// 		payload.append('newname', userInput);
+// 		// 		axiosClient.post('/update-manufacture', payload)
+// 		// 		.then(({data}) => {
+// 		// 			console.log(data);
+// 		// 			alert(`Manufacture name updated to, ${userInput}!`);
+// 		// 			loadcatsubcat();
+// 		// 		})
+// 		// 		.catch((err) => {
+// 		// 			alert("There's an issue in updating!");
+// 		// 			const response = err.response;
+// 		// 			if (response && response.status === 422) {
+// 		// 				console.log(response.data.message);
+// 		// 			}
+// 		// 		});
+// 		// 	} else {
+// 		// 		alert('No input provided.');
+// 		// 	}
+// 		// Prompt the user to enter three values separated by commas
+// const userInput = window.prompt('Please enter three values separated by commas (,):', '');
+
+// // Check if the user provided input
+// if (userInput !== null) {
+//     // Split the input string into an array of values using commas as the delimiter
+//     const inputsArray = userInput.split(',');
+
+//     // Trim whitespace from each value and store them in separate variables
+//     const input1 = inputsArray[0].trim();
+//     const input2 = inputsArray[1].trim();
+//     const input3 = inputsArray[2].trim();
+
+//     // Log the inputs
+//     console.log('Input 1:', input1);
+//     console.log('Input 2:', input2);
+//     console.log('Input 3:', input3);
+// } else {
+//     // User clicked Cancel or closed the prompt
+//     console.log('No input provided.');
+// }
+
+// 	}
 	return (
 		<>
 		<div className="container">

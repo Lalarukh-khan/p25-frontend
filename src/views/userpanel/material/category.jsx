@@ -133,7 +133,6 @@ export default function MaterialCategory(){
 	const loadcatsubcat = () => {
 		axiosClient.get('/get-catsubcat')
 		.then(({data}) => {
-			console.log("concerned data: "+data); 
 			setRowData(data.data);
 		})
 		.catch((err) => {
@@ -142,6 +141,48 @@ export default function MaterialCategory(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const delcat = (catid) => {
+		const confirmed = window.confirm('Are you sure you want to delete?');
+		if (confirmed) {
+			const payload = new FormData();
+				payload.append('categid', catid);
+				axiosClient.post('/delete-category', payload)
+				.then(({data}) => {
+					console.log(data);
+					loadcatsubcat();
+				})
+				.catch((err) => {
+					alert("There's an issue in deleting!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+			});
+		}
+	}
+	const editcat = (catid) => {
+		const userInput = window.prompt('Enter new category name:', '');
+			if (userInput !== null) {
+				const payload = new FormData();
+				payload.append('categid', catid);
+				payload.append('newname', userInput);
+				axiosClient.post('/update-category', payload)
+				.then(({data}) => {
+					console.log(data);
+					alert(`Category name updated to, ${userInput}!`);
+					loadcatsubcat();
+				})
+				.catch((err) => {
+					alert("There's an issue in updating!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+				});
+			} else {
+				alert('No input provided.');
+			}
 	}
 
 	return (
@@ -197,8 +238,8 @@ export default function MaterialCategory(){
 												<h5 className="categfotn" id={category.category_id}>{category.category_name}</h5>
 											</div>
 											<div className="col-lg-2 col-md-2 col-sm-2">
-												<button>X</button>&nbsp;
-												<button>Y</button>
+												<button onClick={() => delcat(category.category_id)}>X</button>&nbsp;
+												<button onClick={() => editcat(category.category_id)}>Y</button>
 											</div>
 										</div>
 									</div>
