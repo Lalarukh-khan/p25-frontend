@@ -10,6 +10,7 @@ export default function AddShipment(){
 		loadmaterialvalues(0);
 		loadsubmattypes(0);
 		loadshipments();
+		loadwarehouse();
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -36,6 +37,41 @@ export default function AddShipment(){
 					});
 					select.addEventListener('change', function() {
 						loadsubcategories(this.value);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadwarehouse = () => {
+		axiosClient.get('/get-warehouse')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			// Function to create and append the <select> element
+			function createSelect(options) {
+				const selectContainer = document.getElementById('warehouse-container');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shpinput`;
+					select.id = `slctwrhs`;
+					// Loop through the options and create <option> elements
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.wrhidname; 
+						select.appendChild(optionElement);
 					});
 					selectContainer.appendChild(select);
 				// }
@@ -232,10 +268,12 @@ export default function AddShipment(){
 		const shipmentqty =  document.getElementById("shipmentqty").value;
 		const receivedqty =  document.getElementById("receivedqty").value;
 		const remainingqty =  document.getElementById("remainingqty").value;
+		const slctwrhs =  document.getElementById("slctwrhs").value;
 		const payload = new FormData();
 		payload.append('shipid', shipid);
 		payload.append('name', name);
 		payload.append('from', from);
+		payload.append('slctwrhs', slctwrhs);
 		payload.append('slctcateg', slctcateg);
 		payload.append('slctsubcateg', slctsubcateg);
 		payload.append('slctmat', slctmat);
@@ -301,10 +339,13 @@ export default function AddShipment(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<input type="text" id="from" placeholder="Shipment From" className="shpinput"/>
 						</div>
-						<div className="col-lg-3 col-md-3 col-sm-12">
+						<div className="col-lg-2 col-md-2 col-sm-12">
+							<div id="warehouse-container"></div>
+						</div>
+						<div className="col-lg-2 col-md-2 col-sm-12">
 							<div id="category-container"></div>
 						</div>
-						<div className="col-lg-3 col-md-3 col-sm-12">
+						<div className="col-lg-2 col-md-2 col-sm-12">
 							<div id="subcategory-container"></div>
 						</div>
 					</div>
@@ -365,6 +406,7 @@ export default function AddShipment(){
 							<th>Shipment ID</th>
 							<th>Shipment Name (PGD)</th>
 							<th>Shipment From</th>
+							<th>Warehouse</th>
 							<th>Category</th>
 							<th>Sub Category</th>
 							<th>Material Name</th>
@@ -381,6 +423,7 @@ export default function AddShipment(){
 								<td>{row.shipid}</td>
 								<td>{row.name}</td>
 								<td>{row.shpfrom}</td>
+								<td>{row.warehousename}</td>
 								<td>{row.categoryname}</td>
 								<td>{row.subcategoryname}</td>
 								<td>{row.materialname}</td>
