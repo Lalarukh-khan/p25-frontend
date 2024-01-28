@@ -67,6 +67,11 @@ padding-bottom: 10px;
   font-size: 18px;
   text-transform: capitalize;
 }
+.dashsub{
+  color: black;
+  background-color: #bbbbbb !important;
+  font-size: 18px;
+}
 .logininpt{
   height: 50px;
 }
