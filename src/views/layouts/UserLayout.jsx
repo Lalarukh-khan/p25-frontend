@@ -88,7 +88,7 @@ export default function UserLayout() {
 								</NavDropdown>
 								<NavDropdown title="Material Requisition" className="navlinkleft" id="collapsible-nav-dropdown">
 									<Link to="/create-requisition" className="dropdown-item">Create Requisition</Link>
-									<Link to="/material-category" className="dropdown-item">Requisition Update</Link>
+									<Link to="/update-requisition" className="dropdown-item">Requisition Update</Link>
 								</NavDropdown>
 								<NavDropdown title="Settings" className="navlinkleft" id="collapsible-nav-dropdown">
 									<Link to="/user-information" className="dropdown-item">User Information</Link>
