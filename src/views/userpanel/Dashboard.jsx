@@ -59,55 +59,64 @@ export default function UserDashboard() {
             </thead>
             <tbody>
               <tr style={{border: "1px solid transparent"}}>
-                <td colSpan={4}>Core System</td>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>Core System</td>
               </tr>
               <tr style={{borderBottom: "1px solid transparent"}}>
-                <td className="dashsub">Main Equipment &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &gt;</td>
+                <td className="dashsub">Main Equipment &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &gt;</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>100</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>50</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>10</td>
               </tr>
               <tr style={{border: "1px solid transparent"}}>
-                <td colSpan={4}>Core System 2</td>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>Radio Base Station</td>
               </tr>
               <tr style={{borderBottom: "1px solid transparent"}}>
-                <td className="dashsub">Sub Categrory 2&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &gt;</td>
+                <td className="dashsub">2 BR&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;    &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;    &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &gt;</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
               </tr>
               <tr style={{border: "1px solid transparent"}}>
-                <td colSpan={4}>Core System 3</td>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>Antenna System</td>
               </tr>
               <tr style={{borderBottom: "1px solid transparent"}}>
-                <td className="dashsub">Sub Categrory 3&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &gt;</td>
+                <td className="dashsub">RFDS System&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;&gt;</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
               </tr>
               <tr style={{border: "1px solid transparent"}}>
-                <td colSpan={4}>Core System 4</td>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>Power System</td>
               </tr>
               <tr style={{borderBottom: "1px solid transparent"}}>
-                <td className="dashsub">Sub Categrory 4&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &gt;</td>
+                <td className="dashsub">Rectifier&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;   &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;    &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &gt;</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
               </tr>
               <tr style={{border: "1px solid transparent"}}>
-                <td colSpan={4}>Core System 5</td>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>Subscriber Unit</td>
               </tr>
               <tr style={{borderBottom: "1px solid transparent"}}>
-                <td className="dashsub">Sub Categrory 5&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &gt;</td>
+                <td className="dashsub">FS Mobile Radio UHF&nbsp; &nbsp;  &nbsp;  &gt;</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
               </tr>
               <tr style={{border: "1px solid transparent"}}>
-                <td colSpan={4}>Core System 6</td>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>VCC & Consoles</td>
               </tr>
               <tr style={{borderBottom: "1px solid transparent"}}>
-                <td className="dashsub">Sub Categrory 6&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &gt;</td>
+                <td className="dashsub">VCC Equipped&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &gt;</td>
+                <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
+                <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
+                <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
+              </tr>
+              <tr style={{border: "1px solid transparent"}}>
+                <td colSpan={4} style={{color: "black", fontSize: "20px"}}>Others</td>
+              </tr>
+              <tr style={{borderBottom: "1px solid transparent"}}>
+                <td className="dashsub">Cabinet Premium&nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp; &gt;</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
                 <td style={{color: "black", fontWeight: "bold", fontSize: "18px"}}>5000</td>
