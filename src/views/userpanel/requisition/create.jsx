@@ -79,6 +79,9 @@ export default function CreateRequisition(){
 		const uniqueNumber = Date.now();
 		document.getElementById("rmnumb").value = uniqueNumber;
 		document.getElementById("mruser").value = token;
+		const today = new Date();
+		const formattedDate = today.toISOString().split('T')[0];
+		document.getElementById('outdate').min = formattedDate;
 	}
 	const loadlisiting = (shpid) => {
 		const payload = new FormData();

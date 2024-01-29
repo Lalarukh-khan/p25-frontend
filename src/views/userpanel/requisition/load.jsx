@@ -7,6 +7,7 @@ export default function LoadRequisition(){
 	const [toneModal, setToneModal] = useState(false);
 	const [rnmnval, setRnmnVal] = useState("false");
 	const [serialModal, setSerialModal] = useState(false);
+	const [rejectModal, setRejectModal] = useState(false);
 	const [lssid, setLsid] = useState("false");
 	const [rowData, setRowData] = useState(null);
 	const [topid, setTopid] = useState(null);
@@ -19,6 +20,12 @@ export default function LoadRequisition(){
 	}
 	const OpenSerialModal = () =>{
 		setSerialModal(true);
+	}
+	const RejecthandleClose = () =>{
+		setRejectModal(false);
+	}
+	const OpenRejectModal = () =>{
+		setRejectModal(true);
 	}
 	const OpenToneModal = () =>{
 		setToneModal(true);
@@ -51,6 +58,31 @@ export default function LoadRequisition(){
 		axiosClient.post('/check-usercontrol', payload)
 		.then(({data}) => {
 			const jsonData = data.data[0];
+			if(jsonData.approvedby !== null){
+				const firin = document.getElementById("approvebywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.approvedby;
+			}
+			if(jsonData.acceptedby !== null){
+				const firin = document.getElementById("accptbywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.acceptedby;
+				const createdby = document.getElementById("reviewby");
+				const createdby2 = document.getElementById("reviewbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.reviewby !== null){
+				const firin = document.getElementById("rvwbywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.reviewby;
+				const createdby = document.getElementById("approveby");
+				const createdby2 = document.getElementById("approvebyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
 			if(jsonData.mrcreatedby !== null){
 				const firin = document.getElementById("mrcreatedby");
 				firin.innerHTML = "";
@@ -76,31 +108,6 @@ export default function LoadRequisition(){
 				createdby.disabled = false;
 				createdby2.disabled = false;
 			}
-			if(jsonData.acceptedby !== null){
-				const firin = document.getElementById("accptbywhole");
-				firin.innerHTML = "";
-				firin.innerText = jsonData.acceptedby;
-				const createdby = document.getElementById("reviewby");
-				const createdby2 = document.getElementById("reviewbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
-			if(jsonData.reviewby !== null){
-				const firin = document.getElementById("rvwbywhole");
-				firin.innerHTML = "";
-				firin.innerText = jsonData.reviewby;
-				const createdby = document.getElementById("approveby");
-				const createdby2 = document.getElementById("approvebyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
-			if(jsonData.approvedby !== null){
-				const firin = document.getElementById("approvebywhole");
-				firin.innerHTML = "";
-				firin.innerText = jsonData.approvedby;
-			}
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -113,6 +120,9 @@ export default function LoadRequisition(){
 		const uniqueNumber = Date.now();
 		document.getElementById("rmnumb").value = uniqueNumber;
 		document.getElementById("mruser").value = token;
+		const today = new Date();
+		const formattedDate = today.toISOString().split('T')[0];
+		document.getElementById('outdate').min = formattedDate;
 	}
 	const loadlisitingRnmn = (shpid) => {
 		const payload = new FormData();
@@ -664,6 +674,24 @@ export default function LoadRequisition(){
 			}
 		});
 	}
+	const rejectthis = () => {
+		const rejectnote = document.getElementById("rejectnote").value;
+		const payload = new FormData();
+		payload.append('email', token);
+		payload.append('rmnm', topid);
+		payload.append('rejectnote', rejectnote);
+		axiosClient.post('/reject-req', payload)
+		.then(({data}) => {
+			console.log(data);
+			RejecthandleClose();
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
 	return (
 		<>
 		<div className="container">
@@ -791,7 +819,7 @@ export default function LoadRequisition(){
 							<div id="checkbywhole">
 							<div className="row">
 								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="checkedby" onClick={chckbyuser}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="checkedbyrjct">Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="checkedbyrjct" onClick={OpenRejectModal}>Reject</button></div>
 							</div>
 							</div>
 					</div>
@@ -800,7 +828,7 @@ export default function LoadRequisition(){
 							<div id="accptbywhole">
 							<div className="row">
 								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="accpetedby" onClick={accpkbyuser}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="acceptedbyrjct">Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="acceptedbyrjct" onClick={OpenRejectModal}>Reject</button></div>
 							</div>
 							</div>
 					</div>
@@ -809,7 +837,7 @@ export default function LoadRequisition(){
 							<div id="rvwbywhole">
 							<div className="row">
 								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="reviewby" onClick={reviewbyuser}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="reviewbyrjct">Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="reviewbyrjct" onClick={OpenRejectModal}>Reject</button></div>
 							</div>
 							</div>
 					</div>
@@ -818,7 +846,7 @@ export default function LoadRequisition(){
 							<div id="approvebywhole">
 							<div className="row">
 								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="approveby" onClick={Approvebyuser}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="approvebyrjct">Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="approvebyrjct" onClick={OpenRejectModal}>Reject</button></div>
 							</div>
 							</div>
 					</div>
@@ -981,6 +1009,24 @@ export default function LoadRequisition(){
 					<div className="row mt-5">
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={storesn}>Add</button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
+			<Modal show={rejectModal} centered onHide={RejecthandleClose} data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true" className="modal-lg">
+				<Modal.Header>
+					<button id="closemodal" type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
+						onClick={RejecthandleClose}
+					></button>
+				</Modal.Header>
+				<Modal.Body>
+					<div className="row  mb-3">
+						<h5>Enter Reason for Rejection:</h5>
+						<textarea name="rejectnote" cols="20" rows="5" id="rejectnote"></textarea>
+					</div>
+					<div className="row mt-5">
+						<div className="col-lg-2 col-md-2 col-sm-12">
+						<button className="categbtn" id="categbtn" onClick={rejectthis} style={{backgroundColor:"red"}}>Reject</button>
 						</div>
 					</div>
 				</Modal.Body>
