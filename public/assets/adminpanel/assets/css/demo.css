@@ -67,6 +67,11 @@ padding-bottom: 10px;
   font-size: 18px;
   text-transform: capitalize;
 }
+.h6heading{
+  font-weight: bold;
+  color: black;
+  font-size: 15px;
+}
 .dashsub{
   color: black;
   background-color: #bbbbbb !important;

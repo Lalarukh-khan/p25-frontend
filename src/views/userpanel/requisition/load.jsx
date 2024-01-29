@@ -3,12 +3,13 @@ import axiosClient from '../../../axios-client';
 import { useStateContext } from "../../contexts/ContextProvider";
 import { Modal } from 'react-bootstrap';
 
-export default function CreateRequisition(){
+export default function LoadRequisition(){
 	const [toneModal, setToneModal] = useState(false);
 	const [rnmnval, setRnmnVal] = useState("false");
 	const [serialModal, setSerialModal] = useState(false);
 	const [lssid, setLsid] = useState("false");
 	const [rowData, setRowData] = useState(null);
+	const [topid, setTopid] = useState(null);
 	const [serialData, setSerialData] = useState(null);
 	const TonehandleClose = () =>{
 		setToneModal(false);
@@ -28,7 +29,21 @@ export default function CreateRequisition(){
 		getCurrentDateTime();
 		loadsites();
 		loadcompanies();
-		document.getElementById("btncreatedby").disabled = "true";
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		const id = urlParams.get('id');
+		setTopid(id);
+		usercontrol(id);
+		loadlisitingRnmn(id);
+		document.getElementById("checkedby").disabled = "true";
+		document.getElementById("checkedbyrjct").disabled = "true";
+		document.getElementById("accpetedby").disabled = "true";
+		document.getElementById("acceptedbyrjct").disabled = "true";
+		document.getElementById("reviewby").disabled = "true";
+		document.getElementById("reviewbyrjct").disabled = "true";
+		document.getElementById("approveby").disabled = "true";
+		document.getElementById("approvebyrjct").disabled = "true";
+		// checkbyuser(token);
 	}, []);
 	const usercontrol = (rmnm) => {
 		const payload = new FormData();
@@ -36,15 +51,7 @@ export default function CreateRequisition(){
 		axiosClient.post('/check-usercontrol', payload)
 		.then(({data}) => {
 			const jsonData = data.data[0];
-			if(jsonData.mrcreatedby == null){
-				if(rowData !== null){
-					console.log("Yes, its not null!");
-					const createdby = document.getElementById("btncreatedby");
-					createdby.style.background = "#F26422";
-					createdby.disabled = false;
-				}
-			}
-			else{
+			if(jsonData.mrcreatedby !== null){
 				const firin = document.getElementById("mrcreatedby");
 				firin.innerHTML = "";
 				firin.innerText = jsonData.mrcreatedby;
@@ -53,20 +60,47 @@ export default function CreateRequisition(){
 				const firin = document.getElementById("sncreatedby");
 				firin.innerHTML = "";
 				firin.innerText = jsonData.sncreatedby;
+				const createdby = document.getElementById("checkedby");
+				const createdby2 = document.getElementById("checkedbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
 			}
-			// console.log("rowData:", rowData); // Log rowData to console for debugging
-			// if (rowData !== null) {
-			// 	const createdby = document.getElementById("mrcreatedby");
-			// 	if (createdby) {
-			// 		console.log("Button found:", createdby); // Log the button element for debugging
-			// 		createdby.style.background = "#F26422";
-			// 		createdby.removeAttribute('disabled');
-			// 	} else {
-			// 		console.error("Button element not found"); // Log an error if the button element is not found
-			// 	}
-			// } else {
-			// 	console.log("rowData is null, button will remain disabled");
-			// }
+			if(jsonData.checkedby !== null){
+				const firin = document.getElementById("checkbywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.checkedby;
+				const createdby = document.getElementById("accpetedby");
+				const createdby2 = document.getElementById("acceptedbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.acceptedby !== null){
+				const firin = document.getElementById("accptbywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.acceptedby;
+				const createdby = document.getElementById("reviewby");
+				const createdby2 = document.getElementById("reviewbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.reviewby !== null){
+				const firin = document.getElementById("rvwbywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.reviewby;
+				const createdby = document.getElementById("approveby");
+				const createdby2 = document.getElementById("approvebyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.approvedby !== null){
+				const firin = document.getElementById("approvebywhole");
+				firin.innerHTML = "";
+				firin.innerText = jsonData.approvedby;
+			}
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -79,6 +113,20 @@ export default function CreateRequisition(){
 		const uniqueNumber = Date.now();
 		document.getElementById("rmnumb").value = uniqueNumber;
 		document.getElementById("mruser").value = token;
+	}
+	const loadlisitingRnmn = (shpid) => {
+		const payload = new FormData();
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-reqbyRNMN', payload)
+		.then(({data}) => {
+			setRowData(data.data);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
 	}
 	const loadlisiting = (shpid) => {
 		const payload = new FormData();
@@ -479,6 +527,26 @@ export default function CreateRequisition(){
 			const shpid = data.data;
 			loadlisiting(shpid.id);
 			setSerialModal();
+			checkuserrole(token);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const checkuserrole = (email) => {
+		const payload = new FormData();
+		payload.append('email', email);
+		axiosClient.post('/check-userauth', payload)
+		.then(({data}) => {
+			console.log(data);
+			if(data.data.msn == 1){
+				const createdby = document.getElementById("btnsnby");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+			}
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -500,14 +568,94 @@ export default function CreateRequisition(){
 			}
 		});
 	}
-	const createdbyuser = () => {
+	const snbyuser = () => {
 		const payload = new FormData();
 		payload.append('email', token);
-		payload.append('rmnm', rnmnval);
-		axiosClient.post('/update-userreq', payload)
+		payload.append('rmnm', topid);
+		axiosClient.post('/update-SNuserreq', payload)
 		.then(({data}) => {
 			console.log(data);
-			usercontrol(rnmnval);
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const id = urlParams.get('id');
+			usercontrol(id);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const chckbyuser = () => {
+		const payload = new FormData();
+		payload.append('email', token);
+		payload.append('rmnm', topid);
+		axiosClient.post('/update-Chuserreq', payload)
+		.then(({data}) => {
+			console.log(data);
+			console.log(rnmnval);
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const id = urlParams.get('id');
+			usercontrol(id);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const accpkbyuser = () => {
+		const payload = new FormData();
+		payload.append('email', token);
+		payload.append('rmnm', topid);
+		axiosClient.post('/update-Accuserreq', payload)
+		.then(({data}) => {
+			console.log(data);
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const id = urlParams.get('id');
+			usercontrol(id);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const reviewbyuser = () => {
+		const payload = new FormData();
+		payload.append('email', token);
+		payload.append('rmnm', topid);
+		axiosClient.post('/update-Rvwuserreq', payload)
+		.then(({data}) => {
+			console.log(data);
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const id = urlParams.get('id');
+			usercontrol(id);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const Approvebyuser = () => {
+		const payload = new FormData();
+		payload.append('email', token);
+		payload.append('rmnm', topid);
+		axiosClient.post('/update-Appruserreq', payload)
+		.then(({data}) => {
+			console.log(data);
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const id = urlParams.get('id');
+			usercontrol(id);
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -621,13 +769,13 @@ export default function CreateRequisition(){
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading">MR Creator By: TVN POC</h5>
 							<div id="mrcreatedby">
-							<button className="categbtn" style={{background: "grey"}} id="btncreatedby" onClick={createdbyuser}>Submit</button>
+							<button className="categbtn" style={{background: "grey"}} id="btncreatedby">Submit</button>
 							</div>
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
-							<h6 className="h5heading">S/R Creator By: WH Team (Proj & TVN)</h6>
+							<h6 className="h5heading">S/R Creator By:  WH Team (Proj & TVN)</h6>
 							<div id="sncreatedby">
-							<button className="categbtn" disabled style={{background: "grey"}} id="btnsnby">Submit</button>
+							<button className="categbtn" style={{background: "grey"}} id="btnsnby" onClick={snbyuser}>Submit</button>
 							</div>
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
@@ -640,30 +788,38 @@ export default function CreateRequisition(){
 				<div className="row" style={{marginTop: "100px", marginBottom: "100px"}}>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading">Checked By: TVN PM</h5>
+							<div id="checkbywhole">
 							<div className="row">
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "grey"}}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "red"}}>Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="checkedby" onClick={chckbyuser}>Submit</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="checkedbyrjct">Reject</button></div>
+							</div>
 							</div>
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading">Accepted By: TVN Head</h5>
+							<div id="accptbywhole">
 							<div className="row">
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "grey"}}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "red"}}>Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="accpetedby" onClick={accpkbyuser}>Submit</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="acceptedbyrjct">Reject</button></div>
+							</div>
 							</div>
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading">Review By: Purchaser POC</h5>
+							<div id="rvwbywhole">
 							<div className="row">
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "grey"}}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "red"}}>Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="reviewby" onClick={reviewbyuser}>Submit</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="reviewbyrjct">Reject</button></div>
+							</div>
 							</div>
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading">Approved By: Purchaser PM</h5>
+							<div id="approvebywhole">
 							<div className="row">
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "grey"}}>Submit</button></div>
-								<div className="col-lg-6"><button className="categbtn" disabled style={{background: "red"}}>Reject</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "grey"}} id="approveby" onClick={Approvebyuser}>Submit</button></div>
+								<div className="col-lg-6"><button className="categbtn" style={{background: "red"}} id="approvebyrjct">Reject</button></div>
+							</div>
 							</div>
 					</div>
 				</div>

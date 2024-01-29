@@ -1,73 +1,65 @@
-import {  Col, Row, Stack, Table, } from "react-bootstrap";
-// import { ChevronDown } from "react-bootstrap-icons";
+import { useEffect, useState } from "react";
+import axiosClient from '../../../axios-client';
+import { Link } from 'react-router-dom';
 
 export default function UpdateRequistion() {
-	const COLUMNS = [
-		{ id: "SLNo", headerName: "SLNo" },
-		{ id: "ShipmentNo", headerName: "ShipmentNo" },
-		{ id: "Box_No", headerName: "Box_No" },
-		{ id: "Part Number", headerName: "Part Number" },
-		{ id: "Material Name", headerName: "Material Name" },
-		{ id: "ItemDescription", headerName: "ItemDescription" },
-		{ id: "ManufacturarName", headerName: "ManufacturarName" },
-		{ id: "ItemCategory", headerName: "ItemCategory" },
-		{ id: "ItemType", headerName: "ItemType" },
-		{ id: "SerialNo", headerName: "SerialNo" },
-		{ id: "AssignSite", headerName: "AssignSite" },
-		{ id: "MaterialLocation", headerName: "MaterialLocation" },
-		{ id: "MRStatus ", headerName: "MRStatus " },
-		{ id: "Update Print File", headerName: "Update Print File" },
-		{ id: "Installation done", headerName: "Installation done" },
-	]
-	const REQUISITIONS = [
-		{
-		"SLNo": "-",
-		"ShipmentNo": "-",
-		"Box_No": "-",
-		"Part Number": "-",
-		"Material Name": "-",
-		"ItemDescription": "-",
-		"ManufacturarName": "-",
-		"ItemCategory": "-",
-		"ItemType": "-",
-		"SerialNo": "-",
-		"AssignSite": "-",
-		"MaterialLocation": "-",
-		"MRStatus ": "-",
-		"Update Print File": "-",
-		"Installation done": "-",
-		},
-	]
+	const [rowData, setRowData] = useState(null);
+	useEffect(() => {
+		loadrequistion();
+	}, []);
+	const loadrequistion = () => {
+		axiosClient.get('/get-allreqs')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			setRowData(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
     return (
-        <div>
-          <Row>
-        <Col>
-          <Table bordered>
-            <thead>
-              <tr>
-                {COLUMNS.map((column, idx) => (
-                  <th key={idx} style={{ minWidth: 120 }}>
-                    <Stack direction="horizontal" gap={2}>
-                      {column.headerName}
-
-                      {/* <Button size="sm" variant="link" className="ms-auto"></Button> */}
-                    </Stack>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {REQUISITIONS.map((item, idx) => (
-                <tr key={idx}>
-                  {COLUMNS.map((column, idx) => (
-                    <td key={idx}>{item[column.id]}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
+        <div className="container">
+		{rowData && (
+			<div className="mt-5 mb-3">
+				<table className="shipmenttable">
+				<tr>
+					<th>SL No</th>
+					<th>MR Created By</th>
+					<th>Time And Date</th>
+					<th>Site Name</th>
+					<th>Outbound Date</th>
+					<th>Reciever Company</th>
+					<th>MR Status</th>
+					<th>Insatllation Status</th>
+					<th>Supporting Document</th>
+				</tr>
+				{rowData.map((row, index) => (
+					<tr key={row.id}>
+						<td>{index + 1}</td>
+						<td>{row.created_by}</td>
+						<td>{row.created_at}</td>
+						<td>{row.sitename}</td>
+						<td>{row.outbound}</td>
+						<td>{row.compname}</td>
+						<td><Link to={`/load-requistion?id=${row.rm_number}`} style={{width: "80%", background: "#F26422", border:"1px solid #F26422", color:"#fff"}}>{row.status}</Link></td>
+						{/* {row.status ? (
+							<td>{row.addsl}</td>
+						) : (
+							<td>
+								<button className="categbtn" onClick={() => addsn(row.id)} style={{width: "80%"}}>Add S/N</button>
+							</td>
+						)} */}
+						<td>Not Done</td>
+						<td>Attach File</td>
+					</tr>
+				))}
+				</table>
+			</div>
+		)}
         </div>
     )
 }

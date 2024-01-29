@@ -31,7 +31,7 @@ export default function Login(){
 		.then(({data}) => {
 			document.getElementById("sigin").innerHTML = 'Sign in';
 			setUser(email);
-			setToken("token");
+			setToken(email);
 			console.log(data);
 		})
 		.catch((err) => {

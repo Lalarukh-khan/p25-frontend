@@ -106,7 +106,7 @@ export default function SiteInformation(){
 							<input type="text" id="mnfid" placeholder="Site ID" className="shpinput"/>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
-							<button className="categbtn" id="categbtn" onClick={AddManufecturer}>Add Warehouse</button>
+							<button className="categbtn" id="categbtn" onClick={AddManufecturer}>Add Site</button>
 						</div>
 					</div>
 				</div>

@@ -9,9 +9,9 @@ export default function AddSerial(){
 		loadshipments();
 		loadshipmentvalues(0);
 		loadmanufactures();
-		const uniqueString = Math.random().toString(36).substr(2, 9);
+		const uniqueNumber = Date.now();
 		const today = new Date().toISOString().split('T')[0];
-		document.getElementById("matsid").value = uniqueString;
+		document.getElementById("matsid").value = uniqueNumber;
 		document.getElementById('date').value = today;
 	}, []);
 	const loadshipments = () => {
@@ -108,6 +108,7 @@ export default function AddSerial(){
 			rs3.innerText = slctshipment;
 			rs4.innerText = shpquantity;
 			rs5.innerText = matname.text;
+			document.getElementById("successmsg").display = "block";
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -445,6 +446,7 @@ export default function AddSerial(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddSerial}>Upload</button>
 						</div>
+						<h5 className="h5heading mt-3" id="successmsg" style={{display: "none"}}>Your data has been successfully uploaded!</h5>
 					</div>
 				</div>
 				<div className="col-lg-6 col-md-6 col-sm-12">
