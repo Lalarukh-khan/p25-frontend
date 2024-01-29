@@ -96,10 +96,10 @@ export default function UserLayout() {
 								</NavDropdown>
 							</Nav>
 							<Nav>
-								<Nav.Link onClick={onLogout}>
+								<Nav.Link>
 									<img src="assets/adminpanel/assets/images/navbar/bell.png" className="navlinkbell" />
 								</Nav.Link>
-								<Nav.Link eventKey={2} href="#memes">
+								<Nav.Link  onClick={onLogout}>
 									<img src="assets/adminpanel/assets/images/navbar/user.png"className="navlinkuser" />
 								</Nav.Link>
 							</Nav>
