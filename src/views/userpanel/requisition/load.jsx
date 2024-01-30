@@ -59,12 +59,12 @@ export default function LoadRequisition(){
 			if(jsonData.approvedby !== null){
 				const firin = document.getElementById("approvebywhole");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.approvedby;
+				firin.innerHTML = jsonData.approvedby;
 			}
 			if(jsonData.acceptedby !== null){
 				const firin = document.getElementById("accptbywhole");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.acceptedby;
+				firin.innerHTML = jsonData.acceptedby;
 				const createdby = document.getElementById("reviewby");
 				const createdby2 = document.getElementById("reviewbyrjct");
 				createdby.style.background = "#F26422";
@@ -74,7 +74,7 @@ export default function LoadRequisition(){
 			if(jsonData.reviewby !== null){
 				const firin = document.getElementById("rvwbywhole");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.reviewby;
+				firin.innerHTML = jsonData.reviewby;
 				const createdby = document.getElementById("approveby");
 				const createdby2 = document.getElementById("approvebyrjct");
 				createdby.style.background = "#F26422";
@@ -84,12 +84,12 @@ export default function LoadRequisition(){
 			if(jsonData.mrcreatedby !== null){
 				const firin = document.getElementById("mrcreatedby");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.mrcreatedby;
+				firin.innerHTML = jsonData.mrcreatedby;
 			}
 			if(jsonData.sncreatedby !== null){
 				const firin = document.getElementById("sncreatedby");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.sncreatedby;
+				firin.innerHTML = jsonData.sncreatedby;
 				const createdby = document.getElementById("checkedby");
 				const createdby2 = document.getElementById("checkedbyrjct");
 				createdby.style.background = "#F26422";
@@ -99,7 +99,7 @@ export default function LoadRequisition(){
 			if(jsonData.checkedby !== null){
 				const firin = document.getElementById("checkbywhole");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.checkedby;
+				firin.innerHTML = jsonData.checkedby;
 				const createdby = document.getElementById("accpetedby");
 				const createdby2 = document.getElementById("acceptedbyrjct");
 				createdby.style.background = "#F26422";
@@ -115,8 +115,11 @@ export default function LoadRequisition(){
 		});
 	}
 	const userload = () => {
-		const uniqueNumber = Date.now();
-		document.getElementById("rmnumb").value = uniqueNumber;
+		// const uniqueNumber = Date.now();
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		const id = urlParams.get('id');
+		document.getElementById("rmnumb").value = id;
 		document.getElementById("mruser").value = token;
 		const today = new Date();
 		const formattedDate = today.toISOString().split('T')[0];
@@ -145,20 +148,20 @@ export default function LoadRequisition(){
 			}
 		});
 	}
-	const loadlisiting = (shpid) => {
-		const payload = new FormData();
-		payload.append('shpid', shpid);
-		axiosClient.post('/get-reqbyId', payload)
-		.then(({data}) => {
-			setRowData(data.data);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
+	// const loadlisiting = (shpid) => {
+	// 	const payload = new FormData();
+	// 	payload.append('shpid', shpid);
+	// 	axiosClient.post('/get-reqbyId', payload)
+	// 	.then(({data}) => {
+	// 		setRowData(data.data);
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
 	const getCurrentDateTime = () => {
 		const currentDate = new Date();
 		let hours = currentDate.getHours();
@@ -173,49 +176,49 @@ export default function LoadRequisition(){
 		document.getElementById("todaydate").value = formattedDateTime;
 	}
 	const addrequest = () => {
-		const rmnm = document.getElementById("rmnumb").value;
-		const mruser = document.getElementById("mruser").value;
-		const slctsite = document.getElementById("slctsite").value;
-		const outdate = document.getElementById("outdate").value;
-		const ppperson = document.getElementById("ppperson").value;
-		const ppnumber = document.getElementById("ppnumber").value;
-		const slctcomp = document.getElementById("slctcomp").value;
-		const trpmode = document.getElementById("trpmode").value;
-		const trpnumber = document.getElementById("trpnumber").value;
-		const payload = new FormData();
-		payload.append('rmnm', rmnm);
-		payload.append('mruser', mruser);
-		payload.append('slctsite', slctsite);
-		payload.append('outdate', outdate);
-		payload.append('ppperson', ppperson);
-		payload.append('ppnumber', ppnumber);
-		payload.append('slctcomp', slctcomp);
-		payload.append('trpmode', trpmode);
-		payload.append('trpnumber', trpnumber);
-		if(slctsite == ""){
-			console.log("Nothing to work on")
-		}
-		else{
-			axiosClient.post('/request-requisition', payload)
-			.then(({data}) => {
-				console.log(data);
+		// const rmnm = document.getElementById("rmnumb").value;
+		// const mruser = document.getElementById("mruser").value;
+		// const slctsite = document.getElementById("slctsite").value;
+		// const outdate = document.getElementById("outdate").value;
+		// const ppperson = document.getElementById("ppperson").value;
+		// const ppnumber = document.getElementById("ppnumber").value;
+		// const slctcomp = document.getElementById("slctcomp").value;
+		// const trpmode = document.getElementById("trpmode").value;
+		// const trpnumber = document.getElementById("trpnumber").value;
+		// const payload = new FormData();
+		// payload.append('rmnm', rmnm);
+		// payload.append('mruser', mruser);
+		// payload.append('slctsite', slctsite);
+		// payload.append('outdate', outdate);
+		// payload.append('ppperson', ppperson);
+		// payload.append('ppnumber', ppnumber);
+		// payload.append('slctcomp', slctcomp);
+		// payload.append('trpmode', trpmode);
+		// payload.append('trpnumber', trpnumber);
+		// if(slctsite == ""){
+		// 	console.log("Nothing to work on")
+		// }
+		// else{
+		// 	axiosClient.post('/request-requisition', payload)
+		// 	.then(({data}) => {
+				// console.log(data);
 				OpenToneModal();
-				storeuserrequisition(rmnm);
+				// storeuserrequisition(rmnm);
 				loadwarehouse();
 				loadshipmentvalues(0);
-				usercontrol(rmnm);
-				const createdby = document.getElementById("btncreatedby");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				setRnmnVal(rmnm);
-			})
-			.catch((err) => {
-				const response = err.response;
-				if (response && response.status === 422) {
-					console.log(response.data.message);
-				}
-			});
-		}
+				usercontrol(topid);
+				// const createdby = document.getElementById("btncreatedby");
+				// createdby.style.background = "#F26422";
+				// createdby.disabled = false;
+				setRnmnVal(topid);
+		// 	})
+		// 	.catch((err) => {
+		// 		const response = err.response;
+		// 		if (response && response.status === 422) {
+		// 			console.log(response.data.message);
+		// 		}
+		// 	});
+		// }
 	}
 	const loadwarehouse = () => {
 		axiosClient.get('/get-warehouse')
@@ -416,8 +419,8 @@ export default function LoadRequisition(){
 		.then(({data}) => {
 			console.log(data);
 			TonehandleClose();
-			const shpid = data.data;
-			loadlisiting(shpid.id);
+			// const shpid = data.data;
+			loadlisitingRnmn(rmnm);
 			// setRowData(data.data);
 		})
 		.catch((err) => {
@@ -427,20 +430,20 @@ export default function LoadRequisition(){
 			}
 		});
 	}
-	const storeuserrequisition = (rmnm) =>{
-		const payload = new FormData();
-		payload.append('rmnm', rmnm);
-		axiosClient.post('/add-userreq', payload)
-		.then(({data}) => {
-			console.log(data); 
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
+	// const storeuserrequisition = (rmnm) =>{
+	// 	const payload = new FormData();
+	// 	payload.append('rmnm', rmnm);
+	// 	axiosClient.post('/add-userreq', payload)
+	// 	.then(({data}) => {
+	// 		console.log(data); 
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
 	const addsn = (lsid) => {
 		loadserials();
 		setLsid(lsid);
@@ -459,8 +462,8 @@ export default function LoadRequisition(){
 		payload.append('selectedCheckboxes', selectedCheckboxes);
 		axiosClient.post('/update-lisitingsn', payload)
 		.then(({data}) => {
-			const shpid = data.data;
-			loadlisiting(shpid.id);
+			console.log(data);
+			loadlisitingRnmn(topid);
 			setSerialModal();
 			checkuserrole(token);
 		})
@@ -643,7 +646,7 @@ export default function LoadRequisition(){
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h5 className="h5heading">Site Name</h5>
-							<input type="text" id="site-container" className="shp2input" />
+							<input type="text" id="site-container" className="shp2input"  readOnly/>
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h5 className="h5heading">Destination Address</h5>
@@ -651,29 +654,29 @@ export default function LoadRequisition(){
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h5 className="h5heading">Outbound Date</h5>
-							<input type="text" id="outdate" className="shp2input"/>
+							<input type="text" id="outdate" className="shp2input" readOnly/>
 						</div>
 					</div>
 					<div className="row  mb-3">
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h5 className="h5heading">Pick-up Person</h5>
-							<input type="text" id="ppperson" placeholder="xxxxx" className="shp2input"/>
+							<input type="text" id="ppperson" placeholder="xxxxx" className="shp2input" readOnly/>
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h5 className="h5heading">Pick-up Person Number</h5>
-							<input type="text" id="ppnumber" placeholder="xxxxx" className="shp2input"/>
+							<input type="text" id="ppnumber" placeholder="xxxxx" className="shp2input" readOnly/>
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h5 className="h5heading">Receiver Company</h5>
-							<input type="text" id="company-container" className="shp2input" />
+							<input type="text" id="company-container" className="shp2input" readOnly />
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h5 className="h5heading">Transport Mode</h5>
-							<input type="text" id="trpmode" placeholder="User" className="shp2input"/>
+							<input type="text" id="trpmode" placeholder="User" className="shp2input" readOnly/>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h5 className="h5heading">Transport Number</h5>
-							<input type="text" id="trpnumber" placeholder="User" className="shp2input"/>
+							<input type="text" id="trpnumber" placeholder="User" className="shp2input" readOnly/>
 						</div>
 					</div>
 					<hr />

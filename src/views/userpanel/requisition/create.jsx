@@ -47,12 +47,12 @@ export default function CreateRequisition(){
 			else{
 				const firin = document.getElementById("mrcreatedby");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.mrcreatedby;
+				firin.innerHTML = jsonData.mrcreatedby;
 			}
 			if(jsonData.sncreatedby !== null){
 				const firin = document.getElementById("sncreatedby");
 				firin.innerHTML = "";
-				firin.innerText = jsonData.sncreatedby;
+				firin.innerHTML = jsonData.sncreatedby;
 			}
 			// console.log("rowData:", rowData); // Log rowData to console for debugging
 			// if (rowData !== null) {
@@ -83,10 +83,24 @@ export default function CreateRequisition(){
 		const formattedDate = today.toISOString().split('T')[0];
 		document.getElementById('outdate').min = formattedDate;
 	}
-	const loadlisiting = (shpid) => {
+	// const loadlisiting = (shpid) => {
+	// 	const payload = new FormData();
+	// 	payload.append('shpid', shpid);
+	// 	axiosClient.post('/get-reqbyId', payload)
+	// 	.then(({data}) => {
+	// 		setRowData(data.data);
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
+	const loadlisitingRnmn = (shpid) => {
 		const payload = new FormData();
 		payload.append('shpid', shpid);
-		axiosClient.post('/get-reqbyId', payload)
+		axiosClient.post('/get-reqbyRNMN', payload)
 		.then(({data}) => {
 			setRowData(data.data);
 		})
@@ -193,48 +207,56 @@ export default function CreateRequisition(){
 		});
 	}
 	const addrequest = () => {
-		const rmnm = document.getElementById("rmnumb").value;
-		const mruser = document.getElementById("mruser").value;
-		const slctsite = document.getElementById("slctsite").value;
-		const outdate = document.getElementById("outdate").value;
-		const ppperson = document.getElementById("ppperson").value;
-		const ppnumber = document.getElementById("ppnumber").value;
-		const slctcomp = document.getElementById("slctcomp").value;
-		const trpmode = document.getElementById("trpmode").value;
-		const trpnumber = document.getElementById("trpnumber").value;
-		const payload = new FormData();
-		payload.append('rmnm', rmnm);
-		payload.append('mruser', mruser);
-		payload.append('slctsite', slctsite);
-		payload.append('outdate', outdate);
-		payload.append('ppperson', ppperson);
-		payload.append('ppnumber', ppnumber);
-		payload.append('slctcomp', slctcomp);
-		payload.append('trpmode', trpmode);
-		payload.append('trpnumber', trpnumber);
-		if(slctsite == ""){
-			console.log("Nothing to work on")
+		console.log("JESS"+rnmnval);
+		if(rnmnval == "false"){
+			const rmnm = document.getElementById("rmnumb").value;
+			const mruser = document.getElementById("mruser").value;
+			const slctsite = document.getElementById("slctsite").value;
+			const outdate = document.getElementById("outdate").value;
+			const ppperson = document.getElementById("ppperson").value;
+			const ppnumber = document.getElementById("ppnumber").value;
+			const slctcomp = document.getElementById("slctcomp").value;
+			const trpmode = document.getElementById("trpmode").value;
+			const trpnumber = document.getElementById("trpnumber").value;
+			const payload = new FormData();
+			payload.append('rmnm', rmnm);
+			payload.append('mruser', mruser);
+			payload.append('slctsite', slctsite);
+			payload.append('outdate', outdate);
+			payload.append('ppperson', ppperson);
+			payload.append('ppnumber', ppnumber);
+			payload.append('slctcomp', slctcomp);
+			payload.append('trpmode', trpmode);
+			payload.append('trpnumber', trpnumber);
+			if(slctsite == ""){
+				console.log("Nothing to work on")
+			}
+			else{
+				axiosClient.post('/request-requisition', payload)
+				.then(({data}) => {
+					console.log(data);
+					OpenToneModal();
+					storeuserrequisition(rmnm);
+					loadwarehouse();
+					loadshipmentvalues(0);
+					usercontrol(rmnm);
+					const createdby = document.getElementById("btncreatedby");
+					createdby.style.background = "#F26422";
+					createdby.disabled = false;
+					setRnmnVal(rmnm);
+				})
+				.catch((err) => {
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+				});
+			}
 		}
 		else{
-			axiosClient.post('/request-requisition', payload)
-			.then(({data}) => {
-				console.log(data);
-				OpenToneModal();
-				storeuserrequisition(rmnm);
-				loadwarehouse();
-				loadshipmentvalues(0);
-				usercontrol(rmnm);
-				const createdby = document.getElementById("btncreatedby");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				setRnmnVal(rmnm);
-			})
-			.catch((err) => {
-				const response = err.response;
-				if (response && response.status === 422) {
-					console.log(response.data.message);
-				}
-			});
+			OpenToneModal();
+			loadwarehouse();
+			loadshipmentvalues(0);
 		}
 	}
 	const loadwarehouse = () => {
@@ -436,8 +458,8 @@ export default function CreateRequisition(){
 		.then(({data}) => {
 			console.log(data);
 			TonehandleClose();
-			const shpid = data.data;
-			loadlisiting(shpid.id);
+			// const shpid = data.data;
+			loadlisitingRnmn(rmnm);
 			// setRowData(data.data);
 		})
 		.catch((err) => {
@@ -479,8 +501,10 @@ export default function CreateRequisition(){
 		payload.append('selectedCheckboxes', selectedCheckboxes);
 		axiosClient.post('/update-lisitingsn', payload)
 		.then(({data}) => {
-			const shpid = data.data;
-			loadlisiting(shpid.id);
+			console.log(data);
+			// const shpid = data.data;
+			// loadlisiting(shpid.id);
+			loadlisitingRnmn(rnmnval);
 			setSerialModal();
 		})
 		.catch((err) => {

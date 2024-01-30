@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 export default function AddSerial(){
 	// const [mattype, setMatType] = useState("");
 	const [rowData, setRowData] = useState(null);
+	const [filerowData, setfilerowData] = useState(null);
 	useEffect(() => {
 		loadshipments();
 		loadshipmentvalues(0);
@@ -40,7 +41,7 @@ export default function AddSerial(){
 				});
 				select.addEventListener('change', function() {
 					loadshipmentvalues(this.value);
-					loadSN();
+					// loadSN();
 				});
 				selectContainer.appendChild(select);
 			}
@@ -207,6 +208,10 @@ export default function AddSerial(){
 						optionElement.text = option.materialname;
 						select.appendChild(optionElement);
 					});
+					select.addEventListener('change', function() {
+						// loadshipmentvalues(this.value);
+						loadSN();
+					});
 					selectContainer.appendChild(select);
 				// }
 			}
@@ -246,6 +251,33 @@ export default function AddSerial(){
 		toshow.style.display = "block";
 	}
 	const handleFile = (e) => {
+		// const file = e.target.files[0];
+	
+		// if (file) {
+		// 	const reader = new FileReader();
+	
+		// 	reader.onload = async (event) => {
+		// 		const data = event.target.result;
+		// 		const workbook = XLSX.read(data, { type: 'binary' });
+	
+		// 		// Assuming the first sheet is the target sheet
+		// 		const sheetName = workbook.SheetNames[0];
+		// 		const sheet = workbook.Sheets[sheetName];
+	
+		// 		// Convert sheet data to JSON
+		// 		const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+		// 		const filteredData = jsonData.filter(row => row.length > 0);
+	
+		// 		// Merge the file data with the existing rowData
+		// 		const mergedData = [...rowData || [], ...filteredData.slice(1)];
+
+		// 		sendRows(filteredData.slice(1));
+		// 		// Update the state with the merged data
+		// 		setfilerowData(mergedData);
+		// 	};
+	
+		// 	reader.readAsBinaryString(file);
+		// }
 		const file = e.target.files[0];
 
 		if (file) {
@@ -265,17 +297,19 @@ export default function AddSerial(){
 			// Filter out empty rows
 			const filteredData = jsonData.filter(row => row.length > 0);
 
-			loadSN();
+			// loadSN();
 			// Send each row in a POST request
+			setfilerowData(filteredData);
 			sendRows(filteredData.slice(1));
 		};
 
 		reader.readAsBinaryString(file);
 		}
 	};
+	
 	const UploadSN = () => {
 		const shpsnmnly = document.getElementById("shpsnmnly").value;
-		const slctshipment = document.getElementById("slctshipment").value;
+		const slctshipment = document.getElementById("shpmatname").value;
 		const payload = new FormData();
 		payload.append('shpsnmnly', shpsnmnly);
 		payload.append('slctshipment', slctshipment);
@@ -303,7 +337,7 @@ export default function AddSerial(){
 			const payload = new FormData();
 			payload.append('slctshipment', shipid);
 			payload.append('shpsnmnly', serial);
-			axiosClient.post('/add-sn', payload)
+			axiosClient.post('/add-sn-bulk', payload)
 			.then(({data}) => {
 				console.log(data); 
 			// 	// Function to create and append the <select> element
@@ -318,12 +352,13 @@ export default function AddSerial(){
 		console.log("All Code Uploaded");
 	};
 	const loadSN = () => {
-		const shipid = document.getElementById("slctshipment").value;
+		const shipid = document.getElementById("shpmatname").value;
 		const payload = new FormData();
 		payload.append('slctshipment', shipid);
 		axiosClient.post('/get-sn', payload)
 		.then(({data}) => {
-			console.log(data); 
+			console.log(data);
+			document.getElementById("filetable").style.display = "none"; 
 			setRowData(data.data);
 		})
 		.catch((err) => {
@@ -474,20 +509,21 @@ export default function AddSerial(){
 						<table className="shipmenttable">
 						<tr>
 							<th>SL No</th>
-							<th>Shipment ID</th>
+							<th>Material Component</th>
 							<th>Serial Number</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
 								<td>{index + 1}</td>
-								<td>{row.shipid}</td>
+								<td>{row.materialname}</td>
 								<td>{row.serial}</td>
 							</tr>
 						))}
 						</table>
 					</div>
 				)}
-					{/* {rowData && (
+				<div id="filetable">
+					{filerowData && (
 					<div id="matresult" className="mt-5 mb-3">
 						<table className="shipmenttable">
 						<tr>
@@ -495,7 +531,7 @@ export default function AddSerial(){
 							<th>Shipment ID</th>
 							<th>Serial Number</th>
 						</tr>
-						{rowData.map((row, rowIndex) => (
+						{filerowData.map((row, rowIndex) => (
 						<tr key={rowIndex}>
 							<td>{rowIndex + 1}</td>
 							{row.map((cell, cellIndex) => (
@@ -505,7 +541,8 @@ export default function AddSerial(){
 						))}
 						</table>
 					</div>
-					)} */}
+					)}
+				</div>
 				</div>
 			</div>
 			</div>
