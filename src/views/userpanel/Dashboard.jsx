@@ -2,6 +2,7 @@
 import {useEffect, useState} from "react";
 import React from 'react';
 import axiosClient from "../../axios-client";
+import { Link } from "react-router-dom";
 // import $ from 'jquery';
 import 'react-daterange-picker/dist/css/react-calendar.css';
 // import { Link } from "react-router-dom";
@@ -275,16 +276,22 @@ export default function UserDashboard() {
 
               <div className="row mb-5">
                 <div className="col-lg-4 col-md-4">
+                  <Link to="/update-requisition">
                   <div style={{color: "white",fontSize:"30px", fontWeight:"bold",textAlign:"center",padding: "10px 0px", backgroundColor:"#F26422"}} id="totalcreated"></div>
                   <h5 className="h5heading" style={{textAlign: "center"}}>MR Created</h5>
+                  </Link>
                 </div>
                 <div className="col-lg-4 col-md-4">
+                  <Link to="/update-requisition">
                   <div style={{color: "white",fontSize:"30px", fontWeight:"bold",textAlign:"center",padding: "10px 0px", backgroundColor:"#3F9B49"}} id="approvedby"></div>
                   <h5 className="h5heading" style={{textAlign: "center"}}>MR Approved</h5>
+                  </Link>
                 </div>
                 <div className="col-lg-4 col-md-4">
+                  <Link to="/update-requisition">
                   <div style={{color: "white",fontSize:"30px", fontWeight:"bold",textAlign:"center",padding: "10px 0px", backgroundColor:"#C60000"}} id="pendingby"></div>
                   <h5 className="h5heading" style={{textAlign: "center"}}>MR Pending</h5>
+                  </Link>
                 </div>
               </div>
               <Card.Title className="mb-4" style={{color: "black", textAlign: "center", fontWeight: "bold", fontSize: "25px"}}>Material Delivery Status</Card.Title>
