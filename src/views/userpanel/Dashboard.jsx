@@ -36,24 +36,24 @@ export default function UserDashboard() {
 			document.getElementById("totalcreated").innerText = data.totalRows; 
 			document.getElementById("approvedby").innerText = data.approvedRows;
 			document.getElementById("pendingby").innerText = data.notApprovedRows;
-      document.getElementById("prchase1").innerText = 200;
-      document.getElementById("warehs1").innerText = 90;
-      document.getElementById("addqty1").innerText = 60;
-      document.getElementById("prchase2").innerText = 200;
-      document.getElementById("warehs2").innerText = 90;
-      document.getElementById("addqty2").innerText = 55;
-      document.getElementById("prchase3").innerText = 600;
-      document.getElementById("warehs3").innerText = 340;
-      document.getElementById("addqty3").innerText = 300;
-      document.getElementById("prchase6").innerText = 600; 
-      document.getElementById("warehs6").innerText = 340;
-      document.getElementById("addqty6").innerText = 22;
-      document.getElementById("prchase7").innerText = 350;
-      document.getElementById("warehs7").innerText = 280;
-      document.getElementById("addqty7").innerText = 185;
-      document.getElementById("prchase8").innerText = 550;
-      document.getElementById("warehs8").innerText = 100;
-      document.getElementById("addqty8").innerText = 29;
+      // document.getElementById("prchase1").innerText = 200;
+      // document.getElementById("warehs1").innerText = 90;
+      // document.getElementById("addqty1").innerText = 60;
+      // document.getElementById("prchase2").innerText = 200;
+      // document.getElementById("warehs2").innerText = 90;
+      // document.getElementById("addqty2").innerText = 55;
+      // document.getElementById("prchase3").innerText = 600;
+      // document.getElementById("warehs3").innerText = 340;
+      // document.getElementById("addqty3").innerText = 300;
+      // document.getElementById("prchase6").innerText = 600; 
+      // document.getElementById("warehs6").innerText = 340;
+      // document.getElementById("addqty6").innerText = 22;
+      // document.getElementById("prchase7").innerText = 350;
+      // document.getElementById("warehs7").innerText = 280;
+      // document.getElementById("addqty7").innerText = 185;
+      // document.getElementById("prchase8").innerText = 550;
+      // document.getElementById("warehs8").innerText = 100;
+      // document.getElementById("addqty8").innerText = 29;
 		})
 		.catch((err) => {
 			const response = err.response; 
@@ -65,21 +65,45 @@ export default function UserDashboard() {
   const handleSubcategoryChange = (selectedValue, catid) => {
     const payload = new FormData();
 		payload.append('selectedValue', selectedValue);
-		axiosClient.post('/getquantities', payload)
+		axiosClient.post('/getpuchaseqty', payload)
 		.then(({data}) => {
       console.log(data);
       const jsonData = data.data[0];
 			document.getElementById("prchase"+catid).innerText = jsonData.quantity;
-			document.getElementById("warehs"+catid).innerText = jsonData.receivedqty;
-			document.getElementById("addqty"+catid).innerText = jsonData.addqty;
 		})
 		.catch((err) => {
+			document.getElementById("prchase"+catid).innerText = "0";
 			const response = err.response;
 			if (response && response.status === 422) {
 				console.log(response.data.message);
 			}
 		});
-    
+		axiosClient.post('/getwarehouseqty', payload)
+		.then(({data}) => {
+      console.log(data);
+      const jsonData = data.data[0];
+      document.getElementById("warehs"+catid).innerText = jsonData.receivedqty;
+		})
+		.catch((err) => {
+			document.getElementById("warehs"+catid).innerText = "0";
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+		axiosClient.post('/getsiteqty', payload)
+		.then(({data}) => {
+      console.log(data);
+      const jsonData = data.data[0];
+      document.getElementById("addqty"+catid).innerText = jsonData.addqty;
+		})
+		.catch((err) => {
+      document.getElementById("addqty"+catid).innerText = "0";
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
   }
     return (
         <div>
@@ -141,6 +165,7 @@ export default function UserDashboard() {
             {category.subcategories && category.subcategories.length > 0 ? (
               <td>
                 <select className="shpinput" onChange={(event) => handleSubcategoryChange(event.target.value, category.category_id)}>
+                  <option value=""> </option>
                   {category.subcategories.map((subcategory, subIndex) => (
                     <option key={subIndex} value={subcategory.id}>
                       {subcategory.name}
@@ -152,13 +177,13 @@ export default function UserDashboard() {
               <td></td>
           )}
             <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"prchase"+category.category_id}>
-              100
+              0
             </td>
             <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"warehs"+category.category_id}>
-              50
+              0
             </td>
             <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"addqty"+category.category_id}>
-              10
+              0
             </td>
           </tr>
         </React.Fragment>

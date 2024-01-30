@@ -79,8 +79,8 @@ export default function UserLayout() {
 								<NavDropdown title="Material" className="navlinkleft" id="collapsible-nav-dropdown">
 									<Link to="/material-category" className="dropdown-item">Add Material Category</Link>
 									<Link to="/add-material" className="dropdown-item">Add Material</Link>
-									<Link to="/add-serial" className="dropdown-item">Add Material S/N</Link>
 									<Link to="/add-shipment" className="dropdown-item">Shipment Information</Link>
+									<Link to="/add-serial" className="dropdown-item">Add Material S/N</Link>
 									<Link to="/manufacture-information" className="dropdown-item">Manufacture Information</Link>
 									<Link to="/warehouse-information" className="dropdown-item">Warehouse Information</Link>
 									<Link to="/site-information" className="dropdown-item">Site Information</Link>
