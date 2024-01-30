@@ -608,7 +608,7 @@ export default function CreateRequisition(){
 									</td>
 								)}
 								<td>{row.unit}</td>
-								<td>{row.quantity}</td>
+								<td>{row.addqty}</td>
 								<td></td>
 							</tr>
 						))}

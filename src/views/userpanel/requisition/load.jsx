@@ -34,8 +34,6 @@ export default function LoadRequisition(){
 	useEffect(() => {
 		userload();
 		getCurrentDateTime();
-		loadsites();
-		loadcompanies();
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 		const id = urlParams.get('id');
@@ -129,6 +127,15 @@ export default function LoadRequisition(){
 		payload.append('shpid', shpid);
 		axiosClient.post('/get-reqbyRNMN', payload)
 		.then(({data}) => {
+			const jsonData = data.data[0];
+			document.getElementById("site-container").value = jsonData.sitename;
+			document.getElementById("company-container").value = jsonData.compname;
+			document.getElementById("destaddress").value = jsonData.sitelocation;
+			document.getElementById("outdate").value = jsonData.outbound;
+			document.getElementById("ppperson").value = jsonData.ppperson;
+			document.getElementById("ppnumber").value = jsonData.ppnumber;
+			document.getElementById("trpmode").value = jsonData.trsmode;
+			document.getElementById("trpnumber").value = jsonData.trsnumber;
 			setRowData(data.data);
 		})
 		.catch((err) => {
@@ -164,88 +171,6 @@ export default function LoadRequisition(){
 		const year = currentDate.getFullYear();
 		const formattedDateTime = `${hours}:${formattedMinutes} ${ampm} ${day} ${month} ${year}`;
 		document.getElementById("todaydate").value = formattedDateTime;
-	}
-	const loadsites = () => {
-		axiosClient.get('/get-site')
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			function createSelect(options) {
-				const selectContainer = document.getElementById('site-container');
-				selectContainer.innerHTML = "";
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `slctsite`;
-					const optionElement = document.createElement('option');
-					optionElement.text = "";
-					select.appendChild(optionElement);
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.sitename; 
-						select.appendChild(optionElement);
-					});
-					select.addEventListener('change', function() {
-						loadaddressbyId(this.value);
-					});
-					selectContainer.appendChild(select);
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
-	const loadaddressbyId = (siteid) => {
-		const payload = new FormData();
-		payload.append('siteid', siteid);
-		axiosClient.post('/get-siteaddressbyId', payload)
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data[0];
-			document.getElementById("destaddress").value = jsonData.sitelocation;
-		})
-		.catch((err) => {
-			document.getElementById("destaddress").value = "";
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
-	const loadcompanies = () => {
-		axiosClient.get('/get-company')
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			function createSelect(options) {
-				const selectContainer = document.getElementById('company-container');
-				selectContainer.innerHTML = "";
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `slctcomp`;
-					const optionElement = document.createElement('option');
-					optionElement.text = "";
-					select.appendChild(optionElement);
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.compname; 
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
 	}
 	const addrequest = () => {
 		const rmnm = document.getElementById("rmnumb").value;
@@ -718,7 +643,7 @@ export default function LoadRequisition(){
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h5 className="h5heading">Site Name</h5>
-							<div id="site-container"></div>
+							<input type="text" id="site-container" className="shp2input" />
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h5 className="h5heading">Destination Address</h5>
@@ -726,7 +651,7 @@ export default function LoadRequisition(){
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h5 className="h5heading">Outbound Date</h5>
-							<input type="date" id="outdate" className="shp2input"/>
+							<input type="text" id="outdate" className="shp2input"/>
 						</div>
 					</div>
 					<div className="row  mb-3">
@@ -740,7 +665,7 @@ export default function LoadRequisition(){
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h5 className="h5heading">Receiver Company</h5>
-							<div id="company-container"></div>
+							<input type="text" id="company-container" className="shp2input" />
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<h5 className="h5heading">Transport Mode</h5>
@@ -781,7 +706,7 @@ export default function LoadRequisition(){
 									</td>
 								)}
 								<td>{row.unit}</td>
-								<td>{row.quantity}</td>
+								<td>{row.addqty}</td>
 								<td></td>
 							</tr>
 						))}
