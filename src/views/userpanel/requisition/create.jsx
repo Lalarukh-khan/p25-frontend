@@ -451,6 +451,7 @@ export default function CreateRequisition(){
 			function slctshptype(options) {
 				const selectContainer = document.getElementById('slctshptype');
 				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
 					const select = document.createElement('select');
 					select.className = `shp2input`;
 					select.id = `shptype`;
@@ -459,10 +460,13 @@ export default function CreateRequisition(){
 					select.appendChild(optionElement);
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slcttype;
-						optionElement.text = option.typename;
-						select.appendChild(optionElement);
+						if (!uniqueValues.has(option.slcttype)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slcttype;
+							optionElement.text = option.typename;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slcttype);
+						}
 					});
 					selectContainer.appendChild(select);
 			}
@@ -547,6 +551,21 @@ export default function CreateRequisition(){
 			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
 			document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
 			document.getElementById("shounit").value = jsonData[0].materialunit;
+			const rmval = document.getElementById("shpremainingqty");
+			const number1 = parseFloat(jsonData[0].receivedqty);
+			const number2 = parseFloat(jsonData[0].total_sn);
+			if(number2 <= number1){
+				if (!isNaN(number1) && !isNaN(number2)) {
+					const result = number1 - number2;
+					if(number2 == 0){
+						rmval.value = "";
+					}
+					else{
+						rmval.value = result;
+					}
+					
+				}
+			}
 			
 		})
 		.catch((err) => {
@@ -557,28 +576,28 @@ export default function CreateRequisition(){
 		});
 
 	}
-	const calcaddq = () => {
-		const input1Value = document.getElementById('shpreceived').value;
-		const input2Value = document.getElementById('shpupdatedqty').value;
-		const resultValue = document.getElementById('shpremainingqty');
-		const number1 = parseFloat(input1Value);
-		const number2 = parseFloat(input2Value);
-		if(number2 <= number1){
-			if (!isNaN(number1) && !isNaN(number2)) {
-				const result = number1 - number2;
-				resultValue.value = result;
-			}
-		}
-		else{
-			document.getElementById('shpupdatedqty').value = number1;
-		}
-	}
+	// const calcaddq = () => {
+	// 	const input1Value = document.getElementById('shpreceived').value;
+	// 	const input2Value = document.getElementById('shpupdatedqty').value;
+	// 	const resultValue = document.getElementById('shpremainingqty');
+	// 	const number1 = parseFloat(input1Value);
+	// 	const number2 = parseFloat(input2Value);
+	// 	if(number2 <= number1){
+	// 		if (!isNaN(number1) && !isNaN(number2)) {
+	// 			const result = number1 - number2;
+	// 			resultValue.value = result;
+	// 		}
+	// 	}
+	// 	else{
+	// 		document.getElementById('shpupdatedqty').value = number1;
+	// 	}
+	// }
 	const addwhreq = () => {
 		const rmnm = document.getElementById("rmnumb").value;
 		const slctwrhs = document.getElementById("slctwrhs").value;
 		const packingno = document.getElementById("packingno").value;
 		const shpcat = document.getElementById("shpcat").value;
-		const slctshpsubcat = document.getElementById("slctshpsubcat").value;
+		const slctshpsubcat = document.getElementById("slctsubcateg").value;
 		const shptype = document.getElementById("shptype").value;
 		const shpmatname = document.getElementById("shpmatname").value;
 		const shppurchase = document.getElementById("shppurchase").value;
@@ -953,7 +972,7 @@ export default function CreateRequisition(){
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h6 className="h5heading">Add Quantity</h6>
-							<input type="text" id="shpupdatedqty" className="shp2input" onInput={calcaddq}/>
+							<input type="text" id="shpupdatedqty" className="shp2input" readOnly/>
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h6 className="h5heading">Remaining  Quantity</h6>

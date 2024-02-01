@@ -43,6 +43,14 @@ export default function UserInformation(){
 		.then(({data}) => {
 			console.log(data);
 			document.getElementById("matconfirm").style.display = "block";
+			document.getElementById("fullname").value = "";
+			document.getElementById("email").value = "";
+			document.getElementById("role").value = "";
+			document.getElementById("username").value = "";
+			document.getElementById("password").value = "";
+			document.getElementById("mobile").value = "";
+			document.getElementById("emergency").value = "";
+			document.getElementById("address").value = "";
 			loadshipments();
 		})
 		.catch((err) => {

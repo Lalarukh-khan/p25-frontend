@@ -70,6 +70,9 @@ export default function WarehouseInformation(){
 		.then(({data}) => {
 			console.log(data);
 			document.getElementById("matconfirm").style.display = "block";
+			document.getElementById("mnfid").value = "";
+			document.getElementById("mnfname").value = "";
+			document.getElementById("mnflocation").value = "";
 			loadshipments();
 			// document.getElementById("categresult").style.display = "block";
 		})

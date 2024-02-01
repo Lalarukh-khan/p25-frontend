@@ -3,15 +3,23 @@ import axiosClient from '../../../axios-client';
 import { useStateContext } from "../../contexts/ContextProvider";
 import { Modal } from 'react-bootstrap';
 
-export default function LoadRequisition(){
+export default function RecreateRequisition(){
 	const [serialModal, setSerialModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
+	const [toneModal, setToneModal] = useState(false);
 	const [lssid, setLsid] = useState("false");
+	const [listid, setlistid] = useState(null);
 	const [rowData, setRowData] = useState(null);
 	const [topid, setTopid] = useState(null);
 	const [serialData, setSerialData] = useState(null);
 	const SerialhandleClose = () =>{
 		setSerialModal(false);
+	}
+	const OpenToneModal = () =>{
+		setToneModal(true);
+	}
+	const TonehandleClose = () =>{
+		setToneModal(false);
 	}
 	const OpenSerialModal = () =>{
 		setSerialModal(true);
@@ -141,20 +149,6 @@ export default function LoadRequisition(){
 			}
 		});
 	}
-	// const loadlisiting = (shpid) => {
-	// 	const payload = new FormData();
-	// 	payload.append('shpid', shpid);
-	// 	axiosClient.post('/get-reqbyId', payload)
-	// 	.then(({data}) => {
-	// 		setRowData(data.data);
-	// 	})
-	// 	.catch((err) => {
-	// 		const response = err.response;
-	// 		if (response && response.status === 422) {
-	// 			console.log(response.data.message);
-	// 		}
-	// 	});
-	// }
 	const getCurrentDateTime = () => {
 		const currentDate = new Date();
 		let hours = currentDate.getHours();
@@ -168,196 +162,6 @@ export default function LoadRequisition(){
 		const formattedDateTime = `${hours}:${formattedMinutes} ${ampm} ${day} ${month} ${year}`;
 		document.getElementById("todaydate").value = formattedDateTime;
 	}
-	// const loadshipmentvalues = (shpid) => {
-	// 	const payload = new FormData();
-	// 	payload.append('shpid', shpid);
-	// 	axiosClient.post('/get-shipmentvaluesbyWH', payload) 
-	// 	.then(({data}) => {
-	// 		console.log(data); 
-	// 		const jsonData = data.data;
-	// 		function slctpackingno(options) {
-	// 			const selectContainer = document.getElementById('slctpackingno');
-	// 			selectContainer.innerHTML = "";
-	// 			// if (selectContainer.innerHTML.trim() === '') {
-	// 				const select = document.createElement('select');
-	// 				select.className = `shp2input`;
-	// 				select.id = `packingno`;
-	// 				// Loop through the options and create <option> elements
-	// 				options.forEach(option => {
-	// 					const optionElement = document.createElement('option');
-	// 					optionElement.value = option.packingno;
-	// 					optionElement.text = option.packingno;
-	// 					select.appendChild(optionElement);
-	// 				});
-	// 				selectContainer.appendChild(select);
-	// 			// }
-	// 		}
-	// 		function slctshpcat(options) {
-	// 			const selectContainer = document.getElementById('slctshpcat');
-	// 			selectContainer.innerHTML = "";
-	// 			// if (selectContainer.innerHTML.trim() === '') {
-	// 				const select = document.createElement('select');
-	// 				select.className = `shp2input`;
-	// 				select.id = `shpcat`;
-	// 				// Loop through the options and create <option> elements
-	// 				options.forEach(option => {
-	// 					const optionElement = document.createElement('option');
-	// 					optionElement.value = option.slctcateg;
-	// 					optionElement.text = option.categoryname;
-	// 					select.appendChild(optionElement);
-	// 				});
-	// 				selectContainer.appendChild(select);
-	// 			// }
-	// 		}
-	// 		function slctshpsubcat(options) {
-	// 			const selectContainer = document.getElementById('slctshpsubcat');
-	// 			selectContainer.innerHTML = "";
-	// 			// if (selectContainer.innerHTML.trim() === '') {
-	// 				const select = document.createElement('select');
-	// 				select.className = `shp2input`;
-	// 				select.id = `shpsubcat`;
-	// 				// Loop through the options and create <option> elements
-	// 				options.forEach(option => {
-	// 					const optionElement = document.createElement('option');
-	// 					optionElement.value = option.slctsubcateg;
-	// 					optionElement.text = option.subcategoryname;
-	// 					select.appendChild(optionElement);
-	// 				});
-	// 				selectContainer.appendChild(select);
-	// 			// }
-	// 		}
-	// 		function slctshptype(options) {
-	// 			const selectContainer = document.getElementById('slctshptype');
-	// 			selectContainer.innerHTML = "";
-	// 			// if (selectContainer.innerHTML.trim() === '') {
-	// 				const select = document.createElement('select');
-	// 				select.className = `shp2input`;
-	// 				select.id = `shptype`;
-	// 				// Loop through the options and create <option> elements
-	// 				options.forEach(option => {
-	// 					const optionElement = document.createElement('option');
-	// 					optionElement.value = option.slcttype;
-	// 					optionElement.text = option.typename;
-	// 					select.appendChild(optionElement);
-	// 				});
-	// 				selectContainer.appendChild(select);
-	// 			// }
-	// 		}
-	// 		function slctshpmatname(options) {
-	// 			const selectContainer = document.getElementById('slctshpmatname');
-	// 			selectContainer.innerHTML = "";
-	// 			// if (selectContainer.innerHTML.trim() === '') {
-	// 				const select = document.createElement('select');
-	// 				select.className = `shp2input`;
-	// 				select.id = `shpmatname`;
-	// 				// Loop through the options and create <option> elements
-	// 				options.forEach(option => {
-	// 					const optionElement = document.createElement('option');
-	// 					optionElement.value = option.slctmat;
-	// 					optionElement.text = option.materialname;
-	// 					select.appendChild(optionElement);
-	// 				});
-	// 				selectContainer.appendChild(select);
-	// 			// }
-	// 		}
-	// 		slctpackingno(jsonData);
-	// 		slctshpcat(jsonData);
-	// 		slctshpsubcat(jsonData);
-	// 		slctshptype(jsonData);
-	// 		slctshpmatname(jsonData);
-	// 		// document.getElementById("packingno").value = jsonData.packingno;
-	// 		// document.getElementById("shpcat").value = jsonData.categoryname;
-	// 		// document.getElementById("shpsubcat").value = jsonData.subcategoryname;
-	// 		// document.getElementById("shptype").value = jsonData.typename;
-	// 		document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
-	// 		document.getElementById("shppurchase").value = jsonData[0].quantity;
-	// 		document.getElementById("shpreceived").value = jsonData[0].receivedqty;
-	// 		document.getElementById("shpremaining").value = jsonData[0].remainingqty;
-	// 		document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
-	// 		document.getElementById("shounit").value = jsonData[0].materialunit;
-	// 	})
-	// 	.catch((err) => {
-	// 		const response = err.response;
-	// 		// const quantity = document.getElementById("quantity");
-	// 		// quantity.value = "";
-	// 		if (response && response.status === 422) {
-	// 			console.log(response.data.message);
-	// 		}
-	// 	});
-	// }
-	// const calcaddq = () => {
-	// 	const input1Value = document.getElementById('shpreceived').value;
-	// 	const input2Value = document.getElementById('shpupdatedqty').value;
-	// 	const resultValue = document.getElementById('shpremainingqty');
-	// 	const number1 = parseFloat(input1Value);
-	// 	const number2 = parseFloat(input2Value);
-	// 	if(number2 <= number1){
-	// 		if (!isNaN(number1) && !isNaN(number2)) {
-	// 			const result = number1 - number2;
-	// 			resultValue.value = result;
-	// 		}
-	// 	}
-	// 	else{
-	// 		document.getElementById('shpupdatedqty').value = number1;
-	// 	}
-	// }
-	// const addwhreq = () => {
-	// 	const rmnm = document.getElementById("rmnumb").value;
-	// 	const slctwrhs = document.getElementById("slctwrhs").value;
-	// 	const packingno = document.getElementById("packingno").value;
-	// 	const shpcat = document.getElementById("shpcat").value;
-	// 	const slctshpsubcat = document.getElementById("shpsubcat").value;
-	// 	const shptype = document.getElementById("shptype").value;
-	// 	const shpmatname = document.getElementById("shpmatname").value;
-	// 	const shppurchase = document.getElementById("shppurchase").value;
-	// 	const shpreceived = document.getElementById("shpreceived").value;
-	// 	const shpremaining = document.getElementById("shpremaining").value;
-	// 	const shounit = document.getElementById("shounit").value;
-	// 	const shpupdatedqty = document.getElementById("shpupdatedqty").value;
-	// 	const shpremainingqty = document.getElementById("shpremainingqty").value;
-	// 	const payload = new FormData();
-	// 	payload.append('rmnm', rmnm);
-	// 	payload.append('slctwrhs', slctwrhs);
-	// 	payload.append('packingno', packingno);
-	// 	payload.append('shpcat', shpcat);
-	// 	payload.append('slctshpsubcat', slctshpsubcat);
-	// 	payload.append('shptype', shptype);
-	// 	payload.append('shpmatname', shpmatname);
-	// 	payload.append('shppurchase', shppurchase);
-	// 	payload.append('shpreceived', shpreceived);
-	// 	payload.append('shpremaining', shpremaining);
-	// 	payload.append('shounit', shounit);
-	// 	payload.append('shpupdatedqty', shpupdatedqty);
-	// 	payload.append('shpremainingqty', shpremainingqty);
-	// 	axiosClient.post('/add-requisitionlisiting', payload)
-	// 	.then(({data}) => {
-	// 		console.log(data);
-	// 		TonehandleClose();
-	// 		// const shpid = data.data;
-	// 		loadlisitingRnmn(rmnm);
-	// 		// setRowData(data.data);
-	// 	})
-	// 	.catch((err) => {
-	// 		const response = err.response;
-	// 		if (response && response.status === 422) {
-	// 			console.log(response.data.message);
-	// 		}
-	// 	});
-	// }
-	// const storeuserrequisition = (rmnm) =>{
-	// 	const payload = new FormData();
-	// 	payload.append('rmnm', rmnm);
-	// 	axiosClient.post('/add-userreq', payload)
-	// 	.then(({data}) => {
-	// 		console.log(data); 
-	// 	})
-	// 	.catch((err) => {
-	// 		const response = err.response;
-	// 		if (response && response.status === 422) {
-	// 			console.log(response.data.message);
-	// 		}
-	// 	});
-	// }
 	const addsn = (lsid, matid) => {
 		loadserials(matid);
 		setLsid(lsid);
@@ -420,6 +224,257 @@ export default function LoadRequisition(){
 			}
 		});
 	}
+	const loadwarehouse = () => {
+		axiosClient.get('/get-warehouse')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data; 
+			function createSelect(options) {
+				const selectContainer = document.getElementById('warehouse-container');
+				selectContainer.innerHTML = "";
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctwrhs`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.wrhidname; 
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadpackingno(this.value);
+					});
+					selectContainer.appendChild(select);
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadpackingno = (shpid) => {
+		const payload = new FormData();
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-packingvaluesbyWH', payload) 
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function slctpackingno(options) {
+				const selectContainer = document.getElementById('slctpackingno');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `packingno`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option;
+						optionElement.text = option;
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadvaluesbypacking(this.value);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			slctpackingno(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			// const quantity = document.getElementById("quantity");
+			// quantity.value = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadvaluesbypacking = (packid) => {
+		const payload = new FormData();
+		payload.append('packid', packid);
+		axiosClient.post('/get-valuesbypack', payload) 
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function slctshpcat(options) {
+				const selectContainer = document.getElementById('slctshpcat');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shpcat`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slctcateg)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slctcateg;
+							optionElement.text = option.categoryname;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slctcateg);
+						}
+					});
+					select.addEventListener('change', function() {
+						loadsubcategories(this.value);
+					});
+					selectContainer.appendChild(select);
+			}
+			function slctshptype(options) {
+				const selectContainer = document.getElementById('slctshptype');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shptype`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slcttype)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slcttype;
+							optionElement.text = option.typename;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slcttype);
+						}
+					});
+					selectContainer.appendChild(select);
+			}
+			function slctshpmatname(options) {
+				const selectContainer = document.getElementById('slctshpmatname');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shpmatname`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slctmat;
+						optionElement.text = option.materialname;
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadmatvalues(this.value);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			slctshptype(jsonData);
+			slctshpcat(jsonData);
+			slctshpmatname(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			// const quantity = document.getElementById("quantity");
+			// quantity.value = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadsubcategories = (categid) => {
+		const payload = new FormData();
+		payload.append('categid', categid);
+		axiosClient.post('/get-subcategory', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const selectContainer = document.getElementById('slctshpsubcat');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctsubcateg`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.name;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadmatvalues = (matid) => {
+		const payload = new FormData();
+		payload.append('matid', matid);
+		axiosClient.post('/get-matvalbypack', payload)
+		.then(({data}) => {
+			const jsonData = data.data;
+			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			document.getElementById("shppurchase").value = jsonData[0].quantity;
+			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
+			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
+			document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
+			document.getElementById("shounit").value = jsonData[0].materialunit;
+			const rmval = document.getElementById("shpremainingqty");
+			const number1 = parseFloat(jsonData[0].receivedqty);
+			const number2 = parseFloat(jsonData[0].total_sn);
+			if(number2 <= number1){
+				if (!isNaN(number1) && !isNaN(number2)) {
+					const result = number1 - number2;
+					if(number2 == 0){
+						rmval.value = "";
+					}
+					else{
+						rmval.value = result;
+					}
+					
+				}
+			}
+			
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+
+	}
+	// const calcaddq = () => {
+	// 	const input1Value = document.getElementById('shpreceived').value;
+	// 	const input2Value = document.getElementById('shpupdatedqty').value;
+	// 	const resultValue = document.getElementById('shpremainingqty');
+	// 	const number1 = parseFloat(input1Value);
+	// 	const number2 = parseFloat(input2Value);
+	// 	if(number2 <= number1){
+	// 		if (!isNaN(number1) && !isNaN(number2)) {
+	// 			const result = number1 - number2;
+	// 			resultValue.value = result;
+	// 		}
+	// 	}
+	// 	else{
+	// 		document.getElementById('shpupdatedqty').value = number1;
+	// 	}
+	// }
 	const loadserials = (matid) => {
 		const payload = new FormData();
 		payload.append('matid', matid);
@@ -568,6 +623,66 @@ export default function LoadRequisition(){
 			}       
 		}
 	}
+	const updatereqlist = (reqlid) => {
+		setlistid(reqlid);
+		OpenToneModal();
+		loadwarehouse();
+	}
+	const updatewhreq = () => {
+			const slctwrhs = document.getElementById("slctwrhs").value;
+			const packingno = document.getElementById("packingno").value;
+			const shpcat = document.getElementById("shpcat").value;
+			const slctshpsubcat = document.getElementById("slctsubcateg").value;
+			const shptype = document.getElementById("shptype").value;
+			const shpmatname = document.getElementById("shpmatname").value;
+			const shppurchase = document.getElementById("shppurchase").value;
+			const shpreceived = document.getElementById("shpreceived").value;
+			const shpremaining = document.getElementById("shpremaining").value;
+			const shounit = document.getElementById("shounit").value;
+			const shpupdatedqty = document.getElementById("shpupdatedqty").value;
+			const shpremainingqty = document.getElementById("shpremainingqty").value;
+			const payload = new FormData();
+			payload.append('listid', listid);
+			payload.append('slctwrhs', slctwrhs);
+			payload.append('packingno', packingno);
+			payload.append('shpcat', shpcat);
+			payload.append('slctshpsubcat', slctshpsubcat);
+			payload.append('shptype', shptype);
+			payload.append('shpmatname', shpmatname);
+			payload.append('shppurchase', shppurchase);
+			payload.append('shpreceived', shpreceived);
+			payload.append('shpremaining', shpremaining);
+			payload.append('shounit', shounit);
+			payload.append('shpupdatedqty', shpupdatedqty);
+			payload.append('shpremainingqty', shpremainingqty);
+			axiosClient.post('/update-requisitionlisiting', payload)
+			.then(({data}) => {
+				console.log(data);
+				TonehandleClose();
+				loadlisitingRnmn(topid);
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status === 422) {
+					console.log(response.data.message);
+				}
+			});
+	}
+	const updaterequest = () => {
+		const payload = new FormData();
+		payload.append('topid', topid);
+		axiosClient.post('/update-requisitionwhole', payload)
+			.then(({data}) => {
+				console.log(data);
+				window.location.href = "/update-requisition";
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status === 422) {
+					console.log(response.data.message);
+				}
+			});
+	}
 	return (
 		<>
 		<div className="container">
@@ -641,6 +756,7 @@ export default function LoadRequisition(){
 							<th>Unit</th>
 							<th>Quantity</th>
 							<th>Remark</th>
+							<th>Update</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
@@ -650,7 +766,7 @@ export default function LoadRequisition(){
 								<td>{row.materialdesc}</td>
 								<td>{row.typename}</td>
 								{row.addsl ? (
-									<td dangerouslySetInnerHTML={{ __html: row.addsl }}></td>
+									<td>{row.addsl}</td>
 								) : (
 									<td>
 										<button className="categbtn" onClick={() => addsn(row.id, row.matid)} style={{width: "80%"}}>Add S/N</button>
@@ -659,11 +775,17 @@ export default function LoadRequisition(){
 								<td>{row.unit}</td>
 								<td>{row.addqty}</td>
 								<td></td>
+								<td><button className="categbtn" onClick={() => updatereqlist(row.id)} style={{width: "80%"}}>Update</button></td>
 							</tr>
 						))}
 						</table>
 					</div>
 				)}
+				<div className="row">
+					<div className="col-lg-2 col-md-2 col-sm-12">
+						<button className="categbtn" onClick={updaterequest}>Send Material Request</button>
+					</div>
+				</div>
 				<div className="row" style={{marginTop: "100px"}}>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading">MR Creator By: TVN POC</h5>
@@ -752,6 +874,102 @@ export default function LoadRequisition(){
 							<h5 className="h6heading">Track No: ________________________</h5>
 					</div>
 				</div>
+			<Modal show={toneModal} centered onHide={TonehandleClose} data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true" className="modal-lg">
+				<Modal.Header>
+					<button id="closemodal" type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
+						onClick={TonehandleClose}
+					></button>
+				</Modal.Header>
+				<Modal.Body>
+				
+				<div className="row  mb-3">
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Warehouse</h6>
+							<div id="warehouse-container"></div>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Packing/Box No.</h6>
+							<div id="slctpackingno" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Category</h6>
+							<div id="slctshpcat" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Sub Category</h6>
+							<div id="slctshpsubcat" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Type</h6>
+							<div id="slctshptype" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Component</h6>
+							<div id="slctshpmatname" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Purchased Quantity</h6>
+							<input type="text" id="shppurchase" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Received Quantity</h6>
+							<input type="text" id="shpreceived" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Remaining Quantity</h6>
+							<input type="text" id="shpremaining" className="shp2input" readOnly/>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Description</h6>
+							<textarea id="shpmatdescription" rows="10" className="shp2input" readOnly></textarea>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Unit</h6>
+							<input type="text" id="shounit" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Add Quantity</h6>
+							<input type="text" id="shpupdatedqty" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Remaining  Quantity</h6>
+							<input type="text" id="shpremainingqty" className="shp2input" readOnly/>
+						</div>
+					</div>
+					<div className="row mt-5">
+						<div className="col-lg-2 col-md-2 col-sm-12">
+						<button className="categbtn" id="categbtn" onClick={updatewhreq}>Update</button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
 			<Modal show={serialModal} centered onHide={SerialhandleClose} data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true" className="modal-lg">
 				<Modal.Header>
 					<button id="closemodal" type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"

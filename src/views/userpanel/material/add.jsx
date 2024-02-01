@@ -166,6 +166,14 @@ export default function AddMaterial(){
 		.then(({data}) => {
 			console.log(data); 
 			document.getElementById("matconfirm").style.display = "block";
+			document.getElementById("component").value = "";
+			document.getElementById("model").value = "";
+			document.getElementById("description").value = "";
+			document.getElementById("partno").value = "";
+			document.getElementById("type").value = "";
+			document.getElementById("quantity").value = "";
+			document.getElementById("slctcateg").value = "";
+			document.getElementById("slctsubcateg").value = "";
 			loadmaterials();
 			// const jsonData = data.data;
 			// console.log("Results:"+jsonData);

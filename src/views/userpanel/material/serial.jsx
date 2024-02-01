@@ -352,6 +352,7 @@ export default function AddSerial(){
 			function slctshptype(options) {
 				const selectContainer = document.getElementById('slctshptype');
 				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
 					const select = document.createElement('select');
 					select.className = `shp2input`;
 					select.id = `shptype`;
@@ -360,10 +361,13 @@ export default function AddSerial(){
 					select.appendChild(optionElement);
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slcttype;
-						optionElement.text = option.typename;
-						select.appendChild(optionElement);
+						if (!uniqueValues.has(option.slcttype)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slcttype;
+							optionElement.text = option.typename;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slcttype);
+						}
 					});
 					selectContainer.appendChild(select);
 			}
@@ -524,7 +528,25 @@ export default function AddSerial(){
 		reader.readAsBinaryString(file);
 		}
 	};
-	
+	const delserial = (slid) => {
+		const confirmed = window.confirm('Are you sure you want to delete?');
+		if (confirmed) {
+			const payload = new FormData();
+				payload.append('slid', slid);
+				axiosClient.post('/delete-serial', payload)
+				.then(({data}) => {
+					console.log(data);
+					loadSN();
+				})
+				.catch((err) => {
+					alert("There's an issue in deleting!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+			});
+		}
+	}
 	const UploadSN = () => {
 		const shpsnmnly = document.getElementById("shpsnmnly").value;
 		const slctshipment = document.getElementById("shpmatname").value;
@@ -738,12 +760,14 @@ export default function AddSerial(){
 							<th>SL No</th>
 							<th>Material Component</th>
 							<th>Serial Number</th>
+							<th>Action</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
 								<td>{index + 1}</td>
 								<td>{row.materialname}</td>
 								<td>{row.serial}</td>
+								<td><button onClick={() => delserial(row.id)}>X</button></td>
 							</tr>
 						))}
 						</table>

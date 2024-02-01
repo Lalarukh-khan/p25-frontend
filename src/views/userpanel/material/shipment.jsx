@@ -216,6 +216,9 @@ export default function AddShipment(){
 					const select = document.createElement('select');
 					select.className = `shpinput`;
 					select.id = `slctmat`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
@@ -294,6 +297,19 @@ export default function AddShipment(){
 		.then(({data}) => {
 			console.log(data); 
 			document.getElementById("matconfirm").style.display = "block";
+			document.getElementById("shipid").value =  "";
+			document.getElementById("name").value =  "";
+			document.getElementById("from").value =  "";
+			document.getElementById("slctcateg").value =  "";
+			document.getElementById("slctsubcateg").value =  "";
+			document.getElementById("slctmat").value =  "";
+			document.getElementById("mattypes").value =  "";
+			document.getElementById("packingno").value =  "";
+			document.getElementById("quantity").value =  "";
+			document.getElementById("shipmentqty").value =  "";
+			document.getElementById("receivedqty").value =  "";
+			document.getElementById("remainingqty").value =  "";
+			document.getElementById("slctwrhs").value =  "";
 			loadshipments();
 		})
 		.catch((err) => {

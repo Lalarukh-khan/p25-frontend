@@ -18,6 +18,7 @@ export default function MaterialCategory(){
 		.then(({data}) => {
 			document.getElementById("categbtn").innerHTML = 'Update';
 			document.getElementById("catconfirm").style.display="block";
+			document.getElementById("category").value = "";
 			console.log(data);
 			loadcategories();
 			loadcatsubcat();
@@ -74,6 +75,7 @@ export default function MaterialCategory(){
 		axiosClient.post('/make-subcategory', payload)
 		.then(({data}) => {
 			document.getElementById("subcategbtn").innerHTML = 'Update';
+			document.getElementById("subcategory").value = "";
 			console.log(data);
 			loadcatsubcat();
 			document.getElementById("subcatconfirm").style.display="block";
