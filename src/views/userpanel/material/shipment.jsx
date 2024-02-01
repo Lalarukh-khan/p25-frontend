@@ -11,6 +11,7 @@ export default function AddShipment(){
 		loadsubmattypes(0);
 		loadshipments();
 		loadwarehouse();
+		document.getElementById("mainheadingtt").innerText = "Shipment Information";
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -104,6 +105,9 @@ export default function AddShipment(){
 				const select = document.createElement('select');
 				select.className = `shpinput`;
 				select.id = `mattypes`;
+				const optionElement = document.createElement('option');
+				optionElement.text = "";
+				select.appendChild(optionElement);
 			
 				// Loop through unique types and create <option> elements
 				uniqueTypes.forEach(type => {
@@ -153,6 +157,9 @@ export default function AddShipment(){
 					const select = document.createElement('select');
 					select.className = `shpinput`;
 					select.id = `slctsubcateg`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
@@ -286,6 +293,7 @@ export default function AddShipment(){
 		axiosClient.post('/add-shipment', payload)
 		.then(({data}) => {
 			console.log(data); 
+			document.getElementById("matconfirm").style.display = "block";
 			loadshipments();
 		})
 		.catch((err) => {
@@ -393,6 +401,7 @@ export default function AddShipment(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddShipment}>Submit</button>
 						</div>
+						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Shipment Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>

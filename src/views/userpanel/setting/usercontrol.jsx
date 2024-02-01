@@ -6,6 +6,7 @@ export default function UserControl(){
 	// const [mattype, setMatType] = useState("");
 	useEffect(() => {
 		loadRole();
+		document.getElementById("mainheadingtt").innerText = "User Control Information";
 	}, []);
 	// const loadshipments = () => {
 	// 	axiosClient.get('/get-role')

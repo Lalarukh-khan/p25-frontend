@@ -71,7 +71,7 @@ export default function UserLayout() {
 					<div className="container-xxl flex-grow-1 navtoprmvl">
 						<Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
 						<Container className="navbaredt" style={{padding: "0"}}>
-							<Navbar.Brand href="#home" className="navbrand">Dashboard</Navbar.Brand>
+							<Navbar.Brand href="#home" className="navbrand" id="mainheadingtt">Dashboard</Navbar.Brand>
 							<Navbar.Toggle aria-controls="responsive-navbar-nav" />
 							<Navbar.Collapse id="responsive-navbar-nav">
 							<Nav className="me-auto">

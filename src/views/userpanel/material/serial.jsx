@@ -7,53 +7,53 @@ export default function AddSerial(){
 	const [rowData, setRowData] = useState(null);
 	const [filerowData, setfilerowData] = useState(null);
 	useEffect(() => {
-		loadshipments();
-		loadshipmentvalues(0);
+		loadwarehouse();
 		loadmanufactures();
 		const uniqueNumber = Date.now();
 		const today = new Date().toISOString().split('T')[0];
 		document.getElementById("matsid").value = uniqueNumber;
 		document.getElementById('date').value = today;
+		document.getElementById("mainheadingtt").innerText = "Material Serial Number";
 	}, []);
-	const loadshipments = () => {
-		axiosClient.get('/get-shipments')
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data; 
-			function createSelect(options) {
-				const selectContainer = document.getElementById('shipment-container');
-				selectContainer.innerHTML = "";
+	// const loadshipments = () => {
+	// 	axiosClient.get('/get-shipments')
+	// 	.then(({data}) => {
+	// 		console.log(data); 
+	// 		const jsonData = data.data; 
+	// 		function createSelect(options) {
+	// 			const selectContainer = document.getElementById('shipment-container');
+	// 			selectContainer.innerHTML = "";
 			
-				// Get unique types
-				const uniqueTypes = [...new Set(options.map(option => option.shipid))];
+	// 			// Get unique types
+	// 			const uniqueTypes = [...new Set(options.map(option => option.shipid))];
 			
-				// Create select element
-				const select = document.createElement('select');
-				select.className = `shp3input`;
-				select.id = `slctshipment`;
+	// 			// Create select element
+	// 			const select = document.createElement('select');
+	// 			select.className = `shp3input`;
+	// 			select.id = `slctshipment`;
 			
-				// Loop through unique types and create <option> elements
-				uniqueTypes.forEach(shipid => {
-					const optionElement = document.createElement('option');
-					optionElement.value = shipid;
-					optionElement.text = shipid;
-					select.appendChild(optionElement);
-				});
-				select.addEventListener('change', function() {
-					loadshipmentvalues(this.value);
-					// loadSN();
-				});
-				selectContainer.appendChild(select);
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
+	// 			// Loop through unique types and create <option> elements
+	// 			uniqueTypes.forEach(shipid => {
+	// 				const optionElement = document.createElement('option');
+	// 				optionElement.value = shipid;
+	// 				optionElement.text = shipid;
+	// 				select.appendChild(optionElement);
+	// 			});
+	// 			select.addEventListener('change', function() {
+	// 				loadshipmentvalues(this.value);
+	// 				// loadSN();
+	// 			});
+	// 			selectContainer.appendChild(select);
+	// 		}
+	// 		createSelect(jsonData);
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
 	const loadmanufactures = () => {
 		axiosClient.get('/get-manufacturers')
 		.then(({data}) => {
@@ -88,28 +88,18 @@ export default function AddSerial(){
 	}
 	const AddSerial = () => {
 		const matsid =  document.getElementById("matsid").value;
-		const slctshipment =  document.getElementById("slctshipment").value;
-		const shpquantity =  document.getElementById("shpquantity").value;
-		const slctmnf = document.getElementById("slctmnf");
+		const slctwrhs =  document.getElementById("slctwrhs").value;
+		const shpquantity =  document.getElementById("shpupdatedqty").value;
 		const slctmnf_id = document.getElementById("slctmnf").value;
-		const matname = slctmnf.options[slctmnf.selectedIndex];
 		const payload = new FormData();
 		payload.append('matsid', matsid);
-		payload.append('slctshipment', slctshipment);
+		payload.append('slctwrhs', slctwrhs);
 		payload.append('shpquantity', shpquantity);
 		payload.append('slctmnf_id', slctmnf_id);
 		axiosClient.post('/add-serial', payload)
 		.then(({data}) => {
 			console.log(data); 
-			const rs2 = document.getElementById("rs2");
-			const rs3 = document.getElementById("rs3");
-			const rs4 = document.getElementById("rs4");
-			const rs5 = document.getElementById("rs5");
-			rs2.innerText = matsid;
-			rs3.innerText = slctshipment;
-			rs4.innerText = shpquantity;
-			rs5.innerText = matname.text;
-			document.getElementById("successmsg").display = "block";
+			document.getElementById("successmsg").style.display = "block";
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -119,10 +109,177 @@ export default function AddSerial(){
 		});
 		
 	}
-	const loadshipmentvalues = (shpid) => {
+	// const loadshipmentvalues = (shpid) => {
+	// 	const payload = new FormData();
+	// 	payload.append('shpid', shpid);
+	// 	axiosClient.post('/get-shipmentvalues', payload) 
+	// 	.then(({data}) => {
+	// 		console.log(data); 
+	// 		const jsonData = data.data;
+	// 		function slctpackingno(options) {
+	// 			const selectContainer = document.getElementById('slctpackingno');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shp2input`;
+	// 				select.id = `packingno`;
+	// 				const optionElement = document.createElement('option');
+	// 				optionElement.text = "";
+	// 				select.appendChild(optionElement);
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.packingno;
+	// 					optionElement.text = option.packingno;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		function slctshpcat(options) {
+	// 			const selectContainer = document.getElementById('slctshpcat');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shp2input`;
+	// 				select.id = `shpcat`;
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.slctcateg;
+	// 					optionElement.text = option.categoryname;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		function slctshpsubcat(options) {
+	// 			const selectContainer = document.getElementById('slctshpsubcat');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shp2input`;
+	// 				select.id = `shpsubcat`;
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.slctsubcateg;
+	// 					optionElement.text = option.subcategoryname;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		function slctshptype(options) {
+	// 			const selectContainer = document.getElementById('slctshptype');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shp2input`;
+	// 				select.id = `shptype`;
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.slcttype;
+	// 					optionElement.text = option.typename;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		function slctshpmatname(options) {
+	// 			const selectContainer = document.getElementById('slctshpmatname');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shp2input`;
+	// 				select.id = `shpmatname`;
+	// 				const optionElement = document.createElement('option');
+	// 				optionElement.text = "";
+	// 				select.appendChild(optionElement);
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.slctmat;
+	// 					optionElement.text = option.materialname;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				select.addEventListener('change', function() {
+	// 					// loadshipmentvalues(this.value);
+	// 					loadSN();
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		slctpackingno(jsonData);
+	// 		slctshpcat(jsonData);
+	// 		slctshpsubcat(jsonData);
+	// 		slctshptype(jsonData);
+	// 		slctshpmatname(jsonData);
+	// 		// document.getElementById("packingno").value = jsonData.packingno;
+	// 		// document.getElementById("shpcat").value = jsonData.categoryname;
+	// 		// document.getElementById("shpsubcat").value = jsonData.subcategoryname;
+	// 		// document.getElementById("shptype").value = jsonData.typename;
+	// 		document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+	// 		document.getElementById("shppurchase").value = jsonData[0].quantity;
+	// 		document.getElementById("shpreceived").value = jsonData[0].receivedqty;
+	// 		document.getElementById("shpremaining").value = jsonData[0].remainingqty;
+	// 		document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
+	// 		document.getElementById("shounit").value = jsonData[0].materialunit;
+	// 		const number1 = parseFloat( jsonData[0].quantity);
+	// 		const number2 = parseFloat(jsonData[0].total_sn);
+	// 		if (!isNaN(number1) && !isNaN(number2)) {
+	// 			const result = number1 - number2;
+	// 			document.getElementById("shpremainingqty").value = result;
+	// 		}
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		// const quantity = document.getElementById("quantity");
+	// 		// quantity.value = "";
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
+	const loadwarehouse = () => {
+		axiosClient.get('/get-warehouse')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data; 
+			function createSelect(options) {
+				const selectContainer = document.getElementById('warehouse-container');
+				selectContainer.innerHTML = "";
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctwrhs`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.wrhidname; 
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadpackingno(this.value);
+					});
+					selectContainer.appendChild(select);
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadpackingno = (shpid) => {
 		const payload = new FormData();
 		payload.append('shpid', shpid);
-		axiosClient.post('/get-shipmentvalues', payload) 
+		axiosClient.post('/get-packingvaluesbyWH', payload) 
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
@@ -133,109 +290,23 @@ export default function AddSerial(){
 					const select = document.createElement('select');
 					select.className = `shp2input`;
 					select.id = `packingno`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
-						optionElement.value = option.packingno;
-						optionElement.text = option.packingno;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshpcat(options) {
-				const selectContainer = document.getElementById('slctshpcat');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpcat`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slctcateg;
-						optionElement.text = option.categoryname;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshpsubcat(options) {
-				const selectContainer = document.getElementById('slctshpsubcat');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpsubcat`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slctsubcateg;
-						optionElement.text = option.subcategoryname;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshptype(options) {
-				const selectContainer = document.getElementById('slctshptype');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shptype`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slcttype;
-						optionElement.text = option.typename;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshpmatname(options) {
-				const selectContainer = document.getElementById('slctshpmatname');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpmatname`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slctmat;
-						optionElement.text = option.materialname;
+						optionElement.value = option;
+						optionElement.text = option;
 						select.appendChild(optionElement);
 					});
 					select.addEventListener('change', function() {
-						// loadshipmentvalues(this.value);
-						loadSN();
+						loadvaluesbypacking(this.value);
 					});
 					selectContainer.appendChild(select);
 				// }
 			}
 			slctpackingno(jsonData);
-			slctshpcat(jsonData);
-			slctshpsubcat(jsonData);
-			slctshptype(jsonData);
-			slctshpmatname(jsonData);
-			// document.getElementById("packingno").value = jsonData.packingno;
-			// document.getElementById("shpcat").value = jsonData.categoryname;
-			// document.getElementById("shpsubcat").value = jsonData.subcategoryname;
-			// document.getElementById("shptype").value = jsonData.typename;
-			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
-			document.getElementById("shppurchase").value = jsonData[0].quantity;
-			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
-			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
-			document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
-			document.getElementById("shounit").value = jsonData[0].materialunit;
-			const number1 = parseFloat( jsonData[0].quantity);
-			const number2 = parseFloat(jsonData[0].total_sn);
-			if (!isNaN(number1) && !isNaN(number2)) {
-				const result = number1 - number2;
-				document.getElementById("shpremainingqty").value = result;
-			}
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -245,6 +316,153 @@ export default function AddSerial(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const loadvaluesbypacking = (packid) => {
+		const payload = new FormData();
+		payload.append('packid', packid);
+		axiosClient.post('/get-valuesbypack', payload) 
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function slctshpcat(options) {
+				const selectContainer = document.getElementById('slctshpcat');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shpcat`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slctcateg)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slctcateg;
+							optionElement.text = option.categoryname;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slctcateg);
+						}
+					});
+					select.addEventListener('change', function() {
+						loadsubcategories(this.value);
+					});
+					selectContainer.appendChild(select);
+			}
+			function slctshptype(options) {
+				const selectContainer = document.getElementById('slctshptype');
+				selectContainer.innerHTML = "";
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shptype`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slcttype;
+						optionElement.text = option.typename;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+			}
+			function slctshpmatname(options) {
+				const selectContainer = document.getElementById('slctshpmatname');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shpmatname`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slctmat;
+						optionElement.text = option.materialname;
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadmatvalues(this.value);
+						loadSN();
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			slctshptype(jsonData);
+			slctshpcat(jsonData);
+			slctshpmatname(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			// const quantity = document.getElementById("quantity");
+			// quantity.value = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadsubcategories = (categid) => {
+		const payload = new FormData();
+		payload.append('categid', categid);
+		axiosClient.post('/get-subcategory', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const selectContainer = document.getElementById('slctshpsubcat');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctsubcateg`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.name;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadmatvalues = (matid) => {
+		const payload = new FormData();
+		payload.append('matid', matid);
+		axiosClient.post('/get-matvalbypack', payload)
+		.then(({data}) => {
+			const jsonData = data.data;
+			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			document.getElementById("shppurchase").value = jsonData[0].quantity;
+			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
+			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
+			document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
+			document.getElementById("shounit").value = jsonData[0].materialunit;
+			const number1 = parseFloat(jsonData[0].receivedqty);
+			const number2 = parseFloat(jsonData[0].total_sn);
+				if (!isNaN(number1) && !isNaN(number2)) {
+					const result = number1 - number2;
+					document.getElementById("shpremainingqty").value = result;
+				}
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+
 	}
 	const addmatshow = () => {
 		const toshow = document.getElementById("toshow");
@@ -317,6 +535,14 @@ export default function AddSerial(){
 		.then(({data}) => {
 			console.log(data); 
 			loadSN();
+			const table = document.getElementById("sntable");
+			const lastRow = table.rows[table.rows.length - 1];
+			const firstTd = lastRow.cells[0]; 
+			const firstTdValue = firstTd.textContent;
+			const number1 = parseInt(firstTdValue);
+			const result = number1+1;
+			console.log("firstTdValue "+result);
+			document.getElementById("shpupdatedqty").value = result;
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -362,6 +588,7 @@ export default function AddSerial(){
 			setRowData(data.data);
 		})
 		.catch((err) => {
+			setRowData("");
 			const response = err.response;
 			if (response && response.status === 422) {
 				console.log(response.data.message);
@@ -392,8 +619,8 @@ export default function AddSerial(){
 					</div>
 					<div className="row  mb-3">
 						<div className="col-lg-6 col-md-6 col-sm-12">
-							<h6 className="h5heading">Shipment ID</h6>
-							<div id="shipment-container"></div>
+							<h6 className="h5heading">Warehouse</h6>
+							<div id="warehouse-container"></div>
 						</div>
 						<div className="col-lg-6 col-md-6 col-sm-12">
 							<h6 className="h5heading">Packing/Box No.</h6>
@@ -464,11 +691,11 @@ export default function AddSerial(){
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h6 className="h5heading">Updated S/N Quantity</h6>
-							<input type="text" id="shpupdatedqty" className="shp2input"/>
+							<input type="text" id="shpupdatedqty" className="shp2input" readOnly/>
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h6 className="h5heading">Remaining S/N Quantity</h6>
-							<input type="text" id="shpremainingqty" className="shp2input"/>
+							<input type="text" id="shpremainingqty" className="shp2input" readOnly/>
 						</div>
 					</div>
 					<div className="row  mb-3">
@@ -481,7 +708,7 @@ export default function AddSerial(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddSerial}>Upload</button>
 						</div>
-						<h5 className="h5heading mt-3" id="successmsg" style={{display: "none"}}>Your data has been successfully uploaded!</h5>
+						<h5 className="h5heading mt-3" id="successmsg" style={{display: "none"}}>Material Serial has been successfully added!</h5>
 					</div>
 				</div>
 				<div className="col-lg-6 col-md-6 col-sm-12">
@@ -506,7 +733,7 @@ export default function AddSerial(){
 
 					{rowData && (
 					<div className="mt-5 mb-3">
-						<table className="shipmenttable">
+						<table className="shipmenttable" id="sntable">
 						<tr>
 							<th>SL No</th>
 							<th>Material Component</th>

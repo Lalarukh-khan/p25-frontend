@@ -7,6 +7,7 @@ export default function MaterialCategory(){
 		loadcategories();
 		loadmattypes();
 		loadcatsubcat();
+		document.getElementById("mainheadingtt").innerText = "Material Catergory";
 	}, [])
 	const UpdateCategory = () => {
 		const category = document.getElementById("category").value;
@@ -16,6 +17,7 @@ export default function MaterialCategory(){
 		axiosClient.post('/make-category', payload)
 		.then(({data}) => {
 			document.getElementById("categbtn").innerHTML = 'Update';
+			document.getElementById("catconfirm").style.display="block";
 			console.log(data);
 			loadcategories();
 			loadcatsubcat();
@@ -74,6 +76,7 @@ export default function MaterialCategory(){
 			document.getElementById("subcategbtn").innerHTML = 'Update';
 			console.log(data);
 			loadcatsubcat();
+			document.getElementById("subcatconfirm").style.display="block";
 		})
 		.catch((err) => {
 			document.getElementById("subcategbtn").innerHTML = 'Update';
@@ -194,6 +197,7 @@ export default function MaterialCategory(){
 						<h5 className="h5heading">Add Category</h5>
 						<div className="col-lg-10 col-md-10 col-sm-12">
 							<input className="categinput" type="text" name="category" id="category"/>
+							<span id="catconfirm" style={{display: 'none'}}>Category Updated Successfully!</span>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<button className="categbtn" id="categbtn" onClick={UpdateCategory}>Update</button>
@@ -211,6 +215,7 @@ export default function MaterialCategory(){
 					<div className="row  mb-5">
 						<div className="col-lg-5 col-md-5 col-sm-12">
 							<input className="categinput" type="text" name="subcategory" id="subcategory" />
+							<span id="subcatconfirm" style={{display: 'none'}}>Sub Category Updated Successfully!</span>
 						</div>
 						<div className="col-lg-5 col-md-5 col-sm-12">
 							<div id="select-container"></div>

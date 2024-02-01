@@ -5,6 +5,7 @@ export default function ManufactureInformation(){
 	// const [mattype, setMatType] = useState("");
 	useEffect(() => {
 		loadshipments();
+		document.getElementById("mainheadingtt").innerText = "Manufacture Information";
 	}, []);
 	const loadshipments = () => {
 		axiosClient.get('/get-manufacturers')
@@ -68,6 +69,7 @@ export default function ManufactureInformation(){
 		axiosClient.post('/add-manufecturer', payload)
 		.then(({data}) => {
 			console.log(data);
+			document.getElementById("matconfirm").style.display = "block";
 			loadshipments();
 			// document.getElementById("categresult").style.display = "block";
 		})
@@ -173,6 +175,7 @@ export default function ManufactureInformation(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<button className="categbtn" id="categbtn" onClick={AddManufecturer}>Add Manufacturer</button>
 						</div>
+						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Manufacture Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>

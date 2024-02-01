@@ -10,6 +10,7 @@ export default function AddMaterial(){
 		loadsubcategories(0);
 		loadmattypes();
 		loadmaterials();
+		document.getElementById("mainheadingtt").innerText = "Add Material";
 	}, []);
 	const loadcategories = () => {
 		axiosClient.get('/get-categories')
@@ -164,6 +165,7 @@ export default function AddMaterial(){
 		axiosClient.post('/add-material', payload)
 		.then(({data}) => {
 			console.log(data); 
+			document.getElementById("matconfirm").style.display = "block";
 			loadmaterials();
 			// const jsonData = data.data;
 			// console.log("Results:"+jsonData);
@@ -210,7 +212,6 @@ export default function AddMaterial(){
 		const reader = new FileReader();
 
 		reader.onload = async (event) => {
-			document.getElementById("uploading").style.display = "block";
 			const data = event.target.result;
 			const workbook = XLSX.read(data, { type: 'binary' });
 
@@ -273,7 +274,7 @@ export default function AddMaterial(){
 			});
 		}
 		console.log("All Code Uploaded");
-		document.getElementById("uploading").style.display = "none";
+		document.getElementById("uploading").style.display = "block";
 		loadmaterials();
 	};
 	return (
@@ -289,7 +290,7 @@ export default function AddMaterial(){
 				<div className="col-lg-8 col-md-8 col-sm-12"></div>
 			</div>
 			<input type="file" onChange={handleFile} accept=".xlsx, .xls" style={{display: "none"}} id="bulkupload"/>
-			<div id="uploading" style={{display: "none"}} ><br />Uploading...</div>
+			<div id="uploading" style={{display: "none"}} ><br />Bulk Material Uploaded</div>
 			<div className="row mb-5" id="toshow" style={{display: "none"}}>
 				<div className="col-lg-9 col-md-9 col-sm-12">
 					<div className="row  mb-3">
@@ -341,6 +342,7 @@ export default function AddMaterial(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddMaterial}>Add Material</button>
 						</div>
+						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Material Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-3 col-md-3 col-sm-12"></div>

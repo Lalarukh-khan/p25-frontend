@@ -5,6 +5,7 @@ export default function CompanyInformation(){
 	// const [mattype, setMatType] = useState("");
 	useEffect(() => {
 		loadshipments();
+		document.getElementById("mainheadingtt").innerText = "Company Information";
 	}, []);
 	const loadshipments = () => {
 		axiosClient.get('/get-company')
@@ -68,6 +69,7 @@ export default function CompanyInformation(){
 		axiosClient.post('/add-company', payload)
 		.then(({data}) => {
 			console.log(data);
+			document.getElementById("matconfirm").style.display = "block";
 			loadshipments();
 			// document.getElementById("categresult").style.display = "block";
 		})
@@ -108,6 +110,7 @@ export default function CompanyInformation(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<button className="categbtn" id="categbtn" onClick={AddManufecturer}>Add Company</button>
 						</div>
+						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Company Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>

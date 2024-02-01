@@ -14,6 +14,7 @@ export default function UserDashboard() {
 	useEffect(() => {
 		loadcatsubcat();
     dashboardreq();
+		document.getElementById("mainheadingtt").innerText = "Dashboard";
 	}, [])
 	const loadcatsubcat = () => {
 		axiosClient.get('/get-catsubcat')
@@ -69,8 +70,8 @@ export default function UserDashboard() {
 		axiosClient.post('/getpuchaseqty', payload)
 		.then(({data}) => {
       console.log(data);
-      const jsonData = data.data[0];
-			document.getElementById("prchase"+catid).innerText = jsonData.quantity;
+      const jsonData = data.data;
+			document.getElementById("prchase"+catid).innerText = jsonData;
 		})
 		.catch((err) => {
 			document.getElementById("prchase"+catid).innerText = "0";
@@ -82,8 +83,8 @@ export default function UserDashboard() {
 		axiosClient.post('/getwarehouseqty', payload)
 		.then(({data}) => {
       console.log(data);
-      const jsonData = data.data[0];
-      document.getElementById("warehs"+catid).innerText = jsonData.receivedqty;
+      const jsonData = data.data;
+      document.getElementById("warehs"+catid).innerText = jsonData;
 		})
 		.catch((err) => {
 			document.getElementById("warehs"+catid).innerText = "0";
@@ -95,8 +96,8 @@ export default function UserDashboard() {
 		axiosClient.post('/getsiteqty', payload)
 		.then(({data}) => {
       console.log(data);
-      const jsonData = data.data[0];
-      document.getElementById("addqty"+catid).innerText = jsonData.addqty;
+      const jsonData = data.data;
+      document.getElementById("addqty"+catid).innerText = jsonData;
 		})
 		.catch((err) => {
       document.getElementById("addqty"+catid).innerText = "0";

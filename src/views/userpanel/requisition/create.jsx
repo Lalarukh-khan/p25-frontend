@@ -29,6 +29,7 @@ export default function CreateRequisition(){
 		loadsites();
 		loadcompanies();
 		document.getElementById("btncreatedby").disabled = "true";
+		document.getElementById("mainheadingtt").innerText = "Create Material Requisition";
 	}, []);
 	const usercontrol = (rmnm) => {
 		const payload = new FormData();
@@ -238,7 +239,6 @@ export default function CreateRequisition(){
 					OpenToneModal();
 					storeuserrequisition(rmnm);
 					loadwarehouse();
-					loadshipmentvalues(0);
 					usercontrol(rmnm);
 					const createdby = document.getElementById("btncreatedby");
 					createdby.style.background = "#F26422";
@@ -256,7 +256,7 @@ export default function CreateRequisition(){
 		else{
 			OpenToneModal();
 			loadwarehouse();
-			loadshipmentvalues(0);
+			loadpackingno(0);
 		}
 	}
 	const loadwarehouse = () => {
@@ -280,7 +280,7 @@ export default function CreateRequisition(){
 						select.appendChild(optionElement);
 					});
 					select.addEventListener('change', function() {
-						loadshipmentvalues(this.value);
+						loadpackingno(this.value);
 					});
 					selectContainer.appendChild(select);
 			}
@@ -293,10 +293,10 @@ export default function CreateRequisition(){
 			}
 		});
 	}
-	const loadshipmentvalues = (shpid) => {
+	const loadpackingno = (shpid) => {
 		const payload = new FormData();
 		payload.append('shpid', shpid);
-		axiosClient.post('/get-shipmentvaluesbyWH', payload) 
+		axiosClient.post('/get-packingvaluesbyWH', payload) 
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
@@ -307,99 +307,105 @@ export default function CreateRequisition(){
 					const select = document.createElement('select');
 					select.className = `shp2input`;
 					select.id = `packingno`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
 					// Loop through the options and create <option> elements
 					options.forEach(option => {
 						const optionElement = document.createElement('option');
-						optionElement.value = option.packingno;
-						optionElement.text = option.packingno;
+						optionElement.value = option;
+						optionElement.text = option;
 						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadvaluesbypacking(this.value);
 					});
 					selectContainer.appendChild(select);
 				// }
 			}
-			function slctshpcat(options) {
-				const selectContainer = document.getElementById('slctshpcat');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpcat`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slctcateg;
-						optionElement.text = option.categoryname;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshpsubcat(options) {
-				const selectContainer = document.getElementById('slctshpsubcat');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpsubcat`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slctsubcateg;
-						optionElement.text = option.subcategoryname;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshptype(options) {
-				const selectContainer = document.getElementById('slctshptype');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shptype`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slcttype;
-						optionElement.text = option.typename;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			function slctshpmatname(options) {
-				const selectContainer = document.getElementById('slctshpmatname');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpmatname`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.slctmat;
-						optionElement.text = option.materialname;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
+			// function slctshpcat(options) {
+			// 	const selectContainer = document.getElementById('slctshpcat');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpcat`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slctcateg;
+			// 			optionElement.text = option.categoryname;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
+			// function slctshpsubcat(options) {
+			// 	const selectContainer = document.getElementById('slctshpsubcat');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpsubcat`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slctsubcateg;
+			// 			optionElement.text = option.subcategoryname;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
+			// function slctshptype(options) {
+			// 	const selectContainer = document.getElementById('slctshptype');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shptype`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slcttype;
+			// 			optionElement.text = option.typename;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
+			// function slctshpmatname(options) {
+			// 	const selectContainer = document.getElementById('slctshpmatname');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpmatname`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slctmat;
+			// 			optionElement.text = option.materialname;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
 			slctpackingno(jsonData);
-			slctshpcat(jsonData);
-			slctshpsubcat(jsonData);
-			slctshptype(jsonData);
-			slctshpmatname(jsonData);
-			// document.getElementById("packingno").value = jsonData.packingno;
-			// document.getElementById("shpcat").value = jsonData.categoryname;
-			// document.getElementById("shpsubcat").value = jsonData.subcategoryname;
-			// document.getElementById("shptype").value = jsonData.typename;
-			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
-			document.getElementById("shppurchase").value = jsonData[0].quantity;
-			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
-			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
-			document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
-			document.getElementById("shounit").value = jsonData[0].materialunit;
+			// slctshpcat(jsonData);
+			// slctshpsubcat(jsonData);
+			// slctshptype(jsonData);
+			// slctshpmatname(jsonData);
+			// // document.getElementById("packingno").value = jsonData.packingno;
+			// // document.getElementById("shpcat").value = jsonData.categoryname;
+			// // document.getElementById("shpsubcat").value = jsonData.subcategoryname;
+			// // document.getElementById("shptype").value = jsonData.typename;
+			// document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			// document.getElementById("shppurchase").value = jsonData[0].quantity;
+			// document.getElementById("shpreceived").value = jsonData[0].receivedqty;
+			// document.getElementById("shpremaining").value = jsonData[0].remainingqty;
+			// document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
+			// document.getElementById("shounit").value = jsonData[0].materialunit;
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -409,6 +415,147 @@ export default function CreateRequisition(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const loadvaluesbypacking = (packid) => {
+		const payload = new FormData();
+		payload.append('packid', packid);
+		axiosClient.post('/get-valuesbypack', payload) 
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function slctshpcat(options) {
+				const selectContainer = document.getElementById('slctshpcat');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shpcat`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slctcateg)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slctcateg;
+							optionElement.text = option.categoryname;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slctcateg);
+						}
+					});
+					select.addEventListener('change', function() {
+						loadsubcategories(this.value);
+					});
+					selectContainer.appendChild(select);
+			}
+			function slctshptype(options) {
+				const selectContainer = document.getElementById('slctshptype');
+				selectContainer.innerHTML = "";
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shptype`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slcttype;
+						optionElement.text = option.typename;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+			}
+			function slctshpmatname(options) {
+				const selectContainer = document.getElementById('slctshpmatname');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shpmatname`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slctmat;
+						optionElement.text = option.materialname;
+						select.appendChild(optionElement);
+					});
+					select.addEventListener('change', function() {
+						loadmatvalues(this.value);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			slctshptype(jsonData);
+			slctshpcat(jsonData);
+			slctshpmatname(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			// const quantity = document.getElementById("quantity");
+			// quantity.value = "";
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadsubcategories = (categid) => {
+		const payload = new FormData();
+		payload.append('categid', categid);
+		axiosClient.post('/get-subcategory', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const selectContainer = document.getElementById('slctshpsubcat');
+				selectContainer.innerHTML = "";
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctsubcateg`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.name;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadmatvalues = (matid) => {
+		const payload = new FormData();
+		payload.append('matid', matid);
+		axiosClient.post('/get-matvalbypack', payload)
+		.then(({data}) => {
+			const jsonData = data.data;
+			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			document.getElementById("shppurchase").value = jsonData[0].quantity;
+			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
+			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
+			document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
+			document.getElementById("shounit").value = jsonData[0].materialunit;
+			
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+
 	}
 	const calcaddq = () => {
 		const input1Value = document.getElementById('shpreceived').value;
@@ -431,7 +578,7 @@ export default function CreateRequisition(){
 		const slctwrhs = document.getElementById("slctwrhs").value;
 		const packingno = document.getElementById("packingno").value;
 		const shpcat = document.getElementById("shpcat").value;
-		const slctshpsubcat = document.getElementById("shpsubcat").value;
+		const slctshpsubcat = document.getElementById("slctshpsubcat").value;
 		const shptype = document.getElementById("shptype").value;
 		const shpmatname = document.getElementById("shpmatname").value;
 		const shppurchase = document.getElementById("shppurchase").value;

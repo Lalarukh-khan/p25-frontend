@@ -17,6 +17,7 @@ import UserControl from "./views/userpanel/setting/usercontrol";
 import CreateRequisition from "./views/userpanel/requisition/create";
 import UpdateRequistion from "./views/userpanel/requisition/update";
 import LoadRequisition from "./views/userpanel/requisition/load";
+import RecreateRequisition from "./views/userpanel/requisition/recreate";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
             {
                 path: "/load-requistion",
                 element: <LoadRequisition />,
+            },
+            {
+                path: "/recreate-requistion",
+                element: <RecreateRequisition />,
             },
         ],
     },
