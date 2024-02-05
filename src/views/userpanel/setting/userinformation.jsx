@@ -6,6 +6,7 @@ export default function UserInformation(){
 	const [rowData, setRowData] = useState(null);
 	useEffect(() => {
 		loadshipments();
+		loadcategories();
 		document.getElementById("mainheadingtt").innerText = "User Information";
 	}, []);
 	const loadshipments = () => {
@@ -13,6 +14,35 @@ export default function UserInformation(){
 		.then(({data}) => {
 			console.log(data); 
 			setRowData(data.data);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadcategories = () => {
+		axiosClient.get('/get-role')
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const selectContainer = document.getElementById('select-container');
+				selectContainer.innerHTML = "";
+					const select = document.createElement('select');
+					select.className = `shpinput`;
+					select.id = `slctcateg`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.id;
+						optionElement.text = option.username;
+						select.appendChild(optionElement);
+					});
+					selectContainer.appendChild(select);
+			}
+			createSelect(jsonData);
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -64,7 +94,7 @@ export default function UserInformation(){
 	const addmatshow = () => {
 		const toshow = document.getElementById("toshow");
 		toshow.style.display = "block";
-	}
+	} 
 	return (
 		<>
 		<div className="container">
@@ -84,12 +114,7 @@ export default function UserInformation(){
 							<input type="text" id="email" placeholder="Email" className="shpinput"/>
 						</div>
 						<div className="col-lg-4 col-md-4 col-sm-12">
-							<select name="role" id="role" className="shpinput">
-								<option value="General User">General (Material/Serial User)</option>
-								<option value="Manager">Manager (Checked User)</option>
-								<option value="Admin">Admin (Review / Accept User)</option>
-								<option value="Super Admin">Super Admin (Approve User)</option>
-							</select>
+							<div id="select-container"></div>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<input type="text" id="username" placeholder="User Name" className="shpinput"/>
