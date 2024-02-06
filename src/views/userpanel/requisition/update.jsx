@@ -44,6 +44,36 @@ export default function UpdateRequistion() {
 			}
 		});
     };
+	const attachfile = (id) => {
+		const formData = new FormData();
+		formData.append('id', id);
+		axiosClient.post('/downloadFile', formData, { responseType: 'blob' })
+			.then(response => {
+				// Create a URL for the Blob object
+				// console.log(response.data);
+				const url = window.URL.createObjectURL(response.data);
+	
+				// Create a temporary link element to trigger the download
+				const link = document.createElement('a');
+				link.href = url;
+				link.setAttribute('download', "file.pdf"); // Set a default filename here
+	
+				// Append the link to the document body and trigger the download
+				document.body.appendChild(link);
+				link.click();
+	
+				// Cleanup: remove the link and revoke the object URL
+				document.body.removeChild(link);
+				window.URL.revokeObjectURL(url);
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status === 422) {
+					console.log(response.data.message);
+				}
+			});
+	};
+	
 	
     return (
         <div className="container">
@@ -80,7 +110,7 @@ export default function UpdateRequistion() {
 						{row.status.includes("Delivery") ? (
 							<td><input type="file" id="fileuplaod" onChange={() => uploadFile(row.userid)}   /></td>
 						) : (
-							<td></td>
+							<td onClick={() => attachfile(row.userid)}><u style={{cursor:"pointer"}}>Attach file</u></td>
 						)}
 					</tr>
 				))}

@@ -20,6 +20,10 @@ export default function UserDashboard() {
 		axiosClient.get('/get-catsubcat')
 		.then(({data}) => {
 			setRowData(data.data);
+      const jsonData = data.data;
+      jsonData.forEach(option => {
+        handleCategoryChange(option.category_id);
+      });
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -94,6 +98,49 @@ export default function UserDashboard() {
 			}
 		});
 		axiosClient.post('/getsiteqty', payload)
+		.then(({data}) => {
+      console.log(data);
+      const jsonData = data.data;
+      document.getElementById("addqty"+catid).innerText = jsonData;
+		})
+		.catch((err) => {
+      document.getElementById("addqty"+catid).innerText = "0";
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+  }
+  const handleCategoryChange = (catid) => {
+    const payload = new FormData();
+		payload.append('selectedValue', catid);
+		axiosClient.post('/getpuchaseqtybyctg', payload)
+		.then(({data}) => {
+      console.log(data);
+      const jsonData = data.data;
+			document.getElementById("prchase"+catid).innerText = jsonData;
+		})
+		.catch((err) => {
+			document.getElementById("prchase"+catid).innerText = "0";
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+		axiosClient.post('/getwarehouseqtybyctg', payload)
+		.then(({data}) => {
+      console.log(data);
+      const jsonData = data.data;
+      document.getElementById("warehs"+catid).innerText = jsonData;
+		})
+		.catch((err) => {
+			document.getElementById("warehs"+catid).innerText = "0";
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+		axiosClient.post('/getsiteqtybyctg', payload)
 		.then(({data}) => {
       console.log(data);
       const jsonData = data.data;
