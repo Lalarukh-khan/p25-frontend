@@ -545,7 +545,7 @@ export default function CreateRequisition(){
 		axiosClient.post('/get-matvalbypack', payload)
 		.then(({data}) => {
 			const jsonData = data.data;
-			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			document.getElementById("shpaddedqty").value = jsonData[0].total_sn;
 			document.getElementById("shppurchase").value = jsonData[0].quantity;
 			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
 			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
@@ -558,7 +558,8 @@ export default function CreateRequisition(){
 				if (!isNaN(number1) && !isNaN(number2)) {
 					const result = number1 - number2;
 					if(number2 == 0){
-						rmval.value = "";
+						document.getElementById('shpupdatedqty').value = "0";
+						rmval.value = "0";
 					}
 					else{
 						rmval.value = result;
@@ -576,22 +577,22 @@ export default function CreateRequisition(){
 		});
 
 	}
-	// const calcaddq = () => {
-	// 	const input1Value = document.getElementById('shpreceived').value;
-	// 	const input2Value = document.getElementById('shpupdatedqty').value;
-	// 	const resultValue = document.getElementById('shpremainingqty');
-	// 	const number1 = parseFloat(input1Value);
-	// 	const number2 = parseFloat(input2Value);
-	// 	if(number2 <= number1){
-	// 		if (!isNaN(number1) && !isNaN(number2)) {
-	// 			const result = number1 - number2;
-	// 			resultValue.value = result;
-	// 		}
-	// 	}
-	// 	else{
-	// 		document.getElementById('shpupdatedqty').value = number1;
-	// 	}
-	// }
+	const calcaddq = () => {
+		const input2Value = document.getElementById('shpupdatedqty').value;
+		const input1Value = document.getElementById('shpaddedqty').value;
+		const resultValue = document.getElementById('shpremainingqty');
+		const number1 = parseFloat(input1Value);
+		const number2 = parseFloat(input2Value);
+		// if(number2 <= number1){
+			if (!isNaN(number1) && !isNaN(number2)) {
+					const result = number1 - number2;
+					resultValue.value = result;
+			}
+		// }
+		// else{
+		// 	document.getElementById('shpupdatedqty').value = number1;
+		// }
+	}
 	const addwhreq = () => {
 		const rmnm = document.getElementById("rmnumb").value;
 		const slctwrhs = document.getElementById("slctwrhs").value;
@@ -966,15 +967,19 @@ export default function CreateRequisition(){
 						</div>
 					</div>
 					<div className="row  mb-3">
-						<div className="col-lg-4 col-md-4 col-sm-12">
+						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h6 className="h5heading">Unit</h6>
 							<input type="text" id="shounit" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-4 col-md-4 col-sm-12">
-							<h6 className="h5heading">Add Quantity</h6>
-							<input type="text" id="shpupdatedqty" className="shp2input" readOnly/>
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">S/N Quantity</h6>
+							<input type="text" id="shpaddedqty" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-4 col-md-4 col-sm-12">
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">Add Quantity</h6>
+							<input type="text" id="shpupdatedqty" className="shp2input" onChange={calcaddq} />
+						</div>
+						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h6 className="h5heading">Remaining  Quantity</h6>
 							<input type="text" id="shpremainingqty" className="shp2input" readOnly/>
 						</div>
