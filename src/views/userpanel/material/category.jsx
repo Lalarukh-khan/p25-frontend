@@ -189,6 +189,49 @@ export default function MaterialCategory(){
 				alert('No input provided.');
 			}
 	}
+	const delsubcat = (catid) => {
+		const confirmed = window.confirm('Are you sure you want to delete?');
+		if (confirmed) {
+			const payload = new FormData();
+				payload.append('categid', catid);
+				axiosClient.post('/delete-subcategory', payload)
+				.then(({data}) => {
+					console.log(data);
+					loadcatsubcat();
+				})
+				.catch((err) => {
+					alert("There's an issue in deleting!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+			});
+		}
+
+	}
+	const editsubcat = (catid) => {
+		const userInput = window.prompt('Enter new sub category name:', '');
+			if (userInput !== null) {
+				const payload = new FormData();
+				payload.append('categid', catid);
+				payload.append('newname', userInput);
+				axiosClient.post('/update-subcategory', payload)
+				.then(({data}) => {
+					console.log(data);
+					alert(`Sub Category name updated to, ${userInput}!`);
+					loadcatsubcat();
+				})
+				.catch((err) => {
+					alert("There's an issue in updating!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+				});
+			} else {
+				alert('No input provided.');
+			}
+	}
 
 	return (
 		<>
@@ -260,8 +303,8 @@ export default function MaterialCategory(){
 															<p className="categsidefotn" id={subcategory.id}>{subcategory.name}</p>
 														</div>
 														<div className="col-lg-2 col-md-2 col-sm-2">
-															<button>X</button>&nbsp;
-															<button>Y</button>
+															<button onClick={() => delsubcat(subcategory.id)}>X</button>&nbsp;
+															<button onClick={() => editsubcat(subcategory.id)}>Y</button>
 														</div>
 													</div>
 												</div>

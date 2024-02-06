@@ -342,6 +342,24 @@ export default function AddShipment(){
 			document.getElementById('receivedqty').value = number3;
 		}
 	}
+	const SearchTable = () => {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("searchinput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("serialtable");
+		tr = table.getElementsByTagName("tr");
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[2];
+			if (td) {
+			txtValue = td.textContent || td.innerText;
+			if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = "none";
+			}
+			}       
+		}
+	}
 	return (
 		<>
 		<div className="container">
@@ -425,7 +443,8 @@ export default function AddShipment(){
 				<hr />
 				{rowData && (
 					<div className="mt-5 mb-3">
-						<table className="shipmenttable">
+					Search: <input type="text" id="searchinput" onKeyUp={SearchTable} placeholder="Search for Shipment...." />
+						<table className="shipmenttable mt-3" id="serialtable">
 						<tr>
 							<th>SL No</th>
 							<th>Shipment ID</th>

@@ -285,6 +285,24 @@ export default function AddMaterial(){
 		document.getElementById("uploading").style.display = "block";
 		loadmaterials();
 	};
+	const SearchTable = () => {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("searchinput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("serialtable");
+		tr = table.getElementsByTagName("tr");
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[1];
+			if (td) {
+			txtValue = td.textContent || td.innerText;
+			if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = "none";
+			}
+			}       
+		}
+	}
 	return (
 		<>
 		<div className="container">
@@ -412,7 +430,8 @@ export default function AddMaterial(){
 			)} */}
 			{rowData && (
 					<div id="matresult" className="mt-5 mb-3">
-						<table className="shipmenttable">
+						Search: <input type="text" id="searchinput" onKeyUp={SearchTable} placeholder="Search for Material...." />
+						<table className="shipmenttable mt-3" id="serialtable">
 						<tr>
 							<th>SL No</th>
 							<th>Material Component</th>
