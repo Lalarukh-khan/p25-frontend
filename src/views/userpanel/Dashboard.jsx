@@ -118,7 +118,7 @@ export default function UserDashboard() {
 		.then(({data}) => {
       console.log(data);
       const jsonData = data.data;
-			document.getElementById("prchase"+catid).innerText = jsonData;
+			document.getElementById("prchasecat"+catid).innerText = jsonData;
 		})
 		.catch((err) => {
 			document.getElementById("prchase"+catid).innerText = "0";
@@ -131,7 +131,7 @@ export default function UserDashboard() {
 		.then(({data}) => {
       console.log(data);
       const jsonData = data.data;
-      document.getElementById("warehs"+catid).innerText = jsonData;
+      document.getElementById("warehscat"+catid).innerText = jsonData;
 		})
 		.catch((err) => {
 			document.getElementById("warehs"+catid).innerText = "0";
@@ -144,7 +144,7 @@ export default function UserDashboard() {
 		.then(({data}) => {
       console.log(data);
       const jsonData = data.data;
-      document.getElementById("addqty"+catid).innerText = jsonData;
+      document.getElementById("addqtycat"+catid).innerText = jsonData;
 		})
 		.catch((err) => {
       document.getElementById("addqty"+catid).innerText = "0";
@@ -205,9 +205,18 @@ export default function UserDashboard() {
     <tbody>
       {rowData.map((category, index) => (
         <React.Fragment key={index}>
-          <tr  style={{border: "1px solid transparent"}}>
-            <td colSpan={4} style={{ color: "black", fontSize: "20px" }}>
+          <tr  style={{borderBottom: "1px solid transparent", marginBottom: "10px"}}>
+            <td style={{ color: "black", fontSize: "20px" }}>
               {category.category_name}
+            </td>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"prchasecat"+category.category_id}>
+              0
+            </td>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"warehscat"+category.category_id}>
+              0
+            </td>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"addqtycat"+category.category_id}>
+              0
             </td>
           </tr>
             <tr style={{borderBottom: "1px solid transparent"}}>
