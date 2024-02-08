@@ -23,7 +23,7 @@ export default function CompanyInformation(){
 						resultDiv.className = 'row resultmanuf';
 						resultDiv.style.marginBottom = '4px';
 						const col1 = document.createElement('div');
-						col1.className = 'col-lg-9 col-md-9 col-sm-9';
+						col1.className = 'col-lg-8 col-md-8 col-sm-8';
 						const categoryName = document.createElement('h5');
 						categoryName.className = 'categfotn';
 						categoryName.textContent = item.compname;
@@ -34,13 +34,19 @@ export default function CompanyInformation(){
 						col1.appendChild(categoryName);
 						col1.appendChild(locationName);
 						const col2 = document.createElement('div');
-						col2.className = 'col-lg-3 col-md-3 col-sm-3';
+						col2.className = 'col-lg-4 col-md-4 col-sm-4';
 						col2.style.paddingTop = '10px';
 						col2.style.paddingLeft = '30px';
 						const buttonX = document.createElement('button');
-						buttonX.textContent = 'X';
+						buttonX.className= "btn btn-danger";
+						buttonX.style.width = "15px";
+						buttonX.style.height = "28px";
+						buttonX.innerHTML = '<i class="bx bx-x"></i>';
 						const buttonY = document.createElement('button');
-						buttonY.textContent = 'Y';
+						buttonY.className= "btn btn-primary";
+						buttonY.style.width = "15px";
+						buttonY.style.height = "28px";
+						buttonY.innerHTML = '<i class="bx bx-edit"></i>';
 						col2.appendChild(buttonX);
 						col2.appendChild(document.createTextNode('\u00A0')); // Non-breaking space
 						col2.appendChild(buttonY);

@@ -196,10 +196,10 @@ export default function UserDashboard() {
   <Table bordered>
     <thead>
       <tr style={{ borderTop: "1px solid transparent" }}>
-        <th>Category</th>
-        <th>Purchased Quantity</th>
-        <th>Warehouse Quantity</th>
-        <th>On site Quantity</th>
+        <th style={{width: "280px"}}>Category</th>
+        <th style={{textAlign: "center"}}>Purchased Quantity</th>
+        <th style={{textAlign: "center"}}>Warehouse Quantity</th>
+        <th style={{textAlign: "center"}}>On site Quantity</th>
       </tr>
     </thead>
     <tbody>
@@ -209,13 +209,13 @@ export default function UserDashboard() {
             <td style={{ color: "black", fontSize: "20px" }}>
               {category.category_name}
             </td>
-            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"prchasecat"+category.category_id}>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px", textAlign: "center" }} id={"prchasecat"+category.category_id}>
               0
             </td>
-            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"warehscat"+category.category_id}>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px", textAlign: "center" }} id={"warehscat"+category.category_id}>
               0
             </td>
-            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"addqtycat"+category.category_id}>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px", textAlign: "center" }} id={"addqtycat"+category.category_id}>
               0
             </td>
           </tr>
@@ -234,13 +234,13 @@ export default function UserDashboard() {
           ) : (
               <td></td>
           )}
-            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"prchase"+category.category_id}>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px", textAlign: "center" }} id={"prchase"+category.category_id}>
               0
             </td>
-            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"warehs"+category.category_id}>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px", textAlign: "center" }} id={"warehs"+category.category_id}>
               0
             </td>
-            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px" }} id={"addqty"+category.category_id}>
+            <td style={{ color: "black", fontWeight: "bold", fontSize: "18px", textAlign: "center" }} id={"addqty"+category.category_id}>
               0
             </td>
           </tr>

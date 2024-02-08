@@ -284,12 +284,12 @@ export default function MaterialCategory(){
 								<div className="row mb-3" key={index}>
 									<div className="col-lg-6 col-md-6 col-sm-12">
 										<div className="row resultcateg">
-											<div className="col-lg-10 col-md-10 col-sm-10">
+											<div className="col-lg-9 col-md-9 col-sm-9">
 												<h5 className="categfotn" id={category.category_id}>{category.category_name}</h5>
 											</div>
-											<div className="col-lg-2 col-md-2 col-sm-2">
-												<button onClick={() => delcat(category.category_id)}>X</button>&nbsp;
-												<button onClick={() => editcat(category.category_id)}>Y</button>
+											<div className="col-lg-3 col-md-3 col-sm-3">
+												<button onClick={() => delcat(category.category_id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button>&nbsp;
+												<button onClick={() => editcat(category.category_id)} className="btn btn-primary" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></button>
 											</div>
 										</div>
 									</div>
@@ -299,12 +299,12 @@ export default function MaterialCategory(){
 											{category.subcategories.map((subcategory, subIndex) => (
 												<div key={subIndex}>
 													<div className='row resultsidecateg' style={{marginBottom: "4px"}}>
-														<div className="col-lg-10 col-md-10 col-sm-10">
+														<div className="col-lg-9 col-md-9 col-sm-9">
 															<p className="categsidefotn" id={subcategory.id}>{subcategory.name}</p>
 														</div>
-														<div className="col-lg-2 col-md-2 col-sm-2">
-															<button onClick={() => delsubcat(subcategory.id)}>X</button>&nbsp;
-															<button onClick={() => editsubcat(subcategory.id)}>Y</button>
+														<div className="col-lg-3 col-md-3 col-sm-3">
+															<button onClick={() => delsubcat(subcategory.id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button>&nbsp;
+															<button onClick={() => editsubcat(subcategory.id)} className="btn btn-primary" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></button>
 														</div>
 													</div>
 												</div>

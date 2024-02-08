@@ -767,7 +767,7 @@ export default function AddSerial(){
 								<td>{index + 1}</td>
 								<td>{row.materialname}</td>
 								<td>{row.serial}</td>
-								<td><button onClick={() => delserial(row.id)}>X</button></td>
+								<td><button onClick={() => delserial(row.id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button></td>
 							</tr>
 						))}
 						</table>

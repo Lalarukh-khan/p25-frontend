@@ -237,7 +237,6 @@ export default function CreateRequisition(){
 				.then(({data}) => {
 					console.log(data);
 					OpenToneModal();
-					storeuserrequisition(rmnm);
 					loadwarehouse();
 					usercontrol(rmnm);
 					const createdby = document.getElementById("btncreatedby");
@@ -625,6 +624,7 @@ export default function CreateRequisition(){
 		.then(({data}) => {
 			console.log(data);
 			TonehandleClose();
+			storeuserrequisition(rmnm);
 			// const shpid = data.data;
 			loadlisitingRnmn(rmnm);
 			// setRowData(data.data);
