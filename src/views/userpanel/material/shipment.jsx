@@ -360,6 +360,15 @@ export default function AddShipment(){
 			}       
 		}
 	}
+	const calcaddq = () => {
+		const input2Value = document.getElementById('quantity').value;
+		const input1Value = document.getElementById('shipmentqty').value;
+		const number1 = parseFloat(input1Value);
+		const number2 = parseFloat(input2Value);
+		if(number1 > number2){
+			document.getElementById('shipmentqty').value = number2;
+		}
+	}
 	return (
 		<>
 		<div className="container">
@@ -420,7 +429,7 @@ export default function AddShipment(){
 						</div>
 						<div className="col-lg-1 col-md-1 col-sm-12">
 							<h6 className="h5heading">Shipment(Q)</h6>
-							<input type="text" id="shipmentqty" className="shp2input"/>
+							<input type="text" id="shipmentqty" className="shp2input" onChange={calcaddq}/>
 						</div>
 						<div className="col-lg-1 col-md-1 col-sm-12">
 							<h6 className="h5heading">Received(Q)</h6>
@@ -435,7 +444,7 @@ export default function AddShipment(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddShipment}>Submit</button>
 						</div>
-						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Shipment Added Successfully!</h5>
+						<h5 className="h5heading mt-3 sccssmsg" id="matconfirm" style={{display: 'none'}}>Shipment Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>
@@ -444,7 +453,7 @@ export default function AddShipment(){
 				{rowData && (
 					<div className="mt-5 mb-3">
 					Search: <input type="text" id="searchinput" onKeyUp={SearchTable} placeholder="Search for Shipment...." />
-						<table className="shipmenttable mt-3" id="serialtable">
+						<table className="shipmenttable2 mt-3" id="serialtable">
 						<tr>
 							<th>SL No</th>
 							<th>Shipment ID</th>

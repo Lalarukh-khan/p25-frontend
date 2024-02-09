@@ -730,7 +730,7 @@ export default function AddSerial(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddSerial}>Upload</button>
 						</div>
-						<h5 className="h5heading mt-3" id="successmsg" style={{display: "none"}}>Material Serial has been successfully added!</h5>
+						<h5 className="h5heading mt-3 sccssmsg" id="successmsg" style={{display: "none"}}>Material Serial has been successfully added!</h5>
 					</div>
 				</div>
 				<div className="col-lg-6 col-md-6 col-sm-12">

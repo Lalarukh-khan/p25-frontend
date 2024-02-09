@@ -6,6 +6,7 @@ import { Modal } from 'react-bootstrap';
 export default function CreateRequisition(){
 	const [toneModal, setToneModal] = useState(false);
 	const [rnmnval, setRnmnVal] = useState("false");
+	const [storeuser, setStoreUser] = useState("false");
 	const [serialModal, setSerialModal] = useState(false);
 	const [lssid, setLsid] = useState("false");
 	const [rowData, setRowData] = useState(null);
@@ -582,15 +583,15 @@ export default function CreateRequisition(){
 		const resultValue = document.getElementById('shpremainingqty');
 		const number1 = parseFloat(input1Value);
 		const number2 = parseFloat(input2Value);
-		// if(number2 <= number1){
+		if(number2 <= number1){
 			if (!isNaN(number1) && !isNaN(number2)) {
 					const result = number1 - number2;
 					resultValue.value = result;
 			}
-		// }
-		// else{
-		// 	document.getElementById('shpupdatedqty').value = number1;
-		// }
+		}
+		else{
+			document.getElementById('shpupdatedqty').value = number1;
+		}
 	}
 	const addwhreq = () => {
 		const rmnm = document.getElementById("rmnumb").value;
@@ -624,7 +625,10 @@ export default function CreateRequisition(){
 		.then(({data}) => {
 			console.log(data);
 			TonehandleClose();
-			storeuserrequisition(rmnm);
+			if(storeuser == "false"){
+				storeuserrequisition(rmnm);
+				setStoreUser("true");
+			}
 			// const shpid = data.data;
 			loadlisitingRnmn(rmnm);
 			// setRowData(data.data);
@@ -702,6 +706,7 @@ export default function CreateRequisition(){
 		.then(({data}) => {
 			console.log(data);
 			usercontrol(rnmnval);
+			document.getElementById("addmatbtn").style.display = "none";
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -709,6 +714,26 @@ export default function CreateRequisition(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const delcat = (catid) => {
+		const confirmed = window.confirm('Are you sure you want to delete?');
+		if (confirmed) {
+			const payload = new FormData();
+				payload.append('categid', catid);
+				axiosClient.post('/delete-rqlisting', payload)
+				.then(({data}) => {
+					console.log(data);
+					const rmnm = document.getElementById("rmnumb").value;
+					loadlisitingRnmn(rmnm);
+				})
+				.catch((err) => {
+					alert("There's an issue in deleting!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+			});
+		}
 	}
 	return (
 		<>
@@ -772,7 +797,7 @@ export default function CreateRequisition(){
 					<hr />
 				{rowData && (
 					<div className="mt-5 mb-3">
-						<table className="shipmenttable">
+						<table className="shipmenttable2">
 						<tr>
 							<th>SL No</th>
 							<th>Packing No.</th>
@@ -783,6 +808,7 @@ export default function CreateRequisition(){
 							<th>Unit</th>
 							<th>Quantity</th>
 							<th>Remark</th>
+							<th>Action</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
@@ -801,6 +827,7 @@ export default function CreateRequisition(){
 								<td>{row.unit}</td>
 								<td>{row.addqty}</td>
 								<td></td>
+								<td><button onClick={() => delcat(row.id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button></td>
 							</tr>
 						))}
 						</table>
@@ -808,7 +835,7 @@ export default function CreateRequisition(){
 				)}
 					<div className="row">
 						<div className="col-lg-2 col-md-2 col-sm-12">
-							<button className="categbtn" onClick={addrequest}>Add Material</button>
+							<button className="categbtn" onClick={addrequest} id="addmatbtn">Add Material</button>
 						</div>
 					</div>
 				<div className="row" style={{marginTop: "100px"}}>

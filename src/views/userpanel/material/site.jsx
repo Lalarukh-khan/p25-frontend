@@ -119,7 +119,7 @@ export default function SiteInformation(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<button className="categbtn" id="categbtn" onClick={AddManufecturer}>Add Site</button>
 						</div>
-						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Site Added Successfully!</h5>
+						<h5 className="h5heading mt-3 sccssmsg" id="matconfirm" style={{display: 'none'}}>Site Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>

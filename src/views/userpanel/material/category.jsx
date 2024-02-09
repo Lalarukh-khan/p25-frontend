@@ -242,7 +242,7 @@ export default function MaterialCategory(){
 						<h5 className="h5heading">Add Category</h5>
 						<div className="col-lg-10 col-md-10 col-sm-12">
 							<input className="categinput" type="text" name="category" id="category"/>
-							<span id="catconfirm" style={{display: 'none'}}>Category Updated Successfully!</span>
+							<span id="catconfirm" className="sccssmsg" style={{display: 'none'}}>Category Updated Successfully!</span>
 						</div>
 						<div className="col-lg-2 col-md-2 col-sm-12">
 							<button className="categbtn" id="categbtn" onClick={UpdateCategory}>Update</button>
@@ -260,7 +260,7 @@ export default function MaterialCategory(){
 					<div className="row  mb-5">
 						<div className="col-lg-5 col-md-5 col-sm-12">
 							<input className="categinput" type="text" name="subcategory" id="subcategory" />
-							<span id="subcatconfirm" style={{display: 'none'}}>Sub Category Updated Successfully!</span>
+							<span id="subcatconfirm" style={{display: 'none'}} className="sccssmsg">Sub Category Updated Successfully!</span>
 						</div>
 						<div className="col-lg-5 col-md-5 col-sm-12">
 							<div id="select-container"></div>

@@ -79,7 +79,7 @@ export default function UpdateRequistion() {
         <div className="container">
 		{rowData && (
 			<div className="mt-5 mb-3">
-				<table className="shipmenttable">
+				<table className="shipmenttable3">
 				<tr>
 					<th>SL No</th>
 					<th>MR Created By</th>
@@ -99,9 +99,33 @@ export default function UpdateRequistion() {
 						<td>{row.sitename}</td>
 						<td>{row.outbound}</td>
 						<td>{row.compname}</td>
-						<td><Link to={`/load-requistion?id=${row.rm_number}`} style={{width: "80%", background: row.status.toLowerCase().includes("rejected") ? "#F22222" : "#F26422", border:"1px solid #F26422", color:"#fff"}}>{row.status}</Link>
+						<td style={{ textAlign: 'center' }}>
+							<Link to={`/load-requistion?id=${row.rm_number}`} style={{
+							background: row.status.toLowerCase().includes("s/n") ? "#99AF0C" :
+										row.status.toLowerCase().includes("checking") ? "#260A60" :
+										row.status.toLowerCase().includes("accepted") ? "#092957" :
+										row.status.toLowerCase().includes("review") ? "#164F4B" :
+										row.status.toLowerCase().includes("approval") ? "#07847C" :
+										row.status.toLowerCase().includes("delivery") ? "#188407" :
+										row.status.toLowerCase().includes("rejected") ? "#F22222" :
+										row.status.toLowerCase().includes("completed") ? "#F26422" : "#3b2419",
+							border: row.status.toLowerCase().includes("s/n") ? "1px solid #99AF0C" :
+							row.status.toLowerCase().includes("checking") ? "1px solid #260A60" :
+							row.status.toLowerCase().includes("accepted") ? "1px solid #092957" :
+							row.status.toLowerCase().includes("review") ? "#164F4B" :
+							row.status.toLowerCase().includes("approval") ? "1px solid #07847C" :
+							row.status.toLowerCase().includes("delivery") ? "1px solid #188407" :
+							row.status.toLowerCase().includes("rejected") ? "1px solid #F22222" :
+							row.status.toLowerCase().includes("completed") ? "1px solid #F26422" : "#3b2419",
+							color: "#fff", 
+							cursor: "pointer", width: '100%', height: '100%', padding: '8px'
+						}}>
+							{row.status}
+						</Link>
 						<br/>
-						<Link to={`/recreate-requistion?id=${row.rm_number}`} style={{width: "50%", margin: 'auto', background: row.status.toLowerCase().includes("rejected") ? "rgb(49, 52, 250)" : "#F26422", border:"1px solid rgb(49, 52, 250)", color:"#fff", display: row.status.toLowerCase().includes("rejected") ? "block" : "none"}}>{row.status.toLowerCase().includes("rejected") ? "Recreate MR" : ""}</Link></td>
+						<br style={{ display: row.status.toLowerCase().includes("rejected") ? "block" : "none"}}/>
+						<Link to={`/recreate-requistion?id=${row.rm_number}`} style={{width: "60%", margin: 'auto', marginTop: '-12px' ,background: row.status.toLowerCase().includes("rejected") ? "rgb(49, 52, 250)" : "#F26422", border:"1px solid rgb(49, 52, 250)", color:"#fff", display: row.status.toLowerCase().includes("rejected") ? "block" : "none"}}>{row.status.toLowerCase().includes("rejected") ? "Recreate MR" : ""}</Link>
+						</td>
 						{row.status.includes("Completed") ? (
 							<td>Done</td>
 						) : (

@@ -68,9 +68,9 @@ export default function RecreateRequisition(){
 				firin.innerHTML = jsonData.acceptedby;
 				const createdby = document.getElementById("reviewby");
 				const createdby2 = document.getElementById("reviewbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
+				// createdby.style.background = "#F26422";
+				createdby.disabled = true;
+				createdby2.disabled = true;
 			}
 			if(jsonData.reviewby !== null){
 				const firin = document.getElementById("rvwbywhole");
@@ -78,9 +78,9 @@ export default function RecreateRequisition(){
 				firin.innerHTML = jsonData.reviewby;
 				const createdby = document.getElementById("approveby");
 				const createdby2 = document.getElementById("approvebyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
+				// createdby.style.background = "#F26422";
+				createdby.disabled = true;
+				createdby2.disabled = true;
 			}
 			if(jsonData.mrcreatedby !== null){
 				const firin = document.getElementById("mrcreatedby");
@@ -93,9 +93,9 @@ export default function RecreateRequisition(){
 				firin.innerHTML = jsonData.sncreatedby;
 				const createdby = document.getElementById("checkedby");
 				const createdby2 = document.getElementById("checkedbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
+				// createdby.style.background = "#F26422";
+				createdby.disabled = true;
+				createdby2.disabled = true;
 			}
 			if(jsonData.checkedby !== null){
 				const firin = document.getElementById("checkbywhole");
@@ -103,9 +103,9 @@ export default function RecreateRequisition(){
 				firin.innerHTML = jsonData.checkedby;
 				const createdby = document.getElementById("accpetedby");
 				const createdby2 = document.getElementById("acceptedbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
+				// createdby.style.background = "#F26422";
+				createdby.disabled = true;
+				createdby2.disabled = true;
 			}
 		})
 		.catch((err) => {
@@ -683,6 +683,25 @@ export default function RecreateRequisition(){
 				}
 			});
 	}
+	const delcat = (catid) => {
+		const confirmed = window.confirm('Are you sure you want to delete?');
+		if (confirmed) {
+			const payload = new FormData();
+				payload.append('categid', catid);
+				axiosClient.post('/delete-rqlisting', payload)
+				.then(({data}) => {
+					console.log(data);
+					loadlisitingRnmn(topid);
+				})
+				.catch((err) => {
+					alert("There's an issue in deleting!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+			});
+		}
+	}
 	return (
 		<>
 		<div className="container">
@@ -745,7 +764,7 @@ export default function RecreateRequisition(){
 					<hr />
 				{rowData && (
 					<div className="mt-5 mb-3">
-						<table className="shipmenttable" id="mrreqtable">
+						<table className="shipmenttable2" id="mrreqtable">
 						<tr>
 							<th>SL No</th>
 							<th>Packing No.</th>
@@ -757,6 +776,7 @@ export default function RecreateRequisition(){
 							<th>Quantity</th>
 							<th>Remark</th>
 							<th>Update</th>
+							<th>Action</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
@@ -776,6 +796,7 @@ export default function RecreateRequisition(){
 								<td>{row.addqty}</td>
 								<td></td>
 								<td><button className="categbtn" onClick={() => updatereqlist(row.id)} style={{width: "80%"}}>Update</button></td>
+								<td><button onClick={() => delcat(row.id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button></td>
 							</tr>
 						))}
 						</table>
@@ -982,7 +1003,7 @@ export default function RecreateRequisition(){
 					<div className="mt-5 mb-3">
 					Search: <input type="text" id="searchinput" onKeyUp={SearchTable} placeholder="Search for serial...." />
 						<input type="text"style={{display: "none"}} value={lssid}/>
-						<table className="shipmenttable mt-3" id="serialtable">
+						<table className="shipmenttable2 mt-3" id="serialtable">
 						<tr>
 							<th>SL No</th>
 							<th>Select</th>

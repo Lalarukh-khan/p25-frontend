@@ -368,7 +368,7 @@ export default function AddMaterial(){
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={AddMaterial}>Add Material</button>
 						</div>
-						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>Material Added Successfully!</h5>
+						<h5 className="h5heading mt-3 sccssmsg" id="matconfirm" style={{display: 'none'}}>Material Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-3 col-md-3 col-sm-12"></div>

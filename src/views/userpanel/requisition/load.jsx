@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosClient from '../../../axios-client';
 import { useStateContext } from "../../contexts/ContextProvider";
 import { Modal } from 'react-bootstrap';
+import html2pdf from 'html2pdf.js';
 
 export default function LoadRequisition(){
 	const [serialModal, setSerialModal] = useState(false);
@@ -34,6 +35,7 @@ export default function LoadRequisition(){
 		loadlisitingRnmn(id);
 		document.getElementById("mainheadingtt").innerText = "Update Material Requisition";
 		document.getElementById("checkedby").disabled = "true";
+		document.getElementById("btnsnby").disabled = "true";
 		document.getElementById("checkedbyrjct").disabled = "true";
 		document.getElementById("accpetedby").disabled = "true";
 		document.getElementById("acceptedbyrjct").disabled = "true";
@@ -49,31 +51,6 @@ export default function LoadRequisition(){
 		axiosClient.post('/check-usercontrol', payload)
 		.then(({data}) => {
 			const jsonData = data.data[0];
-			if(jsonData.approvedby !== null){
-				const firin = document.getElementById("approvebywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.approvedby;
-			}
-			if(jsonData.acceptedby !== null){
-				const firin = document.getElementById("accptbywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.acceptedby;
-				const createdby = document.getElementById("reviewby");
-				const createdby2 = document.getElementById("reviewbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
-			if(jsonData.reviewby !== null){
-				const firin = document.getElementById("rvwbywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.reviewby;
-				const createdby = document.getElementById("approveby");
-				const createdby2 = document.getElementById("approvebyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
 			if(jsonData.mrcreatedby !== null){
 				const firin = document.getElementById("mrcreatedby");
 				firin.innerHTML = "";
@@ -95,6 +72,31 @@ export default function LoadRequisition(){
 				firin.innerHTML = jsonData.checkedby;
 				const createdby = document.getElementById("accpetedby");
 				const createdby2 = document.getElementById("acceptedbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.approvedby !== null){
+				const firin = document.getElementById("approvebywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.approvedby;
+			}
+			if(jsonData.acceptedby !== null){
+				const firin = document.getElementById("accptbywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.acceptedby;
+				const createdby = document.getElementById("reviewby");
+				const createdby2 = document.getElementById("reviewbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.reviewby !== null){
+				const firin = document.getElementById("rvwbywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.reviewby;
+				const createdby = document.getElementById("approveby");
+				const createdby2 = document.getElementById("approvebyrjct");
 				createdby.style.background = "#F26422";
 				createdby.disabled = false;
 				createdby2.disabled = false;
@@ -568,9 +570,34 @@ export default function LoadRequisition(){
 			}       
 		}
 	}
+	const delcat = (catid) => {
+		const confirmed = window.confirm('Are you sure you want to delete?');
+		if (confirmed) {
+			const payload = new FormData();
+				payload.append('categid', catid);
+				axiosClient.post('/delete-rqlisting', payload)
+				.then(({data}) => {
+					console.log(data);
+					loadlisitingRnmn(topid);
+				})
+				.catch((err) => {
+					alert("There's an issue in deleting!");
+					const response = err.response;
+					if (response && response.status === 422) {
+						console.log(response.data.message);
+					}
+			});
+		}
+	}
+	const printpage = () => {
+		var element = document.getElementById('getprint');
+		html2pdf()
+			.from(element)
+			.save('material_requisition.pdf');
+	}
 	return (
 		<>
-		<div className="container">
+		<div className="container" id="getprint">
 					<div className="row  mb-5 pt-3 pb-3" style={{background: "#9e9e9e"}}>
 						<div className="col-lg-4 col-md-4 col-sm-12">
 							<h3 style={{color: "#000", marginTop: "20px"}}>Material Requistion (MR)</h3>
@@ -630,7 +657,7 @@ export default function LoadRequisition(){
 					<hr />
 				{rowData && (
 					<div className="mt-5 mb-3">
-						<table className="shipmenttable" id="mrreqtable">
+						<table className="shipmenttable2" id="mrreqtable">
 						<tr>
 							<th>SL No</th>
 							<th>Packing No.</th>
@@ -641,6 +668,7 @@ export default function LoadRequisition(){
 							<th>Unit</th>
 							<th>Quantity</th>
 							<th>Remark</th>
+							<th>Action</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
@@ -659,6 +687,7 @@ export default function LoadRequisition(){
 								<td>{row.unit}</td>
 								<td>{row.addqty}</td>
 								<td></td>
+								<td><button onClick={() => delcat(row.id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button></td>
 							</tr>
 						))}
 						</table>
@@ -681,7 +710,7 @@ export default function LoadRequisition(){
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading" style={{visibility: "hidden"}}>S/R Creator By: TVN Head</h5>
-							<button className="categbtn" disabled style={{background: "grey"}}>Print</button>
+							<button className="categbtn" style={{background: "#F26422"}} onClick={printpage}>Print</button>
 					</div>
 				</div>
 				<div className="row" style={{marginTop: "100px", marginBottom: "100px"}}>
@@ -764,7 +793,7 @@ export default function LoadRequisition(){
 					<div className="mt-5 mb-3">
 					Search: <input type="text" id="searchinput" onKeyUp={SearchTable} placeholder="Search for serial...." />
 						<input type="text"style={{display: "none"}} value={lssid}/>
-						<table className="shipmenttable mt-3" id="serialtable">
+						<table className="shipmenttable2 mt-3" id="serialtable">
 						<tr>
 							<th>SL No</th>
 							<th>Select</th>

@@ -140,7 +140,7 @@ export default function UserInformation(){
 							<h6 className="h5heading" style={{visibility: "hidden"}}>Upload</h6>
 							<button className="categbtn" id="categbtn" onClick={AddManufecturer}>Add User</button>
 						</div>
-						<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none'}}>User Has Been Added Successfully!</h5>
+						<h5 className="h5heading mt-3 sccssmsg" id="matconfirm" style={{display: 'none'}}>User Has Been Added Successfully!</h5>
 					</div>
 				</div>
 				<div className="col-lg-2 col-md-2 col-sm-12"></div>
