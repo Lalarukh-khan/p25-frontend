@@ -60,31 +60,6 @@ export default function LoadRequisition(){
 		axiosClient.post('/check-usercontrol', payload)
 		.then(({data}) => {
 			const jsonData = data.data[0];
-			if(jsonData.mrcreatedby !== null){
-				const firin = document.getElementById("mrcreatedby");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.mrcreatedby;
-			}
-			if(jsonData.sncreatedby !== null){
-				const firin = document.getElementById("sncreatedby");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.sncreatedby;
-				const createdby = document.getElementById("checkedby");
-				const createdby2 = document.getElementById("checkedbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
-			if(jsonData.checkedby !== null){
-				const firin = document.getElementById("checkbywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.checkedby;
-				const createdby = document.getElementById("accpetedby");
-				const createdby2 = document.getElementById("acceptedbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
 			if(jsonData.approvedby !== null){
 				const firin = document.getElementById("approvebywhole");
 				firin.innerHTML = "";
@@ -106,6 +81,31 @@ export default function LoadRequisition(){
 				firin.innerHTML = jsonData.reviewby;
 				const createdby = document.getElementById("approveby");
 				const createdby2 = document.getElementById("approvebyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.mrcreatedby !== null){
+				const firin = document.getElementById("mrcreatedby");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.mrcreatedby;
+			}
+			if(jsonData.sncreatedby !== null){
+				const firin = document.getElementById("sncreatedby");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.sncreatedby;
+				const createdby = document.getElementById("checkedby");
+				const createdby2 = document.getElementById("checkedbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.checkedby !== null){
+				const firin = document.getElementById("checkbywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.checkedby;
+				const createdby = document.getElementById("accpetedby");
+				const createdby2 = document.getElementById("acceptedbyrjct");
 				createdby.style.background = "#F26422";
 				createdby.disabled = false;
 				createdby2.disabled = false;
