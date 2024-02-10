@@ -33,6 +33,14 @@ export default function LoadRequisition(){
 		setTopid(id);
 		usercontrol(id);
 		loadlisitingRnmn(id);
+		// const myDivnew = document.getElementById('approvebywhole');
+		// if (myDivnew.querySelector('button')) {
+		// 	console.log("here");
+		// 	document.getElementById("prntbtn").style.background = "grey";
+		// } else {
+		// 	console.log("here 2");
+		// 	document.getElementById("prntbtn").style.background = "#F26422";
+		// }
 		document.getElementById("mainheadingtt").innerText = "Update Material Requisition";
 		document.getElementById("checkedby").disabled = "true";
 		document.getElementById("btnsnby").disabled = "true";
@@ -361,9 +369,14 @@ export default function LoadRequisition(){
 	// 	});
 	// }
 	const addsn = (lsid, matid) => {
-		loadserials(matid);
-		setLsid(lsid);
-		OpenSerialModal();
+		const myDiv = document.getElementById('sncreatedby');
+		if (myDiv.querySelector('button')) {
+			loadserials(matid);
+			setLsid(lsid);
+			OpenSerialModal();
+		} else {
+			console.log("No");
+		}
 	}
 	const storesn = () => {
 		const checkboxes = document.querySelectorAll('#serialtable input[type="checkbox"]');
@@ -570,30 +583,35 @@ export default function LoadRequisition(){
 			}       
 		}
 	}
-	const delcat = (catid) => {
-		const confirmed = window.confirm('Are you sure you want to delete?');
-		if (confirmed) {
-			const payload = new FormData();
-				payload.append('categid', catid);
-				axiosClient.post('/delete-rqlisting', payload)
-				.then(({data}) => {
-					console.log(data);
-					loadlisitingRnmn(topid);
-				})
-				.catch((err) => {
-					alert("There's an issue in deleting!");
-					const response = err.response;
-					if (response && response.status === 422) {
-						console.log(response.data.message);
-					}
-			});
-		}
-	}
+	// const delcat = (catid) => {
+	// 	const confirmed = window.confirm('Are you sure you want to delete?');
+	// 	if (confirmed) {
+	// 		const payload = new FormData();
+	// 			payload.append('categid', catid);
+	// 			axiosClient.post('/delete-rqlisting', payload)
+	// 			.then(({data}) => {
+	// 				console.log(data);
+	// 				loadlisitingRnmn(topid);
+	// 			})
+	// 			.catch((err) => {
+	// 				alert("There's an issue in deleting!");
+	// 				const response = err.response;
+	// 				if (response && response.status === 422) {
+	// 					console.log(response.data.message);
+	// 				}
+	// 		});
+	// 	}
+	// }
 	const printpage = () => {
-		var element = document.getElementById('getprint');
-		html2pdf()
-			.from(element)
-			.save('material_requisition.pdf');
+		const myDiv = document.getElementById('approvebywhole');
+		if (myDiv.querySelector('button')) {
+			console.log("Can't print!")
+		} else {
+			var element = document.getElementById('getprint');
+			html2pdf()
+				.from(element)
+				.save('material_requisition.pdf');
+		}
 	}
 	return (
 		<>
@@ -668,7 +686,7 @@ export default function LoadRequisition(){
 							<th>Unit</th>
 							<th>Quantity</th>
 							<th>Remark</th>
-							<th>Action</th>
+							<th>Update S/N</th>
 						</tr>
 						{rowData.map((row, index) => (
 							<tr key={row.id}>
@@ -687,7 +705,7 @@ export default function LoadRequisition(){
 								<td>{row.unit}</td>
 								<td>{row.addqty}</td>
 								<td></td>
-								<td><button onClick={() => delcat(row.id)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-x"></i></button></td>
+								<td><button onClick={() => addsn(row.id, row.matid)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></button></td>
 							</tr>
 						))}
 						</table>
@@ -710,7 +728,7 @@ export default function LoadRequisition(){
 					</div>
 					<div className="col-lg-3 col-md-3 col-sm-3">
 							<h5 className="h5heading" style={{visibility: "hidden"}}>S/R Creator By: TVN Head</h5>
-							<button className="categbtn" style={{background: "#F26422"}} onClick={printpage}>Print</button>
+							<button className="categbtn" id="prntbtn" onClick={printpage} style={{background: "#F26422"}}>Print</button>
 					</div>
 				</div>
 				<div className="row" style={{marginTop: "100px", marginBottom: "100px"}}>
