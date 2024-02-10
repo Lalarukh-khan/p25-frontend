@@ -3,6 +3,7 @@ import axiosClient from '../../../axios-client';
 import { useStateContext } from "../../contexts/ContextProvider";
 import { Modal } from 'react-bootstrap';
 import html2pdf from 'html2pdf.js';
+import { Link } from 'react-router-dom';
 
 export default function LoadRequisition(){
 	const [serialModal, setSerialModal] = useState(false);
@@ -705,7 +706,7 @@ export default function LoadRequisition(){
 								<td>{row.unit}</td>
 								<td>{row.addqty}</td>
 								<td></td>
-								<td><button onClick={() => addsn(row.id, row.matid)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></button></td>
+								<td><Link type="button" onClick={() => addsn(row.id, row.matid)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></Link></td>
 							</tr>
 						))}
 						</table>
