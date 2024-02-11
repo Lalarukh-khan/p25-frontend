@@ -280,7 +280,7 @@ export default function CreateRequisition(){
 						select.appendChild(optionElement);
 					});
 					select.addEventListener('change', function() {
-						loadpackingno(this.value);
+						loadwrhscat(this.value);
 					});
 					selectContainer.appendChild(select);
 			}
@@ -292,6 +292,110 @@ export default function CreateRequisition(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const loadwrhscat = (shpid) => {
+		const payload = new FormData();
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-categorybywarehouse', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+			const selectContainer = document.getElementById('slctshpcat');
+			selectContainer.innerHTML = "";
+			const uniqueValues = new Set();
+				const select = document.createElement('select');
+				select.className = `shp2input`;
+				select.id = `shpcat`;
+				const optionElement = document.createElement('option');
+				optionElement.text = "";
+				select.appendChild(optionElement);
+				// Loop through the options and create <option> elements
+				options.forEach(option => {
+					if (!uniqueValues.has(option.slctcateg)) {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slctcateg;
+						optionElement.text = option.categoryname;
+						select.appendChild(optionElement);
+						uniqueValues.add(option.slctcateg);
+					}
+				});
+				select.addEventListener('change', function() {
+					loadsubcategoriesbyWH(this.value, shpid);
+				});
+				selectContainer.appendChild(select);
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadsubcategoriesbyWH = (catid, shpid) => {
+		const payload = new FormData();
+		payload.append('catid', catid);
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-subcategorybyWH', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const selectContainer = document.getElementById('slctshpsubcat');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctsubcateg`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slctsubcateg)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slctsubcateg;
+							optionElement.text = option.subcategoryname;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slctsubcateg);
+						}
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+			function slctshptype(options) {
+				const selectContainer = document.getElementById('slctshptype');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shptype`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slcttype)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slcttype;
+							optionElement.text = option.typename;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slcttype);
+						}
+					});
+					selectContainer.appendChild(select);
+			}
+			slctshptype(jsonData);
+			loadpackingno(shpid);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+
 	}
 	const loadpackingno = (shpid) => {
 		const payload = new FormData();
@@ -423,53 +527,53 @@ export default function CreateRequisition(){
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
-			function slctshpcat(options) {
-				const selectContainer = document.getElementById('slctshpcat');
-				selectContainer.innerHTML = "";
-				const uniqueValues = new Set();
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpcat`;
-					const optionElement = document.createElement('option');
-					optionElement.text = "";
-					select.appendChild(optionElement);
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						if (!uniqueValues.has(option.slctcateg)) {
-							const optionElement = document.createElement('option');
-							optionElement.value = option.slctcateg;
-							optionElement.text = option.categoryname;
-							select.appendChild(optionElement);
-							uniqueValues.add(option.slctcateg);
-						}
-					});
-					select.addEventListener('change', function() {
-						loadsubcategories(this.value);
-					});
-					selectContainer.appendChild(select);
-			}
-			function slctshptype(options) {
-				const selectContainer = document.getElementById('slctshptype');
-				selectContainer.innerHTML = "";
-				const uniqueValues = new Set();
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shptype`;
-					const optionElement = document.createElement('option');
-					optionElement.text = "";
-					select.appendChild(optionElement);
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						if (!uniqueValues.has(option.slcttype)) {
-							const optionElement = document.createElement('option');
-							optionElement.value = option.slcttype;
-							optionElement.text = option.typename;
-							select.appendChild(optionElement);
-							uniqueValues.add(option.slcttype);
-						}
-					});
-					selectContainer.appendChild(select);
-			}
+			// function slctshpcat(options) {
+			// 	const selectContainer = document.getElementById('slctshpcat');
+			// 	selectContainer.innerHTML = "";
+			// 	const uniqueValues = new Set();
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpcat`;
+			// 		const optionElement = document.createElement('option');
+			// 		optionElement.text = "";
+			// 		select.appendChild(optionElement);
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			if (!uniqueValues.has(option.slctcateg)) {
+			// 				const optionElement = document.createElement('option');
+			// 				optionElement.value = option.slctcateg;
+			// 				optionElement.text = option.categoryname;
+			// 				select.appendChild(optionElement);
+			// 				uniqueValues.add(option.slctcateg);
+			// 			}
+			// 		});
+			// 		select.addEventListener('change', function() {
+			// 			loadsubcategories(this.value);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// }
+			// function slctshptype(options) {
+			// 	const selectContainer = document.getElementById('slctshptype');
+			// 	selectContainer.innerHTML = "";
+			// 	const uniqueValues = new Set();
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shptype`;
+			// 		const optionElement = document.createElement('option');
+			// 		optionElement.text = "";
+			// 		select.appendChild(optionElement);
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			if (!uniqueValues.has(option.slcttype)) {
+			// 				const optionElement = document.createElement('option');
+			// 				optionElement.value = option.slcttype;
+			// 				optionElement.text = option.typename;
+			// 				select.appendChild(optionElement);
+			// 				uniqueValues.add(option.slcttype);
+			// 			}
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// }
 			function slctshpmatname(options) {
 				const selectContainer = document.getElementById('slctshpmatname');
 				selectContainer.innerHTML = "";
@@ -493,8 +597,8 @@ export default function CreateRequisition(){
 					selectContainer.appendChild(select);
 				// }
 			}
-			slctshptype(jsonData);
-			slctshpcat(jsonData);
+			// slctshptype(jsonData);
+			// slctshpcat(jsonData);
 			slctshpmatname(jsonData);
 		})
 		.catch((err) => {
@@ -506,39 +610,39 @@ export default function CreateRequisition(){
 			}
 		});
 	}
-	const loadsubcategories = (categid) => {
-		const payload = new FormData();
-		payload.append('categid', categid);
-		axiosClient.post('/get-subcategory', payload)
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			function createSelect(options) {
-				const selectContainer = document.getElementById('slctshpsubcat');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `slctsubcateg`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.name;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
+	// const loadsubcategories = (categid) => {
+	// 	const payload = new FormData();
+	// 	payload.append('categid', categid);
+	// 	axiosClient.post('/get-subcategory', payload)
+	// 	.then(({data}) => {
+	// 		console.log(data); 
+	// 		const jsonData = data.data;
+	// 		function createSelect(options) {
+	// 			const selectContainer = document.getElementById('slctshpsubcat');
+	// 			selectContainer.innerHTML = "";
+	// 			// if (selectContainer.innerHTML.trim() === '') {
+	// 				const select = document.createElement('select');
+	// 				select.className = `shp2input`;
+	// 				select.id = `slctsubcateg`;
+	// 				// Loop through the options and create <option> elements
+	// 				options.forEach(option => {
+	// 					const optionElement = document.createElement('option');
+	// 					optionElement.value = option.id;
+	// 					optionElement.text = option.name;
+	// 					select.appendChild(optionElement);
+	// 				});
+	// 				selectContainer.appendChild(select);
+	// 			// }
+	// 		}
+	// 		createSelect(jsonData);
+	// 	})
+	// 	.catch((err) => {
+	// 		const response = err.response;
+	// 		if (response && response.status === 422) {
+	// 			console.log(response.data.message);
+	// 		}
+	// 	});
+	// }
 	const loadmatvalues = (matid) => {
 		const payload = new FormData();
 		payload.append('matid', matid);
@@ -927,16 +1031,9 @@ export default function CreateRequisition(){
 				<Modal.Body>
 				
 				<div className="row  mb-3">
-						<div className="col-lg-6 col-md-6 col-sm-12">
+						<div className="col-lg-12 col-md-12 col-sm-12">
 							<h6 className="h5heading">Warehouse</h6>
 							<div id="warehouse-container"></div>
-						</div>
-						<div className="col-lg-6 col-md-6 col-sm-12">
-							<h6 className="h5heading">Packing/Box No.</h6>
-							<div id="slctpackingno" >
-								<select name="" id="" className="shp2input">
-								</select>
-							</div>
 						</div>
 					</div>
 					<div className="row  mb-3">
@@ -956,9 +1053,16 @@ export default function CreateRequisition(){
 						</div>
 					</div>
 					<div className="row  mb-3">
-						<div className="col-lg-12 col-md-12 col-sm-12">
+						<div className="col-lg-6 col-md-6 col-sm-6">
 							<h6 className="h5heading">Material Type</h6>
 							<div id="slctshptype" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Packing/Box No.</h6>
+							<div id="slctpackingno" >
 								<select name="" id="" className="shp2input">
 								</select>
 							</div>
