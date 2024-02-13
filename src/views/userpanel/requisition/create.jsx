@@ -710,7 +710,13 @@ export default function CreateRequisition(){
 		const shpremaining = document.getElementById("shpremaining").value;
 		const shounit = document.getElementById("shounit").value;
 		const shpupdatedqty = document.getElementById("shpupdatedqty").value;
+		const shpaddedqty = document.getElementById("shpaddedqty").value;
 		const shpremainingqty = document.getElementById("shpremainingqty").value;
+		if(shpupdatedqty == 0){
+			const matconfirm2 = document.getElementById("matconfirm2");
+			matconfirm2.style.display = "block";
+		}
+		else{
 		const payload = new FormData();
 		payload.append('rmnm', rmnm);
 		payload.append('slctwrhs', slctwrhs);
@@ -724,6 +730,7 @@ export default function CreateRequisition(){
 		payload.append('shpremaining', shpremaining);
 		payload.append('shounit', shounit);
 		payload.append('shpupdatedqty', shpupdatedqty);
+		payload.append('shpaddedqty', shpaddedqty);
 		payload.append('shpremainingqty', shpremainingqty);
 		axiosClient.post('/add-requisitionlisiting', payload)
 		.then(({data}) => {
@@ -739,10 +746,14 @@ export default function CreateRequisition(){
 		})
 		.catch((err) => {
 			const response = err.response;
+			const matconfirm = document.getElementById("matconfirm");
+			matconfirm.style.display = "block";
+			console.log("error: "+response.data.message);
 			if (response && response.status === 422) {
 				console.log(response.data.message);
 			}
-		});
+		});	
+		}
 	}
 	const storeuserrequisition = (rmnm) =>{
 		const payload = new FormData();
@@ -1115,6 +1126,8 @@ export default function CreateRequisition(){
 							<input type="text" id="shpremainingqty" className="shp2input" readOnly/>
 						</div>
 					</div>
+					<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none', color: 'red'}}>Quantity Limit has been exceeded!</h5>
+					<h5 className="h5heading mt-3" id="matconfirm2" style={{display: 'none', color: 'red'}}>Added Quantity can not be zero!</h5>
 					<div className="row mt-5">
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={addwhreq}>Add</button>

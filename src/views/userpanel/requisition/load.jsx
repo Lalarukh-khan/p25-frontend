@@ -10,6 +10,7 @@ export default function LoadRequisition(){
 	const [rejectModal, setRejectModal] = useState(false);
 	const [lssid, setLsid] = useState("false");
 	const [rowData, setRowData] = useState(null);
+	const [slqty, setSlqty] = useState(null);
 	const [topid, setTopid] = useState(null);
 	const [serialData, setSerialData] = useState(null);
 	const SerialhandleClose = () =>{
@@ -60,31 +61,6 @@ export default function LoadRequisition(){
 		axiosClient.post('/check-usercontrol', payload)
 		.then(({data}) => {
 			const jsonData = data.data[0];
-			if(jsonData.approvedby !== null){
-				const firin = document.getElementById("approvebywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.approvedby;
-			}
-			if(jsonData.acceptedby !== null){
-				const firin = document.getElementById("accptbywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.acceptedby;
-				const createdby = document.getElementById("reviewby");
-				const createdby2 = document.getElementById("reviewbyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
-			if(jsonData.reviewby !== null){
-				const firin = document.getElementById("rvwbywhole");
-				firin.innerHTML = "";
-				firin.innerHTML = jsonData.reviewby;
-				const createdby = document.getElementById("approveby");
-				const createdby2 = document.getElementById("approvebyrjct");
-				createdby.style.background = "#F26422";
-				createdby.disabled = false;
-				createdby2.disabled = false;
-			}
 			if(jsonData.mrcreatedby !== null){
 				const firin = document.getElementById("mrcreatedby");
 				firin.innerHTML = "";
@@ -106,6 +82,31 @@ export default function LoadRequisition(){
 				firin.innerHTML = jsonData.checkedby;
 				const createdby = document.getElementById("accpetedby");
 				const createdby2 = document.getElementById("acceptedbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.approvedby !== null){
+				const firin = document.getElementById("approvebywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.approvedby;
+			}
+			if(jsonData.acceptedby !== null){
+				const firin = document.getElementById("accptbywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.acceptedby;
+				const createdby = document.getElementById("reviewby");
+				const createdby2 = document.getElementById("reviewbyrjct");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
+				createdby2.disabled = false;
+			}
+			if(jsonData.reviewby !== null){
+				const firin = document.getElementById("rvwbywhole");
+				firin.innerHTML = "";
+				firin.innerHTML = jsonData.reviewby;
+				const createdby = document.getElementById("approveby");
+				const createdby2 = document.getElementById("approvebyrjct");
 				createdby.style.background = "#F26422";
 				createdby.disabled = false;
 				createdby2.disabled = false;
@@ -369,10 +370,10 @@ export default function LoadRequisition(){
 	// 		}
 	// 	});
 	// }
-	const addsn = (lsid, matid) => {
+	const addsn = (lsid, matid, addqty) => {
 		const myDiv = document.getElementById('sncreatedby');
 		if (myDiv.querySelector('button')) {
-			loadserials(matid);
+			loadserials(matid, addqty);
 			setLsid(lsid);
 			OpenSerialModal();
 		} else {
@@ -390,19 +391,27 @@ export default function LoadRequisition(){
 		const payload = new FormData();
 		payload.append('lsid', lssid);
 		payload.append('selectedCheckboxes', selectedCheckboxes);
-		axiosClient.post('/update-lisitingsn', payload)
-		.then(({data}) => {
-			console.log(data);
-			loadlisitingRnmn(topid);
-			setSerialModal();
-			checkuserrole(token);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
+		let num11 = parseInt(slqty);
+		let num122 = parseInt(selectedCheckboxes.length);
+		if(num122 <= num11){
+			axiosClient.post('/update-lisitingsn', payload)
+			.then(({data}) => {
+				console.log(data);
+				loadlisitingRnmn(topid);
+				setSerialModal();
+				checkuserrole(token);
+			})
+			.catch((err) => {
+				const response = err.response;
+				if (response && response.status === 422) {
+					console.log(response.data.message);
+				}
+			});
+		}
+		else{
+			const matconfirm = document.getElementById("matconfirm");
+			matconfirm.style.display = "block";
+		}
 	}
 	const checkuserrole = (email) => {
 		const payload = new FormData();
@@ -436,7 +445,8 @@ export default function LoadRequisition(){
 			}
 		});
 	}
-	const loadserials = (matid) => {
+	const loadserials = (matid, addqty) => {
+		setSlqty(addqty);
 		const payload = new FormData();
 		payload.append('matid', matid);
 		console.log("fields"+matid);
@@ -605,9 +615,32 @@ export default function LoadRequisition(){
 	// }
 	const printpage = () => {
 		const myDiv = document.getElementById('approvebywhole');
+		const prntbtnn = document.getElementById('prntbtn');
+		const table = document.getElementById('mrreqtable');
 		if (myDiv.querySelector('button')) {
 			console.log("Can't print!")
 		} else {
+			prntbtnn.style.display = "none";
+			if (table) {
+				const rows = table.querySelectorAll('tr');
+
+				// Loop through each row
+				rows.forEach(function(row) {
+					// Get the last cell of the row
+					const cells = row.querySelectorAll('td');
+					const lastCell = cells[cells.length - 1];
+			
+					// Check if the last cell exists
+					if (lastCell) {
+						// Set the inner HTML of the last cell to an empty string
+						lastCell.innerHTML = '';
+					} else {
+						console.error('Last cell not found in the row.');
+					}
+				});
+			} else {
+				console.error('Table element not found with the specified ID.');
+			}
 			var element = document.getElementById('getprint');
 			html2pdf()
 				.from(element)
@@ -700,13 +733,13 @@ export default function LoadRequisition(){
 									<td dangerouslySetInnerHTML={{ __html: row.addsl }}></td>
 								) : (
 									<td>
-										<button className="categbtn" onClick={() => addsn(row.id, row.matid)} style={{width: "80%"}}>Add S/N</button>
+										<button className="categbtn" onClick={() => addsn(row.id, row.matid, row.addqty)} style={{width: "80%"}}>Add S/N</button>
 									</td>
 								)}
 								<td>{row.unit}</td>
 								<td>{row.addqty}</td>
 								<td></td>
-								<td><Link type="button" onClick={() => addsn(row.id, row.matid)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></Link></td>
+								<td className="updtsnprnt"><Link type="button" onClick={() => addsn(row.id, row.matid, row.addqty)} className="btn btn-danger" style={{width: "20px", height: "28px"}}><i className="bx bx-edit"></i></Link></td>
 							</tr>
 						))}
 						</table>
@@ -829,6 +862,7 @@ export default function LoadRequisition(){
 					</div>
 				)}
 					</div>
+					<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none', color: 'red'}}>Serial Numbers can not be added more than Quantity!</h5>
 					<div className="row mt-5">
 						<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" id="categbtn" onClick={storesn}>Add</button>
