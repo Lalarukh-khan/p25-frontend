@@ -7,6 +7,7 @@ export default function RecreateRequisition(){
 	const [serialModal, setSerialModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
 	const [toneModal, setToneModal] = useState(false);
+	const [toneModal2, setToneModal2] = useState(false);
 	const [lssid, setLsid] = useState("false");
 	const [listid, setlistid] = useState(null);
 	const [rowData, setRowData] = useState(null);
@@ -20,6 +21,12 @@ export default function RecreateRequisition(){
 	}
 	const TonehandleClose = () =>{
 		setToneModal(false);
+	}
+	const OpenToneModal2 = () =>{
+		setToneModal2(true);
+	}
+	const TonehandleClose2 = () =>{
+		setToneModal2(false);
 	}
 	const OpenSerialModal = () =>{
 		setSerialModal(true);
@@ -245,7 +252,7 @@ export default function RecreateRequisition(){
 						select.appendChild(optionElement);
 					});
 					select.addEventListener('change', function() {
-						loadpackingno(this.value);
+						loadwrhscat(this.value);
 					});
 					selectContainer.appendChild(select);
 			}
@@ -257,6 +264,110 @@ export default function RecreateRequisition(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const loadwrhscat = (shpid) => {
+		const payload = new FormData();
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-categorybywarehouse', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+			const selectContainer = document.getElementById('slctshpcat');
+			selectContainer.innerHTML = "";
+			const uniqueValues = new Set();
+				const select = document.createElement('select');
+				select.className = `shp2input`;
+				select.id = `shpcat`;
+				const optionElement = document.createElement('option');
+				optionElement.text = "";
+				select.appendChild(optionElement);
+				// Loop through the options and create <option> elements
+				options.forEach(option => {
+					if (!uniqueValues.has(option.slctcateg)) {
+						const optionElement = document.createElement('option');
+						optionElement.value = option.slctcateg;
+						optionElement.text = option.categoryname;
+						select.appendChild(optionElement);
+						uniqueValues.add(option.slctcateg);
+					}
+				});
+				select.addEventListener('change', function() {
+					loadsubcategoriesbyWH(this.value, shpid);
+				});
+				selectContainer.appendChild(select);
+			}
+			createSelect(jsonData);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+	}
+	const loadsubcategoriesbyWH = (catid, shpid) => {
+		const payload = new FormData();
+		payload.append('catid', catid);
+		payload.append('shpid', shpid);
+		axiosClient.post('/get-subcategorybyWH', payload)
+		.then(({data}) => {
+			console.log(data); 
+			const jsonData = data.data;
+			function createSelect(options) {
+				const selectContainer = document.getElementById('slctshpsubcat');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+				// if (selectContainer.innerHTML.trim() === '') {
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `slctsubcateg`;
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slctsubcateg)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slctsubcateg;
+							optionElement.text = option.subcategoryname;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slctsubcateg);
+						}
+					});
+					selectContainer.appendChild(select);
+				// }
+			}
+			createSelect(jsonData);
+			function slctshptype(options) {
+				const selectContainer = document.getElementById('slctshptype');
+				selectContainer.innerHTML = "";
+				const uniqueValues = new Set();
+					const select = document.createElement('select');
+					select.className = `shp2input`;
+					select.id = `shptype`;
+					const optionElement = document.createElement('option');
+					optionElement.text = "";
+					select.appendChild(optionElement);
+					// Loop through the options and create <option> elements
+					options.forEach(option => {
+						if (!uniqueValues.has(option.slcttype)) {
+							const optionElement = document.createElement('option');
+							optionElement.value = option.slcttype;
+							optionElement.text = option.typename;
+							select.appendChild(optionElement);
+							uniqueValues.add(option.slcttype);
+						}
+					});
+					selectContainer.appendChild(select);
+			}
+			slctshptype(jsonData);
+			loadpackingno(shpid);
+		})
+		.catch((err) => {
+			const response = err.response;
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});
+
 	}
 	const loadpackingno = (shpid) => {
 		const payload = new FormData();
@@ -288,7 +399,89 @@ export default function RecreateRequisition(){
 					selectContainer.appendChild(select);
 				// }
 			}
+			// function slctshpcat(options) {
+			// 	const selectContainer = document.getElementById('slctshpcat');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpcat`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slctcateg;
+			// 			optionElement.text = option.categoryname;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
+			// function slctshpsubcat(options) {
+			// 	const selectContainer = document.getElementById('slctshpsubcat');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpsubcat`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slctsubcateg;
+			// 			optionElement.text = option.subcategoryname;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
+			// function slctshptype(options) {
+			// 	const selectContainer = document.getElementById('slctshptype');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shptype`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slcttype;
+			// 			optionElement.text = option.typename;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
+			// function slctshpmatname(options) {
+			// 	const selectContainer = document.getElementById('slctshpmatname');
+			// 	selectContainer.innerHTML = "";
+			// 	// if (selectContainer.innerHTML.trim() === '') {
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpmatname`;
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			const optionElement = document.createElement('option');
+			// 			optionElement.value = option.slctmat;
+			// 			optionElement.text = option.materialname;
+			// 			select.appendChild(optionElement);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// 	// }
+			// }
 			slctpackingno(jsonData);
+			// slctshpcat(jsonData);
+			// slctshpsubcat(jsonData);
+			// slctshptype(jsonData);
+			// slctshpmatname(jsonData);
+			// // document.getElementById("packingno").value = jsonData.packingno;
+			// // document.getElementById("shpcat").value = jsonData.categoryname;
+			// // document.getElementById("shpsubcat").value = jsonData.subcategoryname;
+			// // document.getElementById("shptype").value = jsonData.typename;
+			// document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			// document.getElementById("shppurchase").value = jsonData[0].quantity;
+			// document.getElementById("shpreceived").value = jsonData[0].receivedqty;
+			// document.getElementById("shpremaining").value = jsonData[0].remainingqty;
+			// document.getElementById("shpmatdescription").innerText = jsonData[0].materialdescription;
+			// document.getElementById("shounit").value = jsonData[0].materialunit;
 		})
 		.catch((err) => {
 			const response = err.response;
@@ -306,53 +499,53 @@ export default function RecreateRequisition(){
 		.then(({data}) => {
 			console.log(data); 
 			const jsonData = data.data;
-			function slctshpcat(options) {
-				const selectContainer = document.getElementById('slctshpcat');
-				selectContainer.innerHTML = "";
-				const uniqueValues = new Set();
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shpcat`;
-					const optionElement = document.createElement('option');
-					optionElement.text = "";
-					select.appendChild(optionElement);
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						if (!uniqueValues.has(option.slctcateg)) {
-							const optionElement = document.createElement('option');
-							optionElement.value = option.slctcateg;
-							optionElement.text = option.categoryname;
-							select.appendChild(optionElement);
-							uniqueValues.add(option.slctcateg);
-						}
-					});
-					select.addEventListener('change', function() {
-						loadsubcategories(this.value);
-					});
-					selectContainer.appendChild(select);
-			}
-			function slctshptype(options) {
-				const selectContainer = document.getElementById('slctshptype');
-				selectContainer.innerHTML = "";
-				const uniqueValues = new Set();
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `shptype`;
-					const optionElement = document.createElement('option');
-					optionElement.text = "";
-					select.appendChild(optionElement);
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						if (!uniqueValues.has(option.slcttype)) {
-							const optionElement = document.createElement('option');
-							optionElement.value = option.slcttype;
-							optionElement.text = option.typename;
-							select.appendChild(optionElement);
-							uniqueValues.add(option.slcttype);
-						}
-					});
-					selectContainer.appendChild(select);
-			}
+			// function slctshpcat(options) {
+			// 	const selectContainer = document.getElementById('slctshpcat');
+			// 	selectContainer.innerHTML = "";
+			// 	const uniqueValues = new Set();
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shpcat`;
+			// 		const optionElement = document.createElement('option');
+			// 		optionElement.text = "";
+			// 		select.appendChild(optionElement);
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			if (!uniqueValues.has(option.slctcateg)) {
+			// 				const optionElement = document.createElement('option');
+			// 				optionElement.value = option.slctcateg;
+			// 				optionElement.text = option.categoryname;
+			// 				select.appendChild(optionElement);
+			// 				uniqueValues.add(option.slctcateg);
+			// 			}
+			// 		});
+			// 		select.addEventListener('change', function() {
+			// 			loadsubcategories(this.value);
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// }
+			// function slctshptype(options) {
+			// 	const selectContainer = document.getElementById('slctshptype');
+			// 	selectContainer.innerHTML = "";
+			// 	const uniqueValues = new Set();
+			// 		const select = document.createElement('select');
+			// 		select.className = `shp2input`;
+			// 		select.id = `shptype`;
+			// 		const optionElement = document.createElement('option');
+			// 		optionElement.text = "";
+			// 		select.appendChild(optionElement);
+			// 		// Loop through the options and create <option> elements
+			// 		options.forEach(option => {
+			// 			if (!uniqueValues.has(option.slcttype)) {
+			// 				const optionElement = document.createElement('option');
+			// 				optionElement.value = option.slcttype;
+			// 				optionElement.text = option.typename;
+			// 				select.appendChild(optionElement);
+			// 				uniqueValues.add(option.slcttype);
+			// 			}
+			// 		});
+			// 		selectContainer.appendChild(select);
+			// }
 			function slctshpmatname(options) {
 				const selectContainer = document.getElementById('slctshpmatname');
 				selectContainer.innerHTML = "";
@@ -376,8 +569,8 @@ export default function RecreateRequisition(){
 					selectContainer.appendChild(select);
 				// }
 			}
-			slctshptype(jsonData);
-			slctshpcat(jsonData);
+			// slctshptype(jsonData);
+			// slctshpcat(jsonData);
 			slctshpmatname(jsonData);
 		})
 		.catch((err) => {
@@ -389,46 +582,13 @@ export default function RecreateRequisition(){
 			}
 		});
 	}
-	const loadsubcategories = (categid) => {
-		const payload = new FormData();
-		payload.append('categid', categid);
-		axiosClient.post('/get-subcategory', payload)
-		.then(({data}) => {
-			console.log(data); 
-			const jsonData = data.data;
-			function createSelect(options) {
-				const selectContainer = document.getElementById('slctshpsubcat');
-				selectContainer.innerHTML = "";
-				// if (selectContainer.innerHTML.trim() === '') {
-					const select = document.createElement('select');
-					select.className = `shp2input`;
-					select.id = `slctsubcateg`;
-					// Loop through the options and create <option> elements
-					options.forEach(option => {
-						const optionElement = document.createElement('option');
-						optionElement.value = option.id;
-						optionElement.text = option.name;
-						select.appendChild(optionElement);
-					});
-					selectContainer.appendChild(select);
-				// }
-			}
-			createSelect(jsonData);
-		})
-		.catch((err) => {
-			const response = err.response;
-			if (response && response.status === 422) {
-				console.log(response.data.message);
-			}
-		});
-	}
 	const loadmatvalues = (matid) => {
 		const payload = new FormData();
 		payload.append('matid', matid);
 		axiosClient.post('/get-matvalbypack', payload)
 		.then(({data}) => {
 			const jsonData = data.data;
-			document.getElementById("shpupdatedqty").value = jsonData[0].total_sn;
+			document.getElementById("shpaddedqty").value = jsonData[0].total_sn;
 			document.getElementById("shppurchase").value = jsonData[0].quantity;
 			document.getElementById("shpreceived").value = jsonData[0].receivedqty;
 			document.getElementById("shpremaining").value = jsonData[0].remainingqty;
@@ -441,7 +601,8 @@ export default function RecreateRequisition(){
 				if (!isNaN(number1) && !isNaN(number2)) {
 					const result = number1 - number2;
 					if(number2 == 0){
-						rmval.value = "";
+						document.getElementById('shpupdatedqty').value = "0";
+						rmval.value = "0";
 					}
 					else{
 						rmval.value = result;
@@ -459,22 +620,22 @@ export default function RecreateRequisition(){
 		});
 
 	}
-	// const calcaddq = () => {
-	// 	const input1Value = document.getElementById('shpreceived').value;
-	// 	const input2Value = document.getElementById('shpupdatedqty').value;
-	// 	const resultValue = document.getElementById('shpremainingqty');
-	// 	const number1 = parseFloat(input1Value);
-	// 	const number2 = parseFloat(input2Value);
-	// 	if(number2 <= number1){
-	// 		if (!isNaN(number1) && !isNaN(number2)) {
-	// 			const result = number1 - number2;
-	// 			resultValue.value = result;
-	// 		}
-	// 	}
-	// 	else{
-	// 		document.getElementById('shpupdatedqty').value = number1;
-	// 	}
-	// }
+	const calcaddq = () => {
+		const input2Value = document.getElementById('shpupdatedqty').value;
+		const input1Value = document.getElementById('shpaddedqty').value;
+		const resultValue = document.getElementById('shpremainingqty');
+		const number1 = parseFloat(input1Value);
+		const number2 = parseFloat(input2Value);
+		if(number2 <= number1){
+			if (!isNaN(number1) && !isNaN(number2)) {
+					const result = number1 - number2;
+					resultValue.value = result;
+			}
+		}
+		else{
+			document.getElementById('shpupdatedqty').value = number1;
+		}
+	}
 	const loadserials = (matid) => {
 		const payload = new FormData();
 		payload.append('matid', matid);
@@ -490,6 +651,65 @@ export default function RecreateRequisition(){
 				console.log(response.data.message);
 			}
 		});
+	}
+	const addwhreq = () => {
+		const rmnm = document.getElementById("rmnumb").value;
+		const slctwrhs = document.getElementById("slctwrhs").value;
+		const packingno = document.getElementById("packingno").value;
+		const shpcat = document.getElementById("shpcat").value;
+		const slctshpsubcat = document.getElementById("slctsubcateg").value;
+		const shptype = document.getElementById("shptype").value;
+		const shpmatname = document.getElementById("shpmatname").value;
+		const shppurchase = document.getElementById("shppurchase").value;
+		const shpreceived = document.getElementById("shpreceived").value;
+		const shpremaining = document.getElementById("shpremaining").value;
+		const shounit = document.getElementById("shounit").value;
+		const shpupdatedqty = document.getElementById("shpupdatedqty").value;
+		const shpaddedqty = document.getElementById("shpaddedqty").value;
+		const shpremainingqty = document.getElementById("shpremainingqty").value;
+		if(shpupdatedqty == 0){
+			const matconfirm2 = document.getElementById("matconfirm2");
+			matconfirm2.style.display = "block";
+		}
+		else{
+		const payload = new FormData();
+		payload.append('rmnm', rmnm);
+		payload.append('slctwrhs', slctwrhs);
+		payload.append('packingno', packingno);
+		payload.append('shpcat', shpcat);
+		payload.append('slctshpsubcat', slctshpsubcat);
+		payload.append('shptype', shptype);
+		payload.append('shpmatname', shpmatname);
+		payload.append('shppurchase', shppurchase);
+		payload.append('shpreceived', shpreceived);
+		payload.append('shpremaining', shpremaining);
+		payload.append('shounit', shounit);
+		payload.append('shpupdatedqty', shpupdatedqty);
+		payload.append('shpaddedqty', shpaddedqty);
+		payload.append('shpremainingqty', shpremainingqty);
+		axiosClient.post('/add-requisitionlisiting', payload)
+		.then(({data}) => {
+			console.log(data);
+			TonehandleClose();
+			TonehandleClose2();
+			// if(storeuser == "false"){
+			// 	storeuserrequisition(rmnm);
+			// 	setStoreUser("true");
+			// }
+			// const shpid = data.data;
+			loadlisitingRnmn(rmnm);
+			// setRowData(data.data);
+		})
+		.catch((err) => {
+			const response = err.response;
+			const matconfirm = document.getElementById("matconfirm");
+			matconfirm.style.display = "block";
+			console.log("error: "+response.data.message);
+			if (response && response.status === 422) {
+				console.log(response.data.message);
+			}
+		});	
+		}
 	}
 	const snbyuser = () => {
 		const payload = new FormData();
@@ -628,6 +848,11 @@ export default function RecreateRequisition(){
 		OpenToneModal();
 		loadwarehouse();
 	}
+	const addrequest = () => {
+		OpenToneModal2();
+		loadwarehouse();
+		loadpackingno(0);
+	}
 	const updatewhreq = () => {
 			const slctwrhs = document.getElementById("slctwrhs").value;
 			const packingno = document.getElementById("packingno").value;
@@ -713,7 +938,7 @@ export default function RecreateRequisition(){
 							<h5 style={{color: "#000", marginTop: "25px"}}>P25 project</h5>
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
-							<h5 className="h5heading">RM Number</h5>
+							<h5 className="h5heading">MR Number</h5>
 							<input type="text" id="rmnumb" placeholder="xxxxx" className="shp2input" readOnly/>
 						</div>
 						<div className="col-lg-3 col-md-3 col-sm-12">
@@ -786,7 +1011,7 @@ export default function RecreateRequisition(){
 								<td>{row.materialdesc}</td>
 								<td>{row.typename}</td>
 								{row.addsl ? (
-									<td>{row.addsl}</td>
+									<td dangerouslySetInnerHTML={{ __html: row.addsl }}></td>
 								) : (
 									<td>
 										<button className="categbtn" onClick={() => addsn(row.id, row.matid)} style={{width: "80%"}}>Add S/N</button>
@@ -803,6 +1028,9 @@ export default function RecreateRequisition(){
 					</div>
 				)}
 				<div className="row">
+						<div className="col-lg-2 col-md-2 col-sm-12">
+							<button className="categbtn" onClick={addrequest} id="addmatbtn">Add Material</button>
+						</div>
 					<div className="col-lg-2 col-md-2 col-sm-12">
 						<button className="categbtn" onClick={updaterequest}>Send Material Request</button>
 					</div>
@@ -904,16 +1132,9 @@ export default function RecreateRequisition(){
 				<Modal.Body>
 				
 				<div className="row  mb-3">
-						<div className="col-lg-6 col-md-6 col-sm-12">
+						<div className="col-lg-12 col-md-12 col-sm-12">
 							<h6 className="h5heading">Warehouse</h6>
 							<div id="warehouse-container"></div>
-						</div>
-						<div className="col-lg-6 col-md-6 col-sm-12">
-							<h6 className="h5heading">Packing/Box No.</h6>
-							<div id="slctpackingno" >
-								<select name="" id="" className="shp2input">
-								</select>
-							</div>
 						</div>
 					</div>
 					<div className="row  mb-3">
@@ -933,9 +1154,16 @@ export default function RecreateRequisition(){
 						</div>
 					</div>
 					<div className="row  mb-3">
-						<div className="col-lg-12 col-md-12 col-sm-12">
+						<div className="col-lg-6 col-md-6 col-sm-6">
 							<h6 className="h5heading">Material Type</h6>
 							<div id="slctshptype" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Packing/Box No.</h6>
+							<div id="slctpackingno" >
 								<select name="" id="" className="shp2input">
 								</select>
 							</div>
@@ -971,22 +1199,130 @@ export default function RecreateRequisition(){
 						</div>
 					</div>
 					<div className="row  mb-3">
-						<div className="col-lg-4 col-md-4 col-sm-12">
+						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h6 className="h5heading">Unit</h6>
 							<input type="text" id="shounit" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-4 col-md-4 col-sm-12">
-							<h6 className="h5heading">Add Quantity</h6>
-							<input type="text" id="shpupdatedqty" className="shp2input" readOnly/>
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">S/N Quantity</h6>
+							<input type="text" id="shpaddedqty" className="shp2input" readOnly/>
 						</div>
-						<div className="col-lg-4 col-md-4 col-sm-12">
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">Add Quantity</h6>
+							<input type="text" id="shpupdatedqty" className="shp2input" onChange={calcaddq} />
+						</div>
+						<div className="col-lg-3 col-md-3 col-sm-12">
 							<h6 className="h5heading">Remaining  Quantity</h6>
 							<input type="text" id="shpremainingqty" className="shp2input" readOnly/>
 						</div>
 					</div>
+					<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none', color: 'red'}}>Quantity Limit has been exceeded!</h5>
+					<h5 className="h5heading mt-3" id="matconfirm2" style={{display: 'none', color: 'red'}}>Added Quantity can not be zero!</h5>
 					<div className="row mt-5">
-						<div className="col-lg-2 col-md-2 col-sm-12">
+						<div className="col-lg-2 col-md-2 col-sm-12" id="updtwrhs">
 						<button className="categbtn" id="categbtn" onClick={updatewhreq}>Update</button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
+			<Modal show={toneModal2} centered onHide={TonehandleClose2} data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true" className="modal-lg">
+				<Modal.Header>
+					<button id="closemodal" type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"
+						onClick={TonehandleClose2}
+					></button>
+				</Modal.Header>
+				<Modal.Body>
+				
+				<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Warehouse</h6>
+							<div id="warehouse-container"></div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Category</h6>
+							<div id="slctshpcat" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Sub Category</h6>
+							<div id="slctshpsubcat" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-6 col-md-6 col-sm-6">
+							<h6 className="h5heading">Material Type</h6>
+							<div id="slctshptype" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+						<div className="col-lg-6 col-md-6 col-sm-12">
+							<h6 className="h5heading">Packing/Box No.</h6>
+							<div id="slctpackingno" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Component</h6>
+							<div id="slctshpmatname" >
+								<select name="" id="" className="shp2input">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Purchased Quantity</h6>
+							<input type="text" id="shppurchase" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Received Quantity</h6>
+							<input type="text" id="shpreceived" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-4 col-md-4 col-sm-12">
+							<h6 className="h5heading">Remaining Quantity</h6>
+							<input type="text" id="shpremaining" className="shp2input" readOnly/>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-12 col-md-12 col-sm-12">
+							<h6 className="h5heading">Material Description</h6>
+							<textarea id="shpmatdescription" rows="10" className="shp2input" readOnly></textarea>
+						</div>
+					</div>
+					<div className="row  mb-3">
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">Unit</h6>
+							<input type="text" id="shounit" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">S/N Quantity</h6>
+							<input type="text" id="shpaddedqty" className="shp2input" readOnly/>
+						</div>
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">Add Quantity</h6>
+							<input type="text" id="shpupdatedqty" className="shp2input" onChange={calcaddq} />
+						</div>
+						<div className="col-lg-3 col-md-3 col-sm-12">
+							<h6 className="h5heading">Remaining  Quantity</h6>
+							<input type="text" id="shpremainingqty" className="shp2input" readOnly/>
+						</div>
+					</div>
+					<h5 className="h5heading mt-3" id="matconfirm" style={{display: 'none', color: 'red'}}>Quantity Limit has been exceeded!</h5>
+					<h5 className="h5heading mt-3" id="matconfirm2" style={{display: 'none', color: 'red'}}>Added Quantity can not be zero!</h5>
+					<div className="row mt-5">
+						<div className="col-lg-2 col-md-2 col-sm-12" id="updtwrhs">
+						<button className="categbtn" id="categbtn" onClick={addwhreq}>Add</button>
 						</div>
 					</div>
 				</Modal.Body>

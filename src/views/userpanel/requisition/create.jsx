@@ -739,6 +739,9 @@ export default function CreateRequisition(){
 			if(storeuser == "false"){
 				storeuserrequisition(rmnm);
 				setStoreUser("true");
+				const createdby = document.getElementById("btncreatedby");
+				createdby.style.background = "#F26422";
+				createdby.disabled = false;
 			}
 			// const shpid = data.data;
 			loadlisitingRnmn(rmnm);

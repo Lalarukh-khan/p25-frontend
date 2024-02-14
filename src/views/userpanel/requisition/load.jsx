@@ -421,12 +421,26 @@ export default function LoadRequisition(){
 			console.log(data);
 			if(data.data.msn == 1){
 				const table = document.getElementById("mrreqtable");
+				// let hasButton = false;
+				// for (let i = 0; i < table.rows.length; i++) {
+				// 	const td = table.rows[i].cells[5]; 
+				// 	if (td.querySelector("button")) {
+				// 		hasButton = true;
+				// 		break;
+				// 	}
+				// }
 				let hasButton = false;
 				for (let i = 0; i < table.rows.length; i++) {
-					const td = table.rows[i].cells[5]; 
-					if (td.querySelector("button")) {
-						hasButton = true;
-						break;
+					const numCells = table.rows[i].cells.length;
+					for (let j = 0; j < numCells - 1; j++) { // Iterate until the second-to-last cell
+						const td = table.rows[i].cells[j];
+						if (td.querySelector("button")) {
+							hasButton = true;
+							break;
+						}
+					}
+					if (hasButton) {
+						break; // Exit the outer loop if a button is found in any row
 					}
 				}
 				if (hasButton) {
